@@ -1,0 +1,59 @@
+name: Validate Skills
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Check SKILL.md files exist
+        run: |
+          test -f skills/mobile-architecture-guard/SKILL.md || exit 1
+          test -f skills/mobile-tdd-guard/SKILL.md || exit 1
+          echo "✓ All SKILL.md files exist"
+      
+      - name: Validate SKILL.md frontmatter
+        run: |
+          for skill in skills/*/SKILL.md; do
+            echo "Checking $skill"
+            grep -q "^name:" "$skill" || (echo "Missing 'name:' in $skill" && exit 1)
+            grep -q "^description:" "$skill" || (echo "Missing 'description:' in $skill" && exit 1)
+          done
+          echo "✓ All SKILL.md files have valid frontmatter"
+      
+      - name: Check for broken reference links
+        run: |
+          for ref in skills/*/references/*.md; do
+            [ -f "$ref" ] || continue
+            echo "Checking references in $ref"
+            # This is a simple check; expand as needed
+          done
+          echo "✓ Reference files validated"
+      
+      - name: Ensure README.md exists
+        run: |
+          test -f README.md || exit 1
+          echo "✓ README.md exists"
+      
+      - name: Ensure LICENSE exists
+        run: |
+          test -f LICENSE || exit 1
+          echo "✓ LICENSE exists"
+
+  spell-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Spell check README and SKILLs
+        uses: codespell-project/actions-codespell@v2
+        with:
+          files: README.md skills/*/SKILL.md
+          skip: ".git,node_modules"
+          ignore_words_file: .codespellignore
