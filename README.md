@@ -43,7 +43,7 @@ Review Kotlin/Android and Flutter code for SOLID principles, Clean Architecture,
 - ✓ SOLID principles (SRP, OCP, LSP, ISP, DIP)
 - ✗ **Bans ViewModel Decorator anti-pattern** (breaks OS lifecycle)
 
-**22 Imperatives** governing architecture decisions with real-world examples.
+**20 Imperatives** governing architecture decisions with real-world examples.
 
 ---
 
@@ -61,7 +61,7 @@ Test-driven development workflow for Kotlin/Android and Flutter: red-green-refac
 - ✓ Kotlin coroutine testing (runTest, suspend function mocking)
 - ✓ Stub class pattern (for compiled languages like Kotlin/Java)
 
-**21 Imperatives** guiding TDD cycles with framework-specific patterns.
+**20 Imperatives** guiding TDD cycles with framework-specific patterns.
 
 ---
 
@@ -81,17 +81,7 @@ You're using an AI-assisted coding tool. Code compiles, tests pass locally—but
 
 ### **Solution: Token-Optimized AI Guardrails**
 
-These skills use **Prompt Caching** and **Diffs-Only Output** to:
-
-#### 1. **Save Tokens (40-60% reduction)**
-- Skill definitions cached in system context
-- AI outputs only changed lines (diffs), not full files
-- 53% token reduction: 6,000 → 2,800 tokens
-
-#### 2. **Standardize Architecture**
-- Architecture rules become testable (22 imperatives)
-- Every developer reviews with same standards
-- Faster team onboarding
+These skills integrate into your review workflow to:
 
 #### 3. **Catch Issues Early**
 - AI invokes skill before sharing code
@@ -186,40 +176,11 @@ Invoke with `@` mentions:
 
 ```
 You are a Senior Mobile Architect reviewing mobile code.
-Apply mobile-architecture-guard (22 imperatives) and mobile-tdd-guard (21 imperatives).
+Apply mobile-architecture-guard (20 imperatives) and mobile-tdd-guard (20 imperatives).
 Output diffs-only, reference specific imperatives.
 ```
 
 **Token savings**: 6,000 → 2,800 tokens (53% reduction)
-
----
-
-## 📖 Guardrails Summary
-
-### **mobile-architecture-guard: 22 Imperatives**
-
-| Category | Details |
-|----------|---------|
-| **Layer Separation** (1-3) | Three layers, no upward deps, data is plumbing |
-| **Dependency Injection** (4-6) | Inject deps, max 4 args, abstractions with client, **BAN ViewModel Wrapper** |
-| **Module Structure** (7-9) | Feature-based modules, no cross-feature leakage, no circular deps |
-| **State Management** (10-12) | **UDF** (state DOWN, events UP), no prop drilling, side effects explicit |
-| **Repositories** (13-14) | Orchestrator-only, data sources as interfaces |
-| **Testing Boundaries** (15) | Domain testable without framework |
-| **SOLID Principles** (16-20) | SRP, OCP, LSP, ISP, DIP with mobile context |
-| **Token Optimization** (21-22) | Diffs-only output, enforce UDF in feedback |
-
-### **mobile-tdd-guard: 21 Imperatives**
-
-| Category | Details |
-|----------|---------|
-| **Test-First Discipline** (1-4) | Fail first, test behavior, one thing per test, clear names, **stub class pattern** |
-| **Mocking & Test Doubles** (5-8) | Mock external deps, mock contracts, no over-spec, no hardcoded fixtures |
-| **Coverage & Boundaries** (9-11) | Happy path + 2 sad paths, boundary conditions, real behavior matches mocks |
-| **Refactoring** (12-14) | Refactor after GREEN only, avoid duplication, specific assertions |
-| **Flutter Testing** (17-18) | Widget tests (UI logic), **golden testing + pumpAndSettle()** |
-| **Kotlin Testing** (19) | Coroutines with runTest |
-| **Token Optimization** (20-21) | Diffs-only output, zero fluff |
 
 ---
 

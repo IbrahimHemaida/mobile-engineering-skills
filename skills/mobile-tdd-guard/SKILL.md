@@ -372,8 +372,8 @@ TDD prevents these by forcing design upfront: if it's hard to test, the design i
 
 ### Kotlin/Android-Specific Patterns
 
-19. **Use `runBlocking`, `runTest`, or `coEvery` to handle coroutines in tests.**
-    - **Bad** (blocking the main thread):
+19. **Use `runTest` (not `runBlocking`) for coroutine tests. Use `coEvery` for suspend mocks.**
+    - **Bad** (`runBlocking` blocks the test thread and doesn't respect coroutine test dispatchers):
       ```kotlin
       @Test
       fun testLoginAsync() {
@@ -404,36 +404,79 @@ TDD prevents these by forcing design upfront: if it's hard to test, the design i
     }
     ```
 
-20. **Token Optimization: Output diffs-only, not full files. No conversational fluff. Command clear targeted changes.**
-    - When generating test code or implementations, output only changed/new lines (code diffs).
-    - Skip explanations like "Here's the complete test class" or "I've added the following features."
-    - Format output as: old code with ~~strikethrough~~, new code highlighted, side-by-side diff view.
-    - Never dump entire files; let reviewers see what changed at a glance.
-    - Eliminate conversational padding—be surgical and precise.
-    - **Why**: With Prompt Caching, this saves 40-60% of tokens when reviewing multiple features.
+20. **Inject `CoroutineDispatcher` instead of hardcoding `Dispatchers.IO` or `Dispatchers.Main` in ViewModels and repositories.**
+    - Hardcoded dispatchers make tests non-deterministic and require `TestCoroutineScheduler` workarounds.
+    - Inject `dispatchers: CoroutineDispatchers` (a wrapper interface) via constructor; tests pass `UnconfinedTestDispatcher()`.
     
-    **❌ BAD (Full file + fluff)**:
-    ```
-    Here's your complete LoginViewModel with improvements. Notice the error handling and analytics integration:
-    
-    class LoginViewModel(
-      private val loginUseCase: LoginUseCase,
-      private val analyticsService: AnalyticsService
-    ) : ViewModel() {
-      // ... 50 more lines
+    **❌ BAD — hardcoded dispatcher**:
+    ```kotlin
+    class LoginViewModel(val useCase: LoginUseCase) : ViewModel() {
+      fun login(email: String, password: String) {
+        viewModelScope.launch(Dispatchers.IO) {  // ❌ Hardcoded; untestable
+          _state.value = useCase.login(email, password)
+        }
+      }
     }
     ```
     
-    **✅ GOOD (Diffs-only, precise)**:
+    **✅ GOOD — injected dispatcher**:
     ```kotlin
-    // LoginViewModel: Add error state emission
+    interface AppDispatchers {
+      val io: CoroutineDispatcher
+      val main: CoroutineDispatcher
+    }
     
-    - val result = loginUseCase(email, password)
-    + val result = loginUseCase(email, password)
-    + if (result.isFailure) {
-    +   _state.value = LoginState.Error(result.exceptionOrNull())
-    + }
+    class LoginViewModel(
+      val useCase: LoginUseCase,
+      val dispatchers: AppDispatchers  // ✓ Injected
+    ) : ViewModel() {
+      fun login(email: String, password: String) {
+        viewModelScope.launch(dispatchers.io) {
+          _state.value = useCase.login(email, password)
+        }
+      }
+    }
+    
+    // In test:
+    val testDispatchers = object : AppDispatchers {
+      override val io = UnconfinedTestDispatcher()
+      override val main = UnconfinedTestDispatcher()
+    }
+    val viewModel = LoginViewModel(mockUseCase, testDispatchers)
     ```
+
+## Output format for AI assistants
+
+When generating test code or reviewing implementations using this skill:
+- Output diffs only — not full files. Show only changed or new lines.
+- No preamble like "Here's your complete test class" or "I've restructured the tests."
+- Format: old line prefixed with `-`, new line prefixed with `+`.
+- Never dump entire files.
+
+**Why**: With Prompt Caching, diffs-only output saves 40–60% of tokens when reviewing multiple features.
+
+**❌ BAD**:
+```
+Here's your complete LoginViewModel with improvements:
+
+class LoginViewModel(
+  private val loginUseCase: LoginUseCase,
+  private val analyticsService: AnalyticsService
+) : ViewModel() {
+  // ... 50 more lines
+}
+```
+
+**✅ GOOD**:
+```kotlin
+// LoginViewModel: Add error state emission
+
+- val result = loginUseCase(email, password)
++ val result = loginUseCase(email, password)
++ if (result.isFailure) {
++   _state.value = LoginState.Error(result.exceptionOrNull())
++ }
+```
 
 ## Self-check before delivery
 

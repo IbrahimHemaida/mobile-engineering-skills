@@ -232,6 +232,8 @@ These are prevented by enforcing Clean Architecture layering and SOLID principle
       );
     }
     ```
+    
+    **When reviewing state management**: Reject any pattern that passes mutable state objects down to the UI, or that allows the UI to directly mutate shared state. Flag violations with reference to this imperative (#10) in findings.
 
 11. **No state duplication; no multi-step prop drilling.**
     - If state must travel through 3+ widget/composable layers, lift it to a shared state holder higher in the tree or use a state manager.
@@ -315,47 +317,41 @@ These are prevented by enforcing Clean Architecture layering and SOLID principle
     - Good: `class LoginViewModel(val useCase: LoginUseCase)`
     - Bad: `class LoginViewModel(val api: RetrofitService)` (violates DIP; couples to framework)
 
-### Token Optimization Imperatives (For AI-Assisted Development)
+## Output format for AI assistants
 
-21. **Output diffs-only, not full files. Command surgical, targeted changes.**
-    - When reviewing architecture or suggesting refactors, output only changed/new code sections as diffs.
-    - Skip explanations like "Here's your complete updated LoginViewModel" or "I've restructured the entire module."
-    - Format as: old code with ~~strikethrough~~, new code highlighted, side-by-side diff view.
-    - Never dump entire files; let reviewers see what changed at a glance.
-    - **Why**: With Prompt Caching, this saves 40-60% of tokens when reviewing multiple features and enables faster iteration.
-    
-    **❌ BAD (Full file + padding)**:
-    ```
-    Here's your complete AuthRepository with improved error handling and caching strategy:
-    
-    class AuthRepository(
-      private val remoteSource: RemoteAuthDataSource,
-      private val localCache: LocalAuthDataSource
-    ) {
-      // ... 100 lines total
-    }
-    ```
-    
-    **✅ GOOD (Diffs-only, precise)**:
-    ```kotlin
-    // AuthRepository: Add retry policy to login method
-    
-    suspend fun login(email: String, password: String): User {
-      return retry(maxAttempts = 3) {
-    -   remoteSource.login(email, password)
-    +   remoteSource.login(email, password).also {
-    +     localCache.save(it)
-    +   }
-      }
-    }
-    ```
+When reviewing architecture or suggesting refactors using this skill:
+- Output diffs only — not full files. Show only changed or new lines.
+- No preamble like "Here's your complete updated LoginViewModel" or "I've restructured the entire module."
+- Format: old line prefixed with `-`, new line prefixed with `+`.
+- Never dump entire files.
 
-22. **Enforce Unidirectional Data Flow in architectural feedback. Command immutability and explicit event handlers.**
-    - When reviewing state management: insist on immutable state objects flowing DOWN (not mutable LiveData).
-    - Insist on explicit event/action methods flowing UP (not direct state mutations from UI).
-    - Reject patterns that blur responsibility (UI mutating shared mutable state, ViewModel reading UI events directly).
-    - Reference UDF imperatives (10) in findings to keep feedback consistent and enforceable.
-    - **Why**: UDF is the architectural standard that enables testability, scalability, and team consistency.
+**Why**: With Prompt Caching, diffs-only output saves 40–60% of tokens when reviewing multiple features.
+
+**❌ BAD**:
+```
+Here's your complete AuthRepository with improved error handling:
+
+class AuthRepository(
+  private val remoteSource: RemoteAuthDataSource,
+  private val localCache: LocalAuthDataSource
+) {
+  // ... 100 lines total
+}
+```
+
+**✅ GOOD**:
+```kotlin
+// AuthRepository: Add retry policy to login method
+
+suspend fun login(email: String, password: String): User {
+  return retry(maxAttempts = 3) {
+-   remoteSource.login(email, password)
++   remoteSource.login(email, password).also {
++     localCache.save(it)
++   }
+  }
+}
+```
 
 ## Self-check before delivery
 
