@@ -50,21 +50,41 @@ TDD prevents these by forcing design upfront: if it's hard to test, the design i
 1. **Write the failing test before the code.**
    - The test specifies behavior. The test is the spec.
    - A test that doesn't fail initially is worthless — you don't know if you're testing the right thing.
+   - **In compiled languages (Kotlin/Java), create a stub class/function FIRST so the test compiles**, then make it fail properly.
    
-   **Kotlin example**:
+   **Kotlin example (CORRECT FLOW)**:
    ```kotlin
+   // Step 1: Create STUB so test compiles (will throw NotImplementedError or return dummy)
+   class LoginUseCase(private val repo: AuthRepository) {
+     suspend fun login(email: String, password: String): User {
+       throw NotImplementedError("Not yet implemented")
+     }
+   }
+   
+   // Step 2: Write the test (now it COMPILES)
    @Test
-   fun loginUseCaseReturnsUserOnValidCreds() {
-     val mockRepo = mockk<UserRepository>()
+   fun loginUseCaseReturnsUserOnValidCreds() = runTest {
+     val mockRepo = mockk<AuthRepository>()
      coEvery { mockRepo.login("test@example.com", "password") } returns User("test@example.com")
      
      val useCase = LoginUseCase(mockRepo)
      val result = useCase.login("test@example.com", "password")
      
      assertEquals(User("test@example.com"), result)
-     // ^ Test fails here because LoginUseCase doesn't exist yet. RED ✓
+     // ✗ Test fails: expected User("test@example.com"), got NotImplementedError. RED ✓
    }
+   
+   // Step 3: Implement minimal code to make test pass (GREEN)
+   class LoginUseCase(private val repo: AuthRepository) {
+     suspend fun login(email: String, password: String): User {
+       return repo.login(email, password)  // ✓ Test passes. GREEN ✓
+     }
+   }
+   
+   // Step 4: Refactor (if needed), test still passes. REFACTOR ✓
    ```
+   
+   **Why the stub?** In Kotlin/Java, the test won't compile if the class doesn't exist. Create a stub that throws `NotImplementedError()` or returns dummy data, so the test compiles and properly fails (RED state).
 
 2. **Test behavior, not implementation.**
    - **Good**: "Given invalid email, the use case returns an error." (tests the contract)
@@ -311,9 +331,10 @@ TDD prevents these by forcing design upfront: if it's hard to test, the design i
     });
     ```
 
-18. **Use `pump()` and `pumpAndSettle()` correctly to avoid flakiness.**
+18. **Use `pump()` and `pumpAndSettle()` correctly to avoid flakiness. GOLDEN FILES MUST use `pumpAndSettle()`.**
     - `pump()`: advance the animation clock by a duration, rebuild widgets once.
     - `pumpAndSettle()`: pump repeatedly until no more pending frames (animations complete, streams settle).
+    - **CRITICAL for visual regression testing**: Always use `pumpAndSettle()` before capturing golden files to ensure animations are complete.
     - For async operations (API calls): mock them or use `pumpAndSettle()` to let the future resolve.
     
     **Flaky example** (won't wait for async):
@@ -327,6 +348,26 @@ TDD prevents these by forcing design upfront: if it's hard to test, the design i
     await tester.tap(find.byText('Login'));
     await tester.pumpAndSettle();  // Wait for async, animations
     expect(find.byText('Welcome'), findsOneWidget);
+    ```
+    
+    **Golden test example** (visual regression):
+    ```dart
+    testWidgets('LoginScreen golden test — success state', (WidgetTester tester) async {
+      await tester.binding.window.physicalSizeTestValue = const Size(400, 800);
+      addTearDown(tester.binding.window.clearPhysicalSizeTestValue);
+      
+      final mockViewModel = MockLoginViewModel();
+      when(mockViewModel.state).thenReturn(LoginState.success(User('test')));
+      
+      await tester.pumpWidget(createApp(viewModel: mockViewModel));
+      await tester.pumpAndSettle();  // ✓ MUST wait for animations before golden capture
+      
+      // Golden file saved: test/goldens/login_screen_success.png
+      await expectLater(
+        find.byType(LoginScreen),
+        matchesGoldenFile('goldens/login_screen_success.png'),
+      );
+    });
     ```
 
 ### Kotlin/Android-Specific Patterns
@@ -363,21 +404,36 @@ TDD prevents these by forcing design upfront: if it's hard to test, the design i
     }
     ```
 
-20. **Test ViewModel state emission with StateFlow/LiveData observers.**
-    - **Kotlin StateFlow**:
-      ```kotlin
-      @Test
-      fun loginViewModelEmitsSuccessOnValidCreds() = runTest {
-        val viewModel = LoginViewModel(mockUseCase)
-        val states = mutableListOf<LoginState>()
-        
-        viewModel.state.onEach { states.add(it) }.collect()
-        viewModel.login("a", "b")
-        advanceUntilIdle()  // runTest: wait for coroutines
-        
-        assertTrue(states.any { it is LoginState.Success })
-      }
-      ```
+20. **Token Optimization: Output diffs-only, not full files. No conversational fluff. Command clear targeted changes.**
+    - When generating test code or implementations, output only changed/new lines (code diffs).
+    - Skip explanations like "Here's the complete test class" or "I've added the following features."
+    - Format output as: old code with ~~strikethrough~~, new code highlighted, side-by-side diff view.
+    - Never dump entire files; let reviewers see what changed at a glance.
+    - Eliminate conversational padding—be surgical and precise.
+    - **Why**: With Prompt Caching, this saves 40-60% of tokens when reviewing multiple features.
+    
+    **❌ BAD (Full file + fluff)**:
+    ```
+    Here's your complete LoginViewModel with improvements. Notice the error handling and analytics integration:
+    
+    class LoginViewModel(
+      private val loginUseCase: LoginUseCase,
+      private val analyticsService: AnalyticsService
+    ) : ViewModel() {
+      // ... 50 more lines
+    }
+    ```
+    
+    **✅ GOOD (Diffs-only, precise)**:
+    ```kotlin
+    // LoginViewModel: Add error state emission
+    
+    - val result = loginUseCase(email, password)
+    + val result = loginUseCase(email, password)
+    + if (result.isFailure) {
+    +   _state.value = LoginState.Error(result.exceptionOrNull())
+    + }
+    ```
 
 ## Self-check before delivery
 

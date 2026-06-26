@@ -72,26 +72,41 @@ These are prevented by enforcing Clean Architecture layering and SOLID principle
    
    **Anti-pattern**: Creating `UserRepository()` directly in a ViewModel. Violates testability and causes tight coupling.
 
-5. **Use constructor injection for required dependencies; never require optional deps.**
-   - If a class has optional dependencies (nullable, with defaults), split into two classes or make the optional part a wrapper.
+5. **Use constructor injection for required dependencies; never require optional deps. CRITICAL: Ban ViewModel Decorator/Wrapper pattern.**
+   - If a class has optional dependencies (nullable, with defaults), split into two classes **OR** pass decoupled service interfaces.
    - Positional arguments in constructor ≤ 4; beyond that, use a builder or dependency injection container (Hilt, GetIt, etc.).
+   - **CRITICAL ANTI-PATTERN TO BAN**: Do NOT wrap a base ViewModel inside a decorator ViewModel. This breaks OS lifecycle scopes and navigation backstacks.
    
-   **Kotlin example — bad**:
+   **❌ CRITICAL ANTI-PATTERN — ViewModel Wrapper (DO NOT DO THIS)**:
+   ```kotlin
+   // BREAKS LIFECYCLE & NAVIGATION
+   class LoginViewModel(val authUseCase: AuthUseCase)
+   
+   class AnalyticsWrappedLoginViewModel(  // ❌ ANTI-PATTERN
+     val baseViewModel: LoginViewModel,
+     val analyticsService: AnalyticsService
+   ) : ViewModel()
+   
+   // Problem: Navigation uses AnalyticsWrappedLoginViewModel, but lifecycle is broken
+   // OS doesn't know about baseViewModel's scope — memory leaks & lifecycle violations
+   ```
+   
+   **✅ CORRECT: Pass decoupled service interfaces via Constructor DI**:
    ```kotlin
    class LoginViewModel(
      val authUseCase: AuthUseCase,
-     val analyticsService: AnalyticsService? = null  // Bad: optional dependency
-   )
+     val analyticsService: AnalyticsService  // ✓ Clean interface dependency
+   ) : ViewModel() {
+     fun login(email: String, password: String) {
+       viewModelScope.launch {
+         val result = authUseCase.login(email, password)
+         analyticsService.trackLoginAttempt(email)  // ✓ Called explicitly
+       }
+     }
+   }
    ```
    
-   **Better**:
-   ```kotlin
-   class LoginViewModel(val authUseCase: AuthUseCase)
-   class AnalyticsWrappedLoginViewModel(
-     val baseViewModel: LoginViewModel,
-     val analyticsService: AnalyticsService
-   )
-   ```
+   **Why**: Wrapping ViewModels breaks the OS's ViewModel.Factory lifecycle binding. Each feature screen should have ONE ViewModel with all its dependencies cleanly injected. If you need optional analytics, pass the service interface (which can be a no-op impl for testing).
 
 6. **Abstractions (interfaces/contracts) live with the client, not the impl.**
    - Domain layer defines `UserRepository` interface.
@@ -133,10 +148,90 @@ These are prevented by enforcing Clean Architecture layering and SOLID principle
 
 ### ViewModel & State Management
 
-10. **ViewModel owns state; UI consumes it.**
-    - Android: LiveData, StateFlow, or MutableState held by ViewModel. Fragment/Activity observes, never mutates.
-    - Flutter: State held in a state manager (BLoC, Provider). Widget reads, dispatches events/methods.
+10. **Strict Unidirectional Data Flow (UDF): State flows DOWN immutable; Events flow UP via explicit actions.**
+    - **State flows DOWN to UI**: ViewModel/BLoC emits immutable state as `StateFlow<State>`, `LiveData<State>`, or streams.
+    - **UI reads state ONLY**: Fragment/Activity/Widget observes state, NEVER mutates it.
+    - **Events flow UP**: UI sends user actions to ViewModel via explicit methods (`login()`, `updateProfile()`), never direct state mutations.
     - **Single source of truth per screen/feature**: One ViewModel per screen, not scattered across fragments or widgets.
+    - **Android**: LiveData, StateFlow, or MutableState held by ViewModel. Fragment/Activity observes, never mutates.
+    - **Flutter**: State held in BLoC, Provider, or state manager. Widget reads, dispatches events/methods.
+    
+    **Kotlin UDF example — CORRECT**:
+    ```kotlin
+    // ViewModel owns state, emits DOWN
+    class LoginViewModel(val authUseCase: AuthUseCase) : ViewModel() {
+      private val _state = MutableStateFlow<LoginState>(LoginState.Idle)
+      val state: StateFlow<LoginState> = _state.asStateFlow()
+      
+      // Events flow UP via explicit actions
+      fun login(email: String, password: String) {
+        viewModelScope.launch {
+          _state.value = LoginState.Loading
+          val result = authUseCase.login(email, password)
+          _state.value = result.fold(
+            { LoginState.Success(it) },
+            { LoginState.Error(it) }
+          )
+        }
+      }
+    }
+    
+    // UI reads state ONLY, never mutates
+    @Composable
+    fun LoginScreen(viewModel: LoginViewModel) {
+      val state by viewModel.state.collectAsState()
+      
+      when (state) {
+        is LoginState.Idle -> LoginForm(onLoginClick = { email, password ->
+          viewModel.login(email, password)  // ✓ Call ViewModel action
+        })
+        is LoginState.Loading -> LoadingIndicator()
+        is LoginState.Success -> SuccessScreen()
+        is LoginState.Error -> ErrorDialog()
+      }
+    }
+    ```
+    
+    **Flutter UDF example — CORRECT**:
+    ```dart
+    // BLoC emits state DOWN
+    class LoginBloc extends Bloc<LoginEvent, LoginState> {
+      LoginBloc(this._authUseCase) : super(LoginInitial()) {
+        on<LoginPressed>(_onLoginPressed);
+      }
+      
+      FutureOr<void> _onLoginPressed(
+        LoginPressed event,
+        Emitter<LoginState> emit,
+      ) async {
+        emit(LoginLoading());
+        final result = await _authUseCase.login(event.email, event.password);
+        emit(result.fold(
+          (user) => LoginSuccess(user),
+          (error) => LoginFailure(error),
+        ));
+      }
+    }
+    
+    // Widget reads state ONLY
+    @override
+    Widget build(BuildContext context) {
+      return BlocBuilder<LoginBloc, LoginState>(
+        builder: (context, state) {
+          if (state is LoginLoading) return LoadingIndicator();
+          if (state is LoginSuccess) return SuccessScreen();
+          if (state is LoginFailure) return ErrorDialog();
+          
+          return LoginForm(
+            onLoginClick: (email, password) {
+              // ✓ Dispatch event UP
+              context.read<LoginBloc>().add(LoginPressed(email, password));
+            },
+          );
+        },
+      );
+    }
+    ```
 
 11. **No state duplication; no multi-step prop drilling.**
     - If state must travel through 3+ widget/composable layers, lift it to a shared state holder higher in the tree or use a state manager.
@@ -219,6 +314,48 @@ These are prevented by enforcing Clean Architecture layering and SOLID principle
     - Presentation depends on Domain abstractions (interfaces), not Data implementations.
     - Good: `class LoginViewModel(val useCase: LoginUseCase)`
     - Bad: `class LoginViewModel(val api: RetrofitService)` (violates DIP; couples to framework)
+
+### Token Optimization Imperatives (For AI-Assisted Development)
+
+21. **Output diffs-only, not full files. Command surgical, targeted changes.**
+    - When reviewing architecture or suggesting refactors, output only changed/new code sections as diffs.
+    - Skip explanations like "Here's your complete updated LoginViewModel" or "I've restructured the entire module."
+    - Format as: old code with ~~strikethrough~~, new code highlighted, side-by-side diff view.
+    - Never dump entire files; let reviewers see what changed at a glance.
+    - **Why**: With Prompt Caching, this saves 40-60% of tokens when reviewing multiple features and enables faster iteration.
+    
+    **❌ BAD (Full file + padding)**:
+    ```
+    Here's your complete AuthRepository with improved error handling and caching strategy:
+    
+    class AuthRepository(
+      private val remoteSource: RemoteAuthDataSource,
+      private val localCache: LocalAuthDataSource
+    ) {
+      // ... 100 lines total
+    }
+    ```
+    
+    **✅ GOOD (Diffs-only, precise)**:
+    ```kotlin
+    // AuthRepository: Add retry policy to login method
+    
+    suspend fun login(email: String, password: String): User {
+      return retry(maxAttempts = 3) {
+    -   remoteSource.login(email, password)
+    +   remoteSource.login(email, password).also {
+    +     localCache.save(it)
+    +   }
+      }
+    }
+    ```
+
+22. **Enforce Unidirectional Data Flow in architectural feedback. Command immutability and explicit event handlers.**
+    - When reviewing state management: insist on immutable state objects flowing DOWN (not mutable LiveData).
+    - Insist on explicit event/action methods flowing UP (not direct state mutations from UI).
+    - Reject patterns that blur responsibility (UI mutating shared mutable state, ViewModel reading UI events directly).
+    - Reference UDF imperatives (10) in findings to keep feedback consistent and enforceable.
+    - **Why**: UDF is the architectural standard that enables testability, scalability, and team consistency.
 
 ## Self-check before delivery
 
