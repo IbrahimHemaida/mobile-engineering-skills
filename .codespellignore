@@ -19,6 +19,8 @@ MVVM
 ViewModel
 AndroidEntryPoint
 HiltViewModel
+InstallIn
+installin
 Retrofit
 OkHttp
 Moshi
@@ -28,6 +30,7 @@ Jetpack
 # Flutter Frameworks & Libraries
 bloc
 BLoC
+blocs
 Riverpod
 Provider
 GetX
@@ -40,7 +43,7 @@ testWidgets
 WidgetTester
 mockito_dart
 
-# Android Testing & Tools
+# Kotlin/Android Testing & Tools
 Paparazzi
 Roborazzi
 Espresso
@@ -50,6 +53,8 @@ MockK
 JUnit
 Gradle
 Android
+shouldBe
+shouldbe
 
 # Data/API Concepts
 DTO
