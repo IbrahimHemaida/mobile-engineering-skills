@@ -1,0 +1,117 @@
+# Mobile Engineering Keywords - Whitelist for Codespell
+# This file tells codespell to ignore these technical terms that would otherwise be flagged as misspellings
+
+# Kotlin/Android Libraries & Frameworks
+mockk
+coEvery
+coVerify
+runTest
+StateFlow
+MutableState
+Composables
+viewmodel
+viewmodels
+Hilt
+Dagger
+Jetpack
+LiveData
+MVVM
+ViewModel
+AndroidEntryPoint
+HiltViewModel
+Retrofit
+OkHttp
+Moshi
+Room
+Jetpack
+
+# Flutter Frameworks & Libraries
+bloc
+BLoC
+Riverpod
+Provider
+GetX
+bloc_test
+golden_toolkit
+alchemist
+pumpAndSettle
+pumpWidget
+testWidgets
+WidgetTester
+mockito_dart
+
+# Android Testing & Tools
+Paparazzi
+Roborazzi
+Espresso
+uicontroller
+Mockito
+MockK
+JUnit
+Gradle
+Android
+
+# Data/API Concepts
+DTO
+DTOs
+Repository
+UseCase
+Mapper
+Serialization
+
+# Architecture Patterns
+UDF
+Unidirectional
+Data
+Flow
+Clean
+Architecture
+DIP
+ISP
+SRP
+OCP
+LSP
+SOLID
+
+# Mobile Development Terms
+APK
+SDK
+Kotlin
+Multiplatform
+KMM
+gradle
+proguard
+shrinking
+dex
+lint
+
+# Development Workflow
+Codespell
+GitHub
+Actions
+CI/CD
+TDD
+BDD
+
+# Other Technical Terms
+async
+await
+coroutine
+suspend
+lifecycle
+recomposition
+Composable
+composable
+enum
+enums
+nullable
+immutable
+declarative
+reactive
+paradigm
+paradigms
+transpile
+serializer
+deserializer
+impl
+impl

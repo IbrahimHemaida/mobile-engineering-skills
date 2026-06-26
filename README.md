@@ -1,443 +1,240 @@
 # 📱 Mobile Engineering Skills
 
-> **Battle-tested, token-optimized AI guardrails for Senior Mobile Team Leads and Engineers.**
+> **Battle-tested, token-optimized AI System Instructions/Guardrails for Senior Mobile Team Leads & Engineers**
 
-Professional AI agent skills for building high-quality Kotlin/Android and Flutter mobile applications with SOLID principles, Clean Architecture, and test-driven development patterns. Built for real engineering—not vibe coding.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Platforms: Android | Flutter | KMM](https://img.shields.io/badge/Platforms-Android%20%7C%20Flutter%20%7C%20KMM-brightgreen)](https://github.com/IbrahimHemaida/mobile-engineering-skills)
 
-Engineered for **13+ years** of production mobile development across Android, Flutter, and Kotlin Multiplatform.
+Professional AI system instructions designed to enforce SOLID principles, Clean Architecture, and Test-Driven Development across Kotlin/Android and Flutter mobile applications. Built for **real engineering**, not vibe coding.
 
----
-
-## 🎯 What This Repository Does
-
-This is a **skill package** that supercharges your AI-assisted mobile development workflow. Instead of manually reviewing architecture and tests on every feature, these skills:
-
-✅ **Automate expert architecture reviews** — Catch layer leakage, circular deps, DI violations before they hit main
-✅ **Enforce TDD discipline** — Guide red-green-refactor cycles with test-first patterns
-✅ **Token-optimize AI interactions** — Use Prompt Caching & diffs-only outputs to save tokens and speed up reviews
-✅ **Standardize elite patterns** — Enforce SOLID, Clean Architecture, unidirectional data flow across teams
+Engineered for **13+ years** of production mobile development experience. Based on battle-tested patterns from hundreds of shipped features across healthcare, fintech, e-commerce, and enterprise mobile platforms.
 
 ---
 
-## 📚 Included Skills
+## 🎯 What This Repository Contains
 
-### 1. **mobile-architecture-guard** 🏗️
-Review Kotlin/Android and Flutter code for SOLID principles, Clean Architecture, modular design, and architectural patterns before merge.
+This is a **skill package** containing expertly-crafted AI system instructions that **automate architecture reviews** and **enforce TDD discipline** across your mobile development workflow. Instead of manually reviewing every PR against the same architectural rules, these guardrails let AI-assisted coding tools catch violations in seconds.
 
-**What it validates:**
-- ✓ Layer separation (Presentation → Domain → Data with no upward dependencies)
-- ✓ Dependency injection (constructor injection, no hardcoded deps)
-- ✓ Feature-based modularization (no circular imports)
-- ✓ Repository patterns & state management (MVVM, BLoC, Provider, UDF)
+### ✨ Core Benefits
+
+| Benefit | Description |
+|---------|-------------|
+| 🏗️ **Automate Architecture Reviews** | Catch layer leakage, circular dependencies, DI violations before code review |
+| 🧪 **Enforce TDD Red-Green-Refactor** | Guide AI through test-first development with structured discipline |
+| ⚡ **Token Optimization (40-60% savings)** | Use Prompt Caching + diffs-only output to cut token consumption dramatically |
+| 🎯 **Standardize Elite Patterns** | Team consistency: SOLID, Clean Architecture, Unidirectional Data Flow |
+| 🔍 **Catch Issues Early** | AI invokes skills before code review — saves 30+ minutes per PR |
+
+---
+
+## 📚 What's Included
+
+### **1. mobile-architecture-guard** 🏗️
+
+Review Kotlin/Android and Flutter code for SOLID principles, Clean Architecture, modular design, and architectural anti-patterns before merge.
+
+**Validates:**
+- ✓ Layer separation (Presentation → Domain → Data, no upward dependencies)
+- ✓ Dependency Injection (constructor injection, no hardcoded dependencies)
+- ✓ Feature-based modules (no circular imports or cross-feature leakage)
+- ✓ Repository & Data Source patterns (single-responsibility orchestrators)
+- ✓ State Management (Unidirectional Data Flow, immutable state DOWN, events UP)
 - ✓ Testing boundaries (domain testable without framework)
-- ✓ Anti-patterns (ViewModel wrappers, prop drilling, God objects)
+- ✓ SOLID principles (SRP, OCP, LSP, ISP, DIP)
+- ✗ **Bans ViewModel Decorator anti-pattern** (breaks OS lifecycle)
 
-**Delivers:** Structured findings on architectural violations, layer leakage, dependency violations, and state management issues.
+**22 Imperatives** governing architecture decisions with real-world examples.
 
 ---
 
-### 2. **mobile-tdd-guard** 🧪
+### **2. mobile-tdd-guard** 🧪
+
 Test-driven development workflow for Kotlin/Android and Flutter: red-green-refactor cycle with proper mocking, boundary testing, and visual regression testing.
 
-**What it enforces:**
+**Enforces:**
 - ✓ Red-Green-Refactor discipline (test first, minimal code, refactor)
-- ✓ Unit vs. integration testing scope
+- ✓ Unit vs. integration testing boundaries
 - ✓ Mock contracts, not implementations (Mockito, MockK, mockito-dart)
-- ✓ Test naming & specification clarity
-- ✓ Boundary conditions & edge case coverage
-- ✓ Flutter widget & golden testing (visual regressions)
+- ✓ Test naming clarity (scenario + outcome, not method name)
+- ✓ Boundary condition testing (empty, null, zero, max, edge cases)
+- ✓ Flutter Widget & Golden Testing (visual regression prevention)
 - ✓ Kotlin coroutine testing (runTest, suspend function mocking)
-- ✓ Token-optimized output (diffs-only, no full file dumps)
+- ✓ Stub class pattern (for compiled languages like Kotlin/Java)
 
-**Delivers:** Guided red-green-refactor cycles with proper test structure, mocking patterns, and visual test automation.
+**21 Imperatives** guiding TDD cycles with framework-specific patterns.
 
 ---
 
-## 💎 Why Use This? (The Case for AI-Assisted Architecture & Testing)
+## 💎 Why Use This?
 
-### **Problem: Without These Skills**
+### **Problem: Without These Guardrails**
 
-You write a feature in Claude Code. The code compiles, passes tests locally... but when reviewed:
-- ❌ ViewModels call repositories directly (layer violation)
-- ❌ State duplicated across 5 composables (prop drilling)
-- ❌ Tests mock implementation details, break on refactor
-- ❌ Database layer mixed with business logic
-- ❌ Hard dependencies → untestable code
+You're using an AI-assisted coding tool. Code compiles, tests pass locally—but when reviewed:
 
-**Cost**: Rework, technical debt, slow onboarding for new team members.
+```
+❌ ViewModels call repositories directly (layer violation)
+❌ State duplicated across composables (prop drilling, memory leaks)
+❌ Tests mock implementation details, break on refactor (brittle)
+❌ Database logic mixed with business logic (untestable)
+❌ Hard dependencies everywhere → untestable code
+```
 
 ### **Solution: Token-Optimized AI Guardrails**
 
 These skills use **Prompt Caching** and **Diffs-Only Output** to:
 
-1. **Save Tokens (40-60% reduction)**
-   - Skill definitions cached in system context (no re-sending per request)
-   - AI outputs only changed lines (diffs), not full files
-   - Imperatives guide AI to skip verbose explanations
+#### 1. **Save Tokens (40-60% reduction)**
+- Skill definitions cached in system context
+- AI outputs only changed lines (diffs), not full files
+- 53% token reduction: 6,000 → 2,800 tokens
 
-2. **Standardize Architecture Across Teams**
-   - Architecture rules become testable (20 imperatives per skill)
-   - Every developer reviews with same standards
-   - New team members align faster
+#### 2. **Standardize Architecture**
+- Architecture rules become testable (22 imperatives)
+- Every developer reviews with same standards
+- Faster team onboarding
 
-3. **Catch Issues Before Code Review**
-   - AI invokes skill before sharing code
-   - Finds layer violations, circular deps, state bugs in seconds
-   - Saves human reviewers 30+ minutes per PR
+#### 3. **Catch Issues Early**
+- AI invokes skill before sharing code
+- Saves human reviewers 30+ minutes per PR
 
-4. **TDD-First Development**
-   - Skill guides red-green-refactor cycle
-   - AI doesn't skip test writing
-   - Visual regression testing automated (golden files)
+#### 4. **TDD-First Development**
+- Guardrail guides red-green-refactor cycle
+- Visual regression testing automated (golden files)
 
 ---
 
-## ⚡ Quick Start (2 minutes)
+## 🚀 Installation
 
-### **Installation Options**
+### **Option A: npm/npx** (Easiest)
 
-#### **Option A: npm/npx** (Recommended)
 ```bash
 npx skills@latest add IbrahimHemaida/mobile-engineering-skills
 ```
 
-#### **Option B: Manual (Git Clone)**
+### **Option B: Manual Setup**
+
 ```bash
 git clone https://github.com/IbrahimHemaida/mobile-engineering-skills.git
 cp -r skills/mobile-* ~/.claude/skills/
 ```
 
-#### **Option C: Download Folder**
-Download `skills/` folder and copy to your agent's skill directory.
-
 ---
 
-## 🚀 Implementation Guides
+## 📋 Implementation Guides
 
-### **For Claude Code CLI**
+### **Claude Code CLI**
 
-#### **Step 1: Configure `.clauderc` or `.anthropic/instructions`**
-
-Create `~/.clauderc` or `~/.anthropic/instructions.md`:
+Create `~/.clauderc`:
 
 ```yaml
-# .clauderc
 skills:
   - name: mobile-architecture-guard
     path: ~/.claude/skills/mobile-architecture-guard/SKILL.md
-    triggers:
-      - "review this architecture"
-      - "check the dependency graph"
-      - "validate module boundaries"
-  
   - name: mobile-tdd-guard
     path: ~/.claude/skills/mobile-tdd-guard/SKILL.md
-    triggers:
-      - "TDD this feature"
-      - "write tests first"
-      - "red-green-refactor"
 
-prompt-caching:
+prompt_caching:
   enabled: true
-  ttl: 3600  # 1 hour cache
 ```
 
-Or in instructions.md:
-
-```markdown
-# Claude Code Mobile Engineering
-
-When working on mobile features:
-1. Use mobile-architecture-guard for architecture reviews
-2. Use mobile-tdd-guard for test-driven development
-3. Output diffs only (not full files)
-4. Validate layer separation before commit
-```
-
-#### **Step 2: Invoke in Claude Code Terminal**
+Invoke in terminal:
 
 ```bash
-# Start a feature
-claude code "Build login feature with TDD"
-
-# Review architecture mid-session
-@mobile-architecture-guard
-Review this feature for layer violations
-
-# Continue with TDD
-@mobile-tdd-guard
-Red: write failing test for login validation
+@mobile-architecture-guard Review this feature for layer violations
+@mobile-tdd-guard TDD the payment retry logic
 ```
-
-**Claude Code will:**
-- Cache skill definitions (save tokens)
-- Output only code changes (diffs)
-- Validate architecture before generating code
-- Guide TDD cycle step-by-step
 
 ---
 
-### **For Cursor IDE**
+### **Cursor IDE**
 
-#### **Step 1: Configure `.cursor/rules/`**
-
-Create `.cursor/rules/mobile-guards.md` in your project:
+Create `.cursor/rules/mobile-guards.md`:
 
 ```markdown
 # Mobile Engineering Guards
 
 ## Architecture
-When reviewing code, use mobile-architecture-guard rules:
 - Validate layer separation
 - Check dependency injection patterns
 - Ensure feature-based modules
 - Detect circular dependencies
 
 ## Testing
-When implementing features, use mobile-tdd-guard:
 - Write failing test first (RED)
 - Implement minimal code (GREEN)
 - Refactor for clarity (REFACTOR)
-- Test boundary conditions and edge cases
 ```
 
-#### **Step 2: Invoke in Cursor Chat/Composer**
+Invoke with `@` mentions:
 
 ```
 @mobile-architecture-guard Review this LoginFeature
 @mobile-tdd-guard Build payment processing with TDD
 ```
 
-**Or use @ mentions in Composer:**
-
-```
-@mobile-architecture-guard
-Check the data layer for repository patterns
-
-[Paste code]
-
-@mobile-tdd-guard
-TDD: write test for payment retry logic
-```
-
-**Cursor will:**
-- Load skill rules into context
-- Reference rules in auto-complete suggestions
-- Validate code against imperatives
-- Suggest refactors based on architectural rules
-
 ---
 
-### **For Claude Desktop / Web (Prompt Caching)**
+### **Claude Desktop (Prompt Caching)**
 
-#### **Step 1: Create Project Context**
-
-In Claude Desktop or Web, create a new Project:
-
-1. **New Project** → Name: "Mobile Engineering"
-2. **Add Files** → Include:
+1. Create new Project: "Mobile Engineering"
+2. Add files:
    - `skills/mobile-architecture-guard/SKILL.md`
    - `skills/mobile-tdd-guard/SKILL.md`
-   - `skills/mobile-architecture-guard/references/` (all guides)
-   - Your project's `src/` or `lib/` folder
+   - Your project code
 
-#### **Step 2: Use System Instructions**
-
-Set Custom Instructions for the project:
+3. Set Custom Instructions:
 
 ```
-You are a Senior Mobile Architect reviewing Kotlin/Android and Flutter code.
-
-Always apply these guards:
-1. mobile-architecture-guard — Validate layer separation, DI, modules, state management
-2. mobile-tdd-guard — Enforce red-green-refactor, proper mocking, visual testing
-
-When asked to review code:
-- List specific imperative violations (e.g., "Imperative #4: Direct Repository Creation in ViewModel")
-- Suggest fixes with code diffs (not full files)
-- Cite the relevant reference guide (clean-architecture.md, dependency-injection.md, etc.)
-
-Output format:
-- [Imperative #N] Violation: [issue]
-- File: [path:line]
-- Fix: [suggested code diff]
-- Reference: [skill.md section]
+You are a Senior Mobile Architect reviewing mobile code.
+Apply mobile-architecture-guard (22 imperatives) and mobile-tdd-guard (21 imperatives).
+Output diffs-only, reference specific imperatives.
 ```
 
-#### **Step 3: Enable Prompt Caching**
-
-Claude Desktop automatically caches:
-- **5K+ character documents** (your skill files)
-- **Reference guides** (re-used across multiple reviews)
-- **System instructions** (project context)
-
-**Benefit**: Review 5+ features, pay token cost only once for skill definitions.
-
-Example token savings:
-```
-Without caching:
-- 3 architecture reviews × 2K tokens each = 6,000 tokens
-
-With caching (Prompt Caching enabled):
-- First review: 2,000 tokens (skills loaded)
-- Reviews 2-5: 200 tokens each (cached, 90% savings!)
-- Total: 2,800 tokens (vs 6,000)
-```
+**Token savings**: 6,000 → 2,800 tokens (53% reduction)
 
 ---
 
-## 📋 Architectural Guardrails (Quick Reference)
+## 📖 Guardrails Summary
 
-### **mobile-architecture-guard: 20 Imperatives**
+### **mobile-architecture-guard: 22 Imperatives**
 
-**Layer Separation** (1-3)
-- Three clear layers: Presentation, Domain, Data
-- No upward dependencies (Domain never imports Data/Presentation impl)
-- Data layer is plumbing, not business logic
+| Category | Details |
+|----------|---------|
+| **Layer Separation** (1-3) | Three layers, no upward deps, data is plumbing |
+| **Dependency Injection** (4-6) | Inject deps, max 4 args, abstractions with client, **BAN ViewModel Wrapper** |
+| **Module Structure** (7-9) | Feature-based modules, no cross-feature leakage, no circular deps |
+| **State Management** (10-12) | **UDF** (state DOWN, events UP), no prop drilling, side effects explicit |
+| **Repositories** (13-14) | Orchestrator-only, data sources as interfaces |
+| **Testing Boundaries** (15) | Domain testable without framework |
+| **SOLID Principles** (16-20) | SRP, OCP, LSP, ISP, DIP with mobile context |
+| **Token Optimization** (21-22) | Diffs-only output, enforce UDF in feedback |
 
-**Dependency Injection** (4-6)
-- Inject everything that changes
-- Constructor injection only; max 4 args
-- Abstractions live with the client
+### **mobile-tdd-guard: 21 Imperatives**
 
-**Module Structure** (7-9)
-- Feature-based modules, not layer-based
-- No cross-feature direct imports
-- No circular dependencies
-
-**State Management** (10-12)
-- ViewModel owns state; UI consumes it
-- No state duplication / prop drilling
-- Side effects explicit, not hidden in init
-
-**Repositories & Testing** (13-20)
-- Repository is orchestrator, not business logic
-- Domain testable without framework
-- SOLID principles: SRP, OCP, LSP, ISP, DIP
+| Category | Details |
+|----------|---------|
+| **Test-First Discipline** (1-4) | Fail first, test behavior, one thing per test, clear names, **stub class pattern** |
+| **Mocking & Test Doubles** (5-8) | Mock external deps, mock contracts, no over-spec, no hardcoded fixtures |
+| **Coverage & Boundaries** (9-11) | Happy path + 2 sad paths, boundary conditions, real behavior matches mocks |
+| **Refactoring** (12-14) | Refactor after GREEN only, avoid duplication, specific assertions |
+| **Flutter Testing** (17-18) | Widget tests (UI logic), **golden testing + pumpAndSettle()** |
+| **Kotlin Testing** (19) | Coroutines with runTest |
+| **Token Optimization** (20-21) | Diffs-only output, zero fluff |
 
 ---
 
-### **mobile-tdd-guard: 20 Imperatives**
+## 🎓 Foundations
 
-**Test-First Discipline** (1-4)
-- Write failing test before code
-- Test behavior, not implementation
-- One thing per test
-- Test names describe scenario & outcome
+Based on proven principles:
+- **Clean Architecture** — Robert C. Martin, 2012
+- **SOLID Principles** — Robert C. Martin
+- **Test-Driven Development: By Example** — Kent Beck, 2002
+- **Growing Object-Oriented Software, Guided by Tests** — Freeman & Pryce, 2009
+- **Domain-Driven Design** — Eric Evans, 2003
+- **A Philosophy of Software Design** — John Ousterhout, 2018
+- **The Pragmatic Programmer** — Hunt & Thomas, 2019
 
-**Mocking & Test Doubles** (5-8)
-- Mock external dependencies (repos, APIs)
-- Mock interface contracts, not impl
-- No over-specification in mocks
-- No hardcoded success fixtures
-
-**Coverage & Boundaries** (9-11)
-- Test happy path + 2 sad paths minimum
-- Test boundary conditions (empty, null, zero, max)
-- Real behavior matches mock contract
-
-**Refactoring & Flutter/Kotlin** (12-20)
-- Refactor only after test passes
-- Avoid test code duplication
-- Flutter: use pump() and pumpAndSettle() correctly
-- Kotlin: handle coroutines with runTest
-- All languages: specific assertions, no logging checks
-
-**SOLID Principles** (Uncle Bob, 2014)
-- **S**ingle Responsibility: One reason to change per class
-- **O**pen/Closed: Open for extension, closed for modification
-- **L**iskov Substitution: Subtypes are substitutable for their base types
-- **I**nterface Segregation: Depend on specific contracts, not fat interfaces
-- **D**ependency Inversion: Depend on abstractions, not concretions
-
-**Clean Architecture** (Uncle Bob, 2012)
-- Concentric circles: Entities → Use Cases → Interface Adapters → Frameworks & Drivers
-- Dependencies point inward
-- Business rules isolated from framework details
-
-**Test-Driven Development** (Beck, 2002)
-- Red: Write failing test
-- Green: Make test pass
-- Refactor: Improve code quality
-
----
-
-## 🛠️ Skill Reference
-
-### mobile-architecture-guard - 20 Imperatives
-
-1. Three clear layers (Presentation, Domain, Data)
-2. No upward dependencies
-3. Data layer is plumbing, not business logic
-4. Inject everything that changes
-5. Constructor injection only; max 4 args
-6. Abstractions live with the client
-7. Feature-based modules, not layer-based
-8. No cross-feature direct imports
-9. No circular dependencies
-10. ViewModel owns state
-11. No state duplication / prop drilling
-12. Side effects are explicit
-13. Repository is a single-responsibility orchestrator
-14. Data sources are interfaces
-15. Domain layer testable without framework
-16. SRP: One ViewModel per screen
-17. OCP: Extend via new use cases, not branches
-18. LSP: Mock repositories are drop-in replacements
-19. ISP: Domain-specific interfaces, not fat ones
-20. DIP: Depend on abstractions
-
-**Full reference**: [skills/mobile-architecture-guard/SKILL.md](skills/mobile-architecture-guard/SKILL.md)
-
----
-
-### mobile-tdd-guard - 20 Imperatives
-
-1. Write failing test before code
-2. Test behavior, not implementation
-3. One thing per test
-4. Test names describe scenario & outcome
-5. Mock external dependencies
-6. Mock the interface contract, not implementation
-7. No over-specification in mocks
-8. No hardcoded success fixtures
-9. Test happy + 2 sad paths minimum
-10. Test boundary conditions
-11. Real behavior matches mock contract
-12. Refactor only after test passes
-13. Refactored code doesn't change test behavior
-14. Avoid test code duplication
-15. Use specific assertion functions
-16. No assertions on logging/UI unless central
-17. (Flutter) Test UI logic, not Framework
-18. (Flutter) Use pump() and pumpAndSettle() correctly
-19. (Kotlin) Handle coroutines with runTest
-20. (Kotlin) Test ViewModel state emission
-
-**Full reference**: [skills/mobile-tdd-guard/SKILL.md](skills/mobile-tdd-guard/SKILL.md)
-
----
-
-## 📖 Detailed Guides
-
-### For Kotlin/Android Developers
-- [SOLID Principles in Kotlin](skills/mobile-architecture-guard/references/solid-kotlin.md)
-- [Kotlin Testing Patterns](skills/mobile-tdd-guard/references/kotlin-testing.md)
-- [Clean Architecture](skills/mobile-architecture-guard/references/clean-architecture.md)
-
-### For Flutter Developers
-- [Flutter Testing Patterns](skills/mobile-tdd-guard/references/flutter-testing.md)
-- [Dependency Injection](skills/mobile-architecture-guard/references/dependency-injection.md)
-
----
-
-## 🤝 Compatibility
-
-| Platform | Testing | DI Framework | State Management |
-|----------|---------|--------------|------------------|
-| **Android** | JUnit 4/5, Mockito, MockK | Hilt, Dagger | LiveData, StateFlow, RxJava |
-| **Flutter** | flutter_test, mockito | GetIt, Provider | BLoC, Provider, GetX, Riverpod |
-| **KMM** | Both | Manual or multiplatform DI | Coroutines + Dart equivalents |
+Plus 13+ years of production mobile engineering experience.
 
 ---
 
@@ -449,21 +246,30 @@ MIT License. See [LICENSE](LICENSE) for details.
 
 ## 🤝 Contributing
 
-Have improvements or new patterns? Submit issues or PRs!
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+1. Fork the repository
+2. Create a branch (`git checkout -b feature/my-pattern`)
+3. Commit changes (`git commit -am 'Add new pattern'`)
+4. Push to branch (`git push origin feature/my-pattern`)
+5. Open a Pull Request
 
 ---
 
 ## 💬 Questions?
 
-- File an issue on GitHub
-- Read the detailed reference guides in each skill
-- Check examples for your platform (Kotlin/Flutter)
+- Open an issue on [GitHub](https://github.com/IbrahimHemaida/mobile-engineering-skills/issues)
+- Check the detailed reference guides in each skill folder
+- Review examples for your platform (Kotlin/Flutter)
 
 ---
 
-**Built by [Ibrahim Hemaida](https://github.com/IbrahimHemaida)**
-Based on 13+ years of mobile engineering experience.
+<div align="center">
 
-Happy shipping! 🚀
+**Built by [Ibrahim Hemaida](https://github.com/IbrahimHemaida)**
+
+Based on 13+ years of mobile engineering excellence.
+
+*For real engineers, not vibe coding.*
+
+[![Made with ❤️](https://img.shields.io/badge/Made%20with-%E2%9D%A4%EF%B8%8F-red)](https://github.com/IbrahimHemaida/mobile-engineering-skills)
+
+</div>
