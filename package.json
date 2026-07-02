@@ -23,7 +23,10 @@
     "context-management",
     "claude-code",
     "security",
-    "certificate-pinning"
+    "certificate-pinning",
+    "accessibility",
+    "wcag",
+    "a11y"
   ],
   "author": "Ibrahim Hemaida",
   "license": "MIT",

@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 #### Skills
+- **mobile-accessibility-guard**: Review Kotlin/Android and Flutter code for WCAG 2.1 AA accessibility violations before merge
+  - 20 imperatives covering content descriptions/semantics, touch target sizing, color contrast, screen reader reading order, form labeling, live-region announcements, and custom widget semantic roles
+  - Severity-ranked findings report format referencing specific WCAG success criteria
+  - Reference guides: screen-reader-patterns.md, touch-and-visual.md
 - **mobile-security-guard**: Review Kotlin/Android and Flutter code for security vulnerabilities before merge
   - 20 imperatives covering secrets handling, certificate pinning, transport security, encrypted local storage, exported component hygiene, deep link/WebView/IPC validation, and release build hygiene
   - Severity-ranked (Critical/High/Medium/Low) findings report format for security reviews

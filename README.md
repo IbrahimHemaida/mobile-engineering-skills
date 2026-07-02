@@ -100,6 +100,25 @@ Review Kotlin/Android and Flutter code for security vulnerabilities before merge
 
 ---
 
+### **5. mobile-accessibility-guard** ♿
+
+Review Kotlin/Android and Flutter code for WCAG 2.1 AA accessibility violations before merge — missing content descriptions/semantics, undersized touch targets, insufficient color contrast, and broken screen reader flow.
+
+**Validates:**
+- ✓ Content descriptions/semantics on all meaningful non-text elements
+- ✓ Touch targets ≥48dp/44pt-equivalent
+- ✓ Color contrast: 4.5:1 text, 3:1 large text/UI components — checked against rendered colors
+- ✓ No status/validation information relies on color alone
+- ✓ Screen reader reading order matches visual order
+- ✓ Form fields have programmatically associated labels
+- ✓ Dynamic content changes and validation errors are announced, not just displayed
+- ✓ Custom tappable widgets expose correct semantic role (button, header, etc.)
+- ✗ **Bans** treating accessibility as a pre-release-only QA pass
+
+**20 Imperatives**, plus a severity-ranked findings report format referencing specific WCAG success criteria.
+
+---
+
 ## 💎 Why Use This?
 
 ### **Problem: Without These Guardrails**
@@ -148,7 +167,7 @@ Claude Code auto-discovers skills placed under `.claude/skills/<skill-name>/SKIL
 
 ```bash
 mkdir -p ~/.claude/skills
-cp -r skills/mobile-architecture-guard skills/mobile-tdd-guard skills/mobile-security-guard skills/ai-context-budget-guard ~/.claude/skills/
+cp -r skills/mobile-architecture-guard skills/mobile-tdd-guard skills/mobile-security-guard skills/mobile-accessibility-guard skills/ai-context-budget-guard ~/.claude/skills/
 ```
 
 You can also invoke a skill directly instead of waiting for automatic matching:
@@ -157,6 +176,7 @@ You can also invoke a skill directly instead of waiting for automatic matching:
 /mobile-architecture-guard Review this feature for layer violations
 /mobile-tdd-guard TDD the payment retry logic
 /mobile-security-guard Audit this auth flow for security issues
+/mobile-accessibility-guard Check this screen for WCAG AA issues
 /ai-context-budget-guard Write a session digest before we wrap up
 ```
 
@@ -194,7 +214,7 @@ Invoke with `@` mentions:
 ### **Claude.ai / Claude Desktop**
 
 1. Go to **Settings → Capabilities** and enable **Code execution and file creation** (required for Skills; Team/Enterprise users enable it under Organization settings instead).
-2. Go to **Customize → Skills** and upload each skill folder as a zip — one skill per zip (`mobile-architecture-guard`, `mobile-tdd-guard`, `mobile-security-guard`, `ai-context-budget-guard`).
+2. Go to **Customize → Skills** and upload each skill folder as a zip — one skill per zip (`mobile-architecture-guard`, `mobile-tdd-guard`, `mobile-security-guard`, `mobile-accessibility-guard`, `ai-context-budget-guard`).
 3. Claude applies a skill automatically when it's relevant to your request — you don't need to reference it by name every time.
 
 Skill availability depends on your plan (Free/Pro/Max/Team/Enterprise); see [Anthropic's Skills documentation](https://support.claude.com/en/articles/12512180-use-skills-in-claude) for current details.
