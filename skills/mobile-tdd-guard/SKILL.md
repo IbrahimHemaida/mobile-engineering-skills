@@ -16,6 +16,14 @@ This skill works with:
 
 This skill complements clean-code-guard (for code quality) and mobile-architecture-guard (for architecture). Use clean-code-guard to audit the test itself. Use architecture-guard to ensure layer boundaries in the code being tested.
 
+## Reference files
+
+This SKILL.md covers the core red-green-refactor rules and checklists. For full setup and worked examples, load these as needed:
+- `references/kotlin-testing.md` — JUnit/MockK setup, Arrange-Act-Assert structure, and extended coroutine/Flow testing patterns beyond the summary below.
+- `references/flutter-testing.md` — Flutter test/Mockito setup, widget test scaffolding, and golden test configuration beyond the summary below.
+
+Read the relevant reference file when setting up a test suite from scratch or when a pattern needs more detail than the summary here provides.
+
 ## How to use this skill
 
 **Red-Green-Refactor cycle** (recommended):

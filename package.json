@@ -33,7 +33,6 @@
     "node": ">=16.0.0"
   },
   "scripts": {
-    "validate": "node scripts/validate.js",
     "lint": "prettier --check .",
     "format": "prettier --write ."
   },

@@ -16,6 +16,15 @@ This skill works with:
 
 This skill complements clean-code-guard and test-guard. Use clean-code-guard for function-level code quality, test-guard for test coverage, and this skill for architectural decisions and module boundaries.
 
+## Reference files
+
+This SKILL.md covers the core rules and checklists. For deeper treatment, load these as needed:
+- `references/clean-architecture.md` — extended layer-separation patterns, real-world layer leakage examples, and migration strategies for legacy modules.
+- `references/dependency-injection.md` — DI container comparisons (Hilt, Koin, GetIt, Riverpod), constructor vs field injection tradeoffs, and testing with fakes vs mocks.
+- `references/solid-kotlin.md` — SOLID principles worked through with larger Kotlin/Flutter examples than the summaries below.
+
+Read the relevant reference file when a violation needs more context than the summary here provides, or when the user asks for a deeper explanation of a specific principle.
+
 ## How to use this skill
 
 **Guard-pass mode** (recommended): After implementing a feature or refactoring a module, check the code structure against the architecture imperatives below. Validate layer separation, dependency injection, and package boundaries before merging.
