@@ -17,6 +17,7 @@ jobs:
           test -f skills/mobile-architecture-guard/SKILL.md || exit 1
           test -f skills/mobile-tdd-guard/SKILL.md || exit 1
           test -f skills/ai-context-budget-guard/SKILL.md || exit 1
+          test -f skills/mobile-security-guard/SKILL.md || exit 1
           echo "✓ All SKILL.md files exist"
       
       - name: Validate SKILL.md frontmatter

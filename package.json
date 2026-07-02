@@ -21,7 +21,9 @@
     "clean-code",
     "solid",
     "context-management",
-    "claude-code"
+    "claude-code",
+    "security",
+    "certificate-pinning"
   ],
   "author": "Ibrahim Hemaida",
   "license": "MIT",

@@ -10,9 +10,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 #### Skills
+- **mobile-security-guard**: Review Kotlin/Android and Flutter code for security vulnerabilities before merge
+  - 20 imperatives covering secrets handling, certificate pinning, transport security, encrypted local storage, exported component hygiene, deep link/WebView/IPC validation, and release build hygiene
+  - Severity-ranked (Critical/High/Medium/Low) findings report format for security reviews
+  - Reference guides: certificate-pinning.md, secure-storage.md, webview-and-ipc.md
 - **ai-context-budget-guard**: Manage AI context budget across long-running mobile engineering sessions
   - 13 imperatives covering digest discipline, index discipline, compression/archiving, and native tool integration (Claude Code CLAUDE.md / auto-memory)
   - Templates for Session Digest, Index, and Archive files
+
+### Fixed
+- README installation instructions corrected to match Claude Code's actual skill discovery mechanism (`.claude/skills/<name>/SKILL.md`, auto-discovered — no `~/.clauderc` config file, no `@`-mention invocation for Claude Code specifically)
+- Claude.ai/Claude Desktop setup instructions corrected to the actual Skills upload flow (Customize → Skills)
+- Removed an unverified specific token-reduction figure; replaced with a description of the mechanism (diffs-only output, imperative references, session digests)
 
 ## [1.0.0] - 2026-06-25
 

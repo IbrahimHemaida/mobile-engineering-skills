@@ -21,7 +21,7 @@ This is a **skill package** containing expertly-crafted AI system instructions t
 |---------|-------------|
 | 🏗️ **Automate Architecture Reviews** | Catch layer leakage, circular dependencies, DI violations before code review |
 | 🧪 **Enforce TDD Red-Green-Refactor** | Guide AI through test-first development with structured discipline |
-| ⚡ **Token Optimization (40-60% savings)** | Use Prompt Caching + diffs-only output to cut token consumption dramatically |
+| ⚡ **Lower Token Overhead** | Diffs-only output, imperative references instead of full re-explanations, and session digests instead of full history replays |
 | 🎯 **Standardize Elite Patterns** | Team consistency: SOLID, Clean Architecture, Unidirectional Data Flow |
 | 🔍 **Catch Issues Early** | AI invokes skills before code review — saves 30+ minutes per PR |
 
@@ -81,6 +81,25 @@ Manage AI context budget across long-running mobile engineering sessions by writ
 
 ---
 
+### **4. mobile-security-guard** 🔒
+
+Review Kotlin/Android and Flutter code for security vulnerabilities before merge — exposed secrets, missing certificate pinning, insecure local storage, and unsafe WebView/deep-link/IPC surfaces.
+
+**Validates:**
+- ✓ No secrets, API keys, or credentials in tracked source
+- ✓ Certificate pinning on auth/sensitive endpoints, with a backup pin
+- ✓ Cleartext traffic default-denied; no disabled TLS validation
+- ✓ Encrypted local storage for tokens/PII (EncryptedSharedPreferences, flutter_secure_storage)
+- ✓ Exported components are intentional, not default-on
+- ✓ Deep link and intent inputs validated as untrusted, with server-side authorization
+- ✓ WebView JS bridges scoped to trusted origins
+- ✓ Debug bypasses and verbose logging stripped from release builds
+- ✗ **Bans** disabled TrustManager/hostname verification "fixes"
+
+**20 Imperatives**, plus a severity-ranked findings report format (Critical/High/Medium/Low) for security reviews.
+
+---
+
 ## 💎 Why Use This?
 
 ### **Problem: Without These Guardrails**
@@ -111,46 +130,34 @@ These skills integrate into your review workflow to:
 
 ## 🚀 Installation
 
-### **Option A: npm/npx** (Easiest)
-
-```bash
-npx skills@latest add IbrahimHemaida/mobile-engineering-skills
-```
-
-### **Option B: Manual Setup**
-
 ```bash
 git clone https://github.com/IbrahimHemaida/mobile-engineering-skills.git
-cp -r skills/mobile-* skills/ai-context-budget-guard ~/.claude/skills/
+mkdir -p ~/.claude/skills
+cp -r mobile-engineering-skills/skills/* ~/.claude/skills/
 ```
+
+This copies all four skills to your user-level Claude Code skills directory (`~/.claude/skills/`), where they're available across every project. To scope skills to a single project instead, copy them into `.claude/skills/` inside that project's repo.
 
 ---
 
 ## 📋 Implementation Guides
 
-### **Claude Code CLI**
+### **Claude Code**
 
-Create `~/.clauderc`:
-
-```yaml
-skills:
-  - name: mobile-architecture-guard
-    path: ~/.claude/skills/mobile-architecture-guard/SKILL.md
-  - name: mobile-tdd-guard
-    path: ~/.claude/skills/mobile-tdd-guard/SKILL.md
-  - name: ai-context-budget-guard
-    path: ~/.claude/skills/ai-context-budget-guard/SKILL.md
-
-prompt_caching:
-  enabled: true
-```
-
-Invoke in terminal:
+Claude Code auto-discovers skills placed under `.claude/skills/<skill-name>/SKILL.md` (project-level, shared with your team via git) or `~/.claude/skills/<skill-name>/SKILL.md` (user-level, available across all your projects). No separate config file is needed — Claude reads each skill's `description` field and applies it automatically when it's relevant to what you're doing.
 
 ```bash
-@mobile-architecture-guard Review this feature for layer violations
-@mobile-tdd-guard TDD the payment retry logic
-@ai-context-budget-guard Write a session digest before we wrap up
+mkdir -p ~/.claude/skills
+cp -r skills/mobile-architecture-guard skills/mobile-tdd-guard skills/mobile-security-guard skills/ai-context-budget-guard ~/.claude/skills/
+```
+
+You can also invoke a skill directly instead of waiting for automatic matching:
+
+```bash
+/mobile-architecture-guard Review this feature for layer violations
+/mobile-tdd-guard TDD the payment retry logic
+/mobile-security-guard Audit this auth flow for security issues
+/ai-context-budget-guard Write a session digest before we wrap up
 ```
 
 ---
@@ -179,27 +186,20 @@ Invoke with `@` mentions:
 ```
 @mobile-architecture-guard Review this LoginFeature
 @mobile-tdd-guard Build payment processing with TDD
+@mobile-security-guard Audit this login flow for security issues
 ```
 
 ---
 
-### **Claude Desktop (Prompt Caching)**
+### **Claude.ai / Claude Desktop**
 
-1. Create new Project: "Mobile Engineering"
-2. Add files:
-   - `skills/mobile-architecture-guard/SKILL.md`
-   - `skills/mobile-tdd-guard/SKILL.md`
-   - Your project code
+1. Go to **Settings → Capabilities** and enable **Code execution and file creation** (required for Skills; Team/Enterprise users enable it under Organization settings instead).
+2. Go to **Customize → Skills** and upload each skill folder as a zip — one skill per zip (`mobile-architecture-guard`, `mobile-tdd-guard`, `mobile-security-guard`, `ai-context-budget-guard`).
+3. Claude applies a skill automatically when it's relevant to your request — you don't need to reference it by name every time.
 
-3. Set Custom Instructions:
+Skill availability depends on your plan (Free/Pro/Max/Team/Enterprise); see [Anthropic's Skills documentation](https://support.claude.com/en/articles/12512180-use-skills-in-claude) for current details.
 
-```
-You are a Senior Mobile Architect reviewing mobile code.
-Apply mobile-architecture-guard (20 imperatives) and mobile-tdd-guard (20 imperatives).
-Output diffs-only, reference specific imperatives.
-```
-
-**Token savings**: 6,000 → 2,800 tokens (53% reduction)
+Regardless of which surface you use, keeping prompts to diffs and specific imperative references (e.g. "fix per imperative #4") instead of pasting full files or full skill content each turn is what actually reduces token overhead — the skills are written with that in mind (see `Output format` sections in each SKILL.md).
 
 ---
 
