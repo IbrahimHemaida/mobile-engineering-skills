@@ -19,7 +19,9 @@
     "architecture",
     "tdd",
     "clean-code",
-    "solid"
+    "solid",
+    "context-management",
+    "claude-code"
   ],
   "author": "Ibrahim Hemaida",
   "license": "MIT",

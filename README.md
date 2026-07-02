@@ -65,6 +65,22 @@ Test-driven development workflow for Kotlin/Android and Flutter: red-green-refac
 
 ---
 
+### **3. ai-context-budget-guard** 🧠
+
+Manage AI context budget across long-running mobile engineering sessions by writing compact session digests instead of re-reading full chat history every time.
+
+**Solves:**
+- ✓ AI re-reading entire project history at the start of every session
+- ✓ Decisions and rejected approaches getting silently re-litigated
+- ✓ Context window exhaustion mid-task from unmanaged session length
+- ✓ Bloated "summaries" that are full transcripts in disguise
+
+**How:** one short Session Digest (30–50 lines) per meaningful session, linked from a single Index file. Only the Index is read at session start; digests are opened on demand. Feeds directly into Claude Code's `CLAUDE.md` / auto-memory instead of duplicating it.
+
+**13 Imperatives** covering digest discipline, index discipline, compression, and native tool integration.
+
+---
+
 ## 💎 Why Use This?
 
 ### **Problem: Without These Guardrails**
@@ -105,7 +121,7 @@ npx skills@latest add IbrahimHemaida/mobile-engineering-skills
 
 ```bash
 git clone https://github.com/IbrahimHemaida/mobile-engineering-skills.git
-cp -r skills/mobile-* ~/.claude/skills/
+cp -r skills/mobile-* skills/ai-context-budget-guard ~/.claude/skills/
 ```
 
 ---
@@ -122,6 +138,8 @@ skills:
     path: ~/.claude/skills/mobile-architecture-guard/SKILL.md
   - name: mobile-tdd-guard
     path: ~/.claude/skills/mobile-tdd-guard/SKILL.md
+  - name: ai-context-budget-guard
+    path: ~/.claude/skills/ai-context-budget-guard/SKILL.md
 
 prompt_caching:
   enabled: true
@@ -132,6 +150,7 @@ Invoke in terminal:
 ```bash
 @mobile-architecture-guard Review this feature for layer violations
 @mobile-tdd-guard TDD the payment retry logic
+@ai-context-budget-guard Write a session digest before we wrap up
 ```
 
 ---

@@ -5,6 +5,15 @@ All notable changes to mobile-engineering-skills will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+#### Skills
+- **ai-context-budget-guard**: Manage AI context budget across long-running mobile engineering sessions
+  - 13 imperatives covering digest discipline, index discipline, compression/archiving, and native tool integration (Claude Code CLAUDE.md / auto-memory)
+  - Templates for Session Digest, Index, and Archive files
+
 ## [1.0.0] - 2026-06-25
 
 ### Added
