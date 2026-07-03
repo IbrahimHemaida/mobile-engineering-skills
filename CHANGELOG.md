@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+#### Skills
+- **ai-context-budget-guard**: expanded from 13 to 16 imperatives
+  - Added: enforced bootstrap directive (rule 16) — a `CLAUDE.md`/`.cursorrules` snippet forcing the AI to read `INDEX.md` before scanning any code, closing the gap where an index exists but nothing tells the AI to check it first
+  - Added: conditional `Scope/DI` and `Module impact` digest fields (rule 3) for sessions touching dependency injection or module boundaries, so the next session doesn't reach for a dependency that was already deliberately avoided
+  - Added: exclusion of generated build artifacts from digest scope (rule 4) — `Hilt_*.kt`, `*Binding.kt`, `*.g.dart`, `*.freezed.dart`, `*.mocks.dart`, and `build/`/`.gradle/`/`DerivedData/` in general
+  - Added: `::save-context`/`::end-session` Quick Trigger, plus a ready-to-use Claude Code `/save-context` custom slash command
+  - `references/templates.md` updated with copy-paste bootstrap directive and slash command templates
+
 ### Added
 
 #### Skills

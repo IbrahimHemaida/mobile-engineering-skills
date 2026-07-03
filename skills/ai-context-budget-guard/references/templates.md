@@ -126,3 +126,42 @@ start of every session without anyone needing to remember to check
 `.ai/context/INDEX.md` manually. The plain-file structure still serves as
 the durable, version-controlled source of truth; the native memory file is
 the fast path that guarantees it actually gets read.
+
+---
+
+## 4. Bootstrap directive (paste into `CLAUDE.md` or `.cursorrules`)
+
+```markdown
+At the start of ANY session, your very first action is to read
+`.ai/context/INDEX.md`. Do not read any code files or historical logs
+until you have evaluated the index.
+```
+
+This is what makes the Index actually get read — without it, an AI tool
+defaults to scanning the project from scratch out of habit even when an
+index exists.
+
+---
+
+## 5. `/save-context` slash command (Claude Code)
+
+Save as `.claude/commands/save-context.md`:
+
+```markdown
+---
+description: Write a session digest and update the context index before ending the session
+---
+
+Halt active work. Evaluate this session against ai-context-budget-guard's
+Digest Discipline and Index Discipline rules, then output:
+1. A Session Digest (30-50 lines, decisions/rejections/Scope-DI-if-applicable/files/Next)
+2. The single Index line to append
+
+Do not include full diffs or pasted code. If nothing in this session
+warrants a digest, say so instead of manufacturing one.
+```
+
+Invoke with `/save-context` at the end of a session. For tools without
+custom slash command support, use the plain-text trigger `::save-context`
+or `::end-session` instead — the SKILL.md's Quick Trigger section covers
+this.

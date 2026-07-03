@@ -77,7 +77,7 @@ Manage AI context budget across long-running mobile engineering sessions by writ
 
 **How:** one short Session Digest (30–50 lines) per meaningful session, linked from a single Index file. Only the Index is read at session start; digests are opened on demand. Feeds directly into Claude Code's `CLAUDE.md` / auto-memory instead of duplicating it.
 
-**13 Imperatives** covering digest discipline, index discipline, compression, and native tool integration.
+**16 Imperatives** covering digest discipline (including mobile-specific DI/module-boundary tracking and exclusion of generated build artifacts), index discipline, compression, native tool integration, and enforced session-start bootstrapping. Includes a `::save-context` quick trigger and a ready-to-use Claude Code `/save-context` slash command.
 
 ---
 
