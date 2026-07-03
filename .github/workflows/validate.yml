@@ -33,11 +33,21 @@ jobs:
       
       - name: Check for broken reference links
         run: |
-          for ref in skills/*/references/*.md; do
-            [ -f "$ref" ] || continue
-            echo "Checking references in $ref"
-            # This is a simple check; expand as needed
+          fail=0
+          for skill_dir in skills/*/; do
+            skill_md="${skill_dir}SKILL.md"
+            [ -f "$skill_md" ] || continue
+            for ref in $(grep -oE 'references/[A-Za-z0-9_.-]+\.md' "$skill_md" | sort -u); do
+              if [ ! -f "${skill_dir}${ref}" ]; then
+                echo "❌ Broken reference in $skill_md: $ref"
+                fail=1
+              fi
+            done
           done
+          if [ "$fail" -eq 1 ]; then
+            exit 1
+          fi
+          echo "✓ No broken reference links found"
           echo "✓ Reference files validated"
       
       - name: Ensure README.md exists

@@ -1,5 +1,22 @@
 # Dependency Injection in Kotlin/Android
 
+## Table of Contents
+
+- [Why Dependency Injection (DI)?](#why-dependency-injection-di)
+- [Three DI Patterns](#three-di-patterns)
+  - [1. Constructor Injection (RECOMMENDED)](#1-constructor-injection-recommended)
+  - [2. Setter Injection (NOT RECOMMENDED)](#2-setter-injection-not-recommended)
+  - [3. Service Locator (AVOID for most cases)](#3-service-locator-avoid-for-most-cases)
+- [DI Containers](#di-containers)
+  - [Manual DI (Simple Projects)](#manual-di-simple-projects)
+  - [Hilt (Android's Recommended DI Framework)](#hilt-androids-recommended-di-framework)
+  - [GetIt (For Flutter)](#getit-for-flutter)
+- [Constructor Injection Guidelines](#constructor-injection-guidelines)
+  - [✅ Good: Clear Dependencies](#-good-clear-dependencies)
+  - [❌ Bad: Too Many Parameters](#-bad-too-many-parameters)
+- [Testing with DI](#testing-with-di)
+- [DI Checklist](#di-checklist)
+
 ## Why Dependency Injection (DI)?
 
 Without DI:

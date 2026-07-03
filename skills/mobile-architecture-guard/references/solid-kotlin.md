@@ -1,5 +1,24 @@
 # SOLID Principles in Kotlin/Android
 
+## Table of Contents
+
+- [Single Responsibility Principle (SRP)](#single-responsibility-principle-srp)
+  - [❌ Bad: Multiple Reasons to Change](#-bad-multiple-reasons-to-change)
+  - [✅ Good: Single Responsibility](#-good-single-responsibility)
+- [Open/Closed Principle (OCP)](#openclosed-principle-ocp)
+  - [❌ Bad: Modifying Existing Code for New Auth Methods](#-bad-modifying-existing-code-for-new-auth-methods)
+  - [✅ Good: Extend via Strategy Pattern](#-good-extend-via-strategy-pattern)
+- [Liskov Substitution Principle (LSP)](#liskov-substitution-principle-lsp)
+  - [❌ Bad: Violating the Contract](#-bad-violating-the-contract)
+  - [✅ Good: Honor the Contract](#-good-honor-the-contract)
+- [Interface Segregation Principle (ISP)](#interface-segregation-principle-isp)
+  - [❌ Bad: Fat Interface](#-bad-fat-interface)
+  - [✅ Good: Segregated Interfaces](#-good-segregated-interfaces)
+- [Dependency Inversion Principle (DIP)](#dependency-inversion-principle-dip)
+  - [❌ Bad: Depends on Concrete Implementation](#-bad-depends-on-concrete-implementation)
+  - [✅ Good: Depends on Abstraction](#-good-depends-on-abstraction)
+- [Summary: SOLID Checklist for Kotlin/Android](#summary-solid-checklist-for-kotlinandroid)
+
 ## Single Responsibility Principle (SRP)
 
 **Definition**: A class should be answerable to one stakeholder group only.

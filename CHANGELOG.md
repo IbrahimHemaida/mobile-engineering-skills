@@ -5,7 +5,13 @@ All notable changes to mobile-engineering-skills will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.1.0] - 2026-07-03
+
+### Fixed
+- Added a Table of Contents to every reference file over 300 lines (clean-architecture.md, dependency-injection.md, solid-kotlin.md, flutter-testing.md, kotlin-testing.md), per skill-authoring best practice for large reference files
+- Added a "Findings report format (Review mode)" section to mobile-architecture-guard and mobile-tdd-guard, matching the format already used by mobile-security-guard/mobile-accessibility-guard/mobile-kmm-migration-guard
+- README now notes that `clean-code-guard` and `test-guard`, referenced by several skills as complementary, are optional companion skills not included in this repository
+- CI's "Check for broken reference links" step now performs a real check (previously a no-op placeholder) — verifies every `references/*.md` path mentioned in a SKILL.md actually exists
 
 ### Changed
 
@@ -105,18 +111,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Future Roadmap
 
-### Planned for v1.1
-- [ ] Domain modeling skill (sharpen project vocabulary and terms)
-- [ ] Kotlin-specific refactoring patterns
-- [ ] Flutter-specific performance optimization skill
-- [ ] Healthcare domain-specific patterns (Patient, Appointment, Prescription entities)
-- [ ] More examples (e-commerce, social apps, fintech)
+### Shipped ahead of the original plan
+- [x] mobile-security-guard
+- [x] mobile-accessibility-guard
+- [x] mobile-kmm-migration-guard (originally planned for v1.2 — shipped in 1.1.0 instead)
 
-### Planned for v1.2
-- [ ] KMM (Kotlin Multiplatform Mobile) specific guidance
+### Planned
+- [ ] Performance profiling skill (static anti-pattern detection: leaked listeners, unbounded coroutine scopes, excessive recomposition — not runtime profiling)
+- [ ] Domain modeling skill (sharpen project vocabulary and terms)
 - [ ] Integration test patterns
 - [ ] CI/CD best practices for mobile
-- [ ] Performance profiling skill
+- [ ] Healthcare domain-specific patterns (Patient, Appointment, Prescription entities)
+- [ ] More examples (e-commerce, social apps, fintech)
 
 ### Community Contributions Welcome
 - Additional language examples (Swift, Dart-specific patterns)

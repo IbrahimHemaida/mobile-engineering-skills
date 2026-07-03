@@ -362,6 +362,20 @@ suspend fun login(email: String, password: String): User {
 }
 ```
 
+## Findings report format (Review mode)
+
+When reviewing existing code, report findings as:
+
+```
+[SEVERITY] Short title
+File: path/to/File.kt:line
+Issue: What's wrong, in one sentence.
+Impact: What breaks or degrades — testability, layer boundary, dependency direction, state predictability.
+Fix: Specific remediation (imperative # from above where relevant).
+```
+
+Severity guide: **Critical** = breaks the dependency rule or causes a circular dependency (domain layer imports a framework type, two modules depend on each other). **High** = layer leakage or a duplicated ViewModel/state-holder anti-pattern that will cause real bugs (lifecycle leaks, untestable business logic). **Medium** = architecturally wrong but currently harmless (a repository doing UI-adjacent work with no leakage yet). **Low** = style/consistency issue that doesn't affect testability or boundaries (inconsistent naming, a use case that could be simplified).
+
 ## Self-check before delivery
 
 Before merging or requesting review:

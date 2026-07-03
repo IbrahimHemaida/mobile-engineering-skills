@@ -1,5 +1,22 @@
 # Flutter Testing Patterns
 
+## Table of Contents
+
+- [Unit Testing](#unit-testing)
+  - [Setup](#setup)
+  - [Basic Unit Test](#basic-unit-test)
+- [Widget Testing](#widget-testing)
+  - [Basic Widget Test](#basic-widget-test)
+- [BLoC Testing (bloc_test)](#bloc-testing-bloc_test)
+- [Pump vs PumpAndSettle](#pump-vs-pumpandsettle)
+- [Mockito Best Practices in Dart](#mockito-best-practices-in-dart)
+  - [Generating Mocks](#generating-mocks)
+  - [Setting Up Behavior](#setting-up-behavior)
+  - [Verifying Calls](#verifying-calls)
+- [Real-World BLoC TDD Example](#real-world-bloc-tdd-example)
+- [Boundary Testing in Flutter](#boundary-testing-in-flutter)
+- [Testing Streams & Futures](#testing-streams--futures)
+
 ## Unit Testing
 
 ### Setup

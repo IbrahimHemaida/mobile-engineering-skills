@@ -486,6 +486,20 @@ class LoginViewModel(
 + }
 ```
 
+## Findings report format (Review mode)
+
+When reviewing existing tests rather than writing new ones, report findings as:
+
+```
+[SEVERITY] Short title
+File: path/to/FileTest.kt:line
+Issue: What's wrong, in one sentence.
+Impact: What this misses or falsely confirms — an untested boundary, a mocked implementation detail, a test that can't fail.
+Fix: Specific remediation (imperative # from above where relevant).
+```
+
+Severity guide: **Critical** = the test can't actually fail when the behavior is wrong (asserts on a mock's own stub, or tests implementation details instead of behavior). **High** = a missing boundary/edge case that's likely to ship a real bug (no test for the empty/null/error path). **Medium** = a real gap that's lower-risk (missing a rarely-hit branch, thin coverage on a stable utility). **Low** = style/duplication issue that doesn't affect correctness (repeated setup that should use `@Before`, a vague test name).
+
 ## Self-check before delivery
 
 Before committing test code:

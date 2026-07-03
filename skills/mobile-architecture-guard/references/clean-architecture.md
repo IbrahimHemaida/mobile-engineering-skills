@@ -1,5 +1,20 @@
 # Clean Architecture in Kotlin/Android
 
+## Table of Contents
+
+- [Three Concentric Circles](#three-concentric-circles)
+- [Layer 1: Entities (Domain Models)](#layer-1-entities-domain-models)
+- [Layer 2: Business Rules (Use Cases)](#layer-2-business-rules-use-cases)
+- [Layer 3: Interface Adapters (Repositories, ViewModels, Screens)](#layer-3-interface-adapters-repositories-viewmodels-screens)
+  - [3a. Repositories (Data Orchestration)](#3a-repositories-data-orchestration)
+  - [3b. Data Sources (Single Responsibility)](#3b-data-sources-single-responsibility)
+  - [3c. ViewModels (Presentation Logic)](#3c-viewmodels-presentation-logic)
+- [Layer 4: Frameworks & Drivers (Android/Flutter)](#layer-4-frameworks--drivers-androidflutter)
+  - [UI (Composables, Activities, Screens)](#ui-composables-activities-screens)
+- [Dependency Flow (ALWAYS Inward)](#dependency-flow-always-inward)
+- [Project Structure Example](#project-structure-example)
+- [Testing Implication](#testing-implication)
+
 ## Three Concentric Circles
 
 ```

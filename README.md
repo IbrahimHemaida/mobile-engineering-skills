@@ -25,6 +25,8 @@ This is a **skill package** containing expertly-crafted AI system instructions t
 | 🎯 **Standardize Elite Patterns** | Team consistency: SOLID, Clean Architecture, Unidirectional Data Flow |
 | 🔍 **Catch Issues Early** | AI invokes skills before code review — saves 30+ minutes per PR |
 
+> **Note**: A few sections below reference `clean-code-guard` and `test-guard` as complementary skills (general-purpose code quality and test quality review, not mobile-specific). These are **optional companion skills and are not included in this repository** — the six skills below are fully self-contained and don't require them. If you use them elsewhere in your own setup, they slot in alongside these for a fuller review pipeline.
+
 ---
 
 ## 📚 What's Included

@@ -1,5 +1,39 @@
 # Kotlin/Android Testing Patterns
 
+## Table of Contents
+
+- [Unit Testing with JUnit & MockK](#unit-testing-with-junit--mockk)
+  - [Setup](#setup)
+- [Test Structure: Arrange-Act-Assert](#test-structure-arrange-act-assert)
+- [MockK Basics](#mockk-basics)
+  - [Creating Mocks](#creating-mocks)
+  - [Setting Up Behavior](#setting-up-behavior)
+  - [Verifying Calls](#verifying-calls)
+- [Testing Suspend Functions](#testing-suspend-functions)
+  - [Using runTest (Structured Concurrency)](#using-runtest-structured-concurrency)
+  - [Handling Multiple Coroutines](#handling-multiple-coroutines)
+- [Testing StateFlow / LiveData](#testing-stateflow--livedata)
+  - [StateFlow (Modern Kotlin)](#stateflow-modern-kotlin)
+  - [LiveData (Legacy)](#livedata-legacy)
+- [Boundary Testing](#boundary-testing)
+  - [Valid vs Invalid Input](#valid-vs-invalid-input)
+- [No Test Duplication](#no-test-duplication)
+  - [❌ Bad: Duplicate Setup](#-bad-duplicate-setup)
+  - [✅ Good: @Before Setup](#-good-before-setup)
+- [Test Naming Convention](#test-naming-convention)
+  - [✅ Good: Function + Scenario + Expected Result](#-good-function--scenario--expected-result)
+  - [❌ Bad: Vague Names](#-bad-vague-names)
+- [Exception Testing](#exception-testing)
+  - [Using assertThrows](#using-assertthrows)
+  - [Using try-catch](#using-try-catch)
+- [Assertion Libraries](#assertion-libraries)
+  - [Truth (Google's assertion library)](#truth-googles-assertion-library)
+  - [JUnit Assertions](#junit-assertions)
+- [Mocking Best Practices](#mocking-best-practices)
+  - [✅ Mock the Interface, Not the Implementation](#-mock-the-interface-not-the-implementation)
+  - [❌ Mock Implementation Details](#-mock-implementation-details)
+- [Real-World Example: TDD Flow](#real-world-example-tdd-flow)
+
 ## Unit Testing with JUnit & MockK
 
 ### Setup
