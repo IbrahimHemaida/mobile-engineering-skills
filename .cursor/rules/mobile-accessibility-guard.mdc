@@ -1,0 +1,9 @@
+---
+description: Review Kotlin/Android and Flutter code for WCAG 2.1 AA accessibility violations — content descriptions, touch targets, contrast, screen reader flow. Use when reviewing new UI or before an accessibility audit.
+globs: ["**/*.kt", "**/*.kts", "**/*.dart"]
+alwaysApply: false
+---
+
+Read and follow `skills/mobile-accessibility-guard/SKILL.md` (relative to the project root) for this review. If your Cursor version supports `@` file mentions with relative paths, `@skills/mobile-accessibility-guard/SKILL.md` also works — otherwise open the file directly.
+
+This is a thin pointer, not a copy — the full ruleset (20 imperatives and a WCAG-referenced findings report format) lives in the referenced file. See `skills/mobile-accessibility-guard/references/` for extended screen-reader testing and touch-target/contrast calculation guidance if a finding needs more context than the summary in SKILL.md provides.

@@ -1,0 +1,11 @@
+---
+description: Manage AI context budget across long-running mobile engineering sessions using session digests and an index instead of re-reading full history.
+globs:
+alwaysApply: true
+---
+
+At the start of any session, read `.ai/context/INDEX.md` first if it exists, before scanning code or history — do not do a full project re-read out of habit.
+
+Read and follow `skills/ai-context-budget-guard/SKILL.md` (relative to the project root) for digest and index format, archiving rules, and the `::save-context`/`::end-session` trigger.
+
+This rule is set to `alwaysApply: true` deliberately — unlike the other five rules in this directory, its value depends on being loaded every session, not just when a relevant file is open. It is intentionally short to minimize the per-request token cost of an always-on rule; see the linked SKILL.md for the full 16-imperative ruleset.

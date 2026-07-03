@@ -1,0 +1,9 @@
+---
+description: Review Kotlin Multiplatform Mobile (KMM) code for platform leakage, unsafe expect/actual usage, and iOS interop hazards. Use when writing/reviewing commonMain code or migrating logic into a shared module.
+globs: ["**/commonMain/**/*.kt", "**/iosMain/**/*.kt", "**/androidMain/**/*.kt"]
+alwaysApply: false
+---
+
+Read and follow `skills/mobile-kmm-migration-guard/SKILL.md` (relative to the project root) for this review. If your Cursor version supports `@` file mentions with relative paths, `@skills/mobile-kmm-migration-guard/SKILL.md` also works — otherwise open the file directly.
+
+This is a thin pointer, not a copy — the full ruleset (21 imperatives and a migration readiness report format) lives in the referenced file. See `skills/mobile-kmm-migration-guard/references/` for extended Kotlin/Native concurrency, Swift interop, and multiplatform library guidance if a finding needs more context than the summary in SKILL.md provides.

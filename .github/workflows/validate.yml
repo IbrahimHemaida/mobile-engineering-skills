@@ -60,6 +60,22 @@ jobs:
           test -f LICENSE || exit 1
           echo "✓ LICENSE exists"
 
+      - name: Ensure every skill has a Cursor rule pointer
+        run: |
+          fail=0
+          for skill_dir in skills/*/; do
+            skill_name="$(basename "$skill_dir")"
+            rule_file=".cursor/rules/${skill_name}.mdc"
+            if [ ! -f "$rule_file" ]; then
+              echo "❌ Missing Cursor rule pointer: $rule_file"
+              fail=1
+            fi
+          done
+          if [ "$fail" -eq 1 ]; then
+            exit 1
+          fi
+          echo "✓ Every skill has a corresponding .cursor/rules/*.mdc pointer"
+
   spell-check:
     runs-on: ubuntu-latest
     steps:

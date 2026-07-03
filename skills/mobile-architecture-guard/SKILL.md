@@ -163,9 +163,15 @@ These are prevented by enforcing Clean Architecture layering and SOLID principle
      - Use event bus or navigation abstraction instead of direct imports.
      - Split into smaller features with clearer boundaries.
 
+12. **Before modifying or removing a public class, function, or interface, search the whole project for its usages — not just the file being edited.** A fix applied to one file that silently breaks three call sites elsewhere is the single most common way an AI coding session ships a regression that compiles cleanly. Run a project-wide search (grep, IDE "Find Usages", or equivalent) for the symbol being changed before finalizing the diff, and confirm every call site still compiles against the new signature/contract — not just the one that motivated the change.
+   **Violation smell**: a diff that changes a `Repository` interface method signature with no corresponding changes shown for its implementations and callers, or a confident "this should be fine" with no actual search performed.
+
+13. **Before presenting a final diff, run the project's actual local build command and confirm it succeeds — don't rely on read-through review alone to catch compile errors.** Use the real build tool for the target platform: `./gradlew assembleDebug`/`compileDebugKotlin` for Android, `xcodebuild` (or `swift build`) for iOS/KMM native targets, `flutter analyze`/`flutter build` for Flutter. A diff that "looks correct" but wasn't actually compiled is not verified — presenting one as ready to merge without running the build is a bare assertion, not a fact.
+   **Exception**: if no build environment is available in the current session, say so explicitly in the output rather than silently skipping this step and presenting the diff as verified.
+
 ### ViewModel & State Management
 
-12. **Strict Unidirectional Data Flow (UDF): State flows DOWN immutable; Events flow UP via explicit actions.**
+14. **Strict Unidirectional Data Flow (UDF): State flows DOWN immutable; Events flow UP via explicit actions.**
     - **State flows DOWN to UI**: ViewModel/BLoC emits immutable state as `StateFlow<State>`, `LiveData<State>`, or streams.
     - **UI reads state ONLY**: Fragment/Activity/Widget observes state, NEVER mutates it.
     - **Events flow UP**: UI sends user actions to ViewModel via explicit methods (`login()`, `updateProfile()`), never direct state mutations.
@@ -252,19 +258,19 @@ These are prevented by enforcing Clean Architecture layering and SOLID principle
     
     **When reviewing state management**: Reject any pattern that passes mutable state objects down to the UI, or that allows the UI to directly mutate shared state. Flag violations with reference to this imperative (#10) in findings.
 
-13. **No state duplication; no multi-step prop drilling.**
+15. **No state duplication; no multi-step prop drilling.**
     - If state must travel through 3+ widget/composable layers, lift it to a shared state holder higher in the tree or use a state manager.
     - ✅ ViewModel → Composable → Composable (one level deep, OK).
     - ❌ ViewModel → Composable → Widget → Widget → Widget (4 hops, bad; use StateFlow or BLoC).
 
-14. **Side effects are explicit, not hidden in init or recomposition.**
+16. **Side effects are explicit, not hidden in init or recomposition.**
     - Kotlin: Use `LaunchedEffect`, `DisposableEffect`, initialization in `init {}` block, or explicit `.onStart()`.
     - Flutter: Use `initState()`, `didChangeDepencies()`, stream subscriptions managed in State.
     - **Anti-pattern**: Calling a use case directly in a Composable `body` or Flutter build method (causes repeated calls).
 
 ### Repository & Data Source Patterns
 
-15. **Repository is a single-responsibility orchestrator, not a god object.**
+17. **Repository is a single-responsibility orchestrator, not a god object.**
     - Repo job: "I fetch user data. Where? Local cache first, then remote, then memory. How? That's for data sources."
     - Not repo job: Business logic, validation, formatting, retry policies (unless the policy is truly about data access).
     
@@ -287,14 +293,14 @@ These are prevented by enforcing Clean Architecture layering and SOLID principle
     
     **Better**: LoginUseCase calls AuthRepository (which just fetches). UseCase handles validation and retry.
 
-16. **Data source interfaces, not concrete implementations, injected into Repository.**
+18. **Data source interfaces, not concrete implementations, injected into Repository.**
     - Good: `LocalUserDataSource` interface, `LocalUserDataSourceImpl` concrete, repo depends on interface.
     - Bad: Repo depends on `SharedPreferences` directly.
     - Allows testing: mock `LocalUserDataSource` without touching SharedPreferences.
 
 ### Testing Boundaries
 
-17. **Domain layer is testable without any framework.**
+19. **Domain layer is testable without any framework.**
     - A use case taking `Repository` (interface) + simple objects (String, Int, model classes) = testable with unit tests only.
     - If a use case needs `Context`, lifecycle, or scheduler, it's business logic bleeding into Presentation.
     
@@ -312,24 +318,24 @@ These are prevented by enforcing Clean Architecture layering and SOLID principle
 
 ### SOLID Principles in Mobile Context
 
-18. **Single Responsibility Principle (SRP)**: 
+20. **Single Responsibility Principle (SRP)**: 
     - One ViewModel per screen/feature, not one per layer.
     - One repository per domain concept (UserRepository, PaymentRepository), not one per data source type.
     - A mapper's job: DTO ↔ Entity transformation, nothing else.
 
-19. **Open/Closed Principle (OCP)**:
+21. **Open/Closed Principle (OCP)**:
     - Adding a new auth method (social login, biometric)? Extend via new use case + new strategy, not branches in LoginUseCase.
     - New data source (Firestore instead of REST)? New impl of repository interface, not if/else in existing repo.
 
-20. **Liskov Substitution Principle (LSP)**:
+22. **Liskov Substitution Principle (LSP)**:
     - A mock repository must be droppable in for the real one without breaking contracts.
     - If test repository returns null when prod returns empty list, LSP is violated.
 
-21. **Interface Segregation Principle (ISP)**:
+23. **Interface Segregation Principle (ISP)**:
     - Don't make a `DataRepository` interface that every data class implements. Make `UserRepository`, `PaymentRepository`, etc.
     - A screen needing a user shouldn't depend on an interface that also defines payment methods.
 
-22. **Dependency Inversion Principle (DIP)**:
+24. **Dependency Inversion Principle (DIP)**:
     - Presentation depends on Domain abstractions (interfaces), not Data implementations.
     - Good: `class LoginViewModel(val useCase: LoginUseCase)`
     - Bad: `class LoginViewModel(val api: RetrofitService)` (violates DIP; couples to framework)
@@ -399,6 +405,8 @@ Before merging or requesting review:
 9. **Single truth check**: Is state defined in one place (ViewModel, BLoC, state holder), not duplicated across multiple classes?
 10. **UI model check**: Does any Composable/Widget receive a `@Serializable`/`@Entity` model directly, or does it go through a `UIState` + mapper?
 11. **DI registration check**: Is every new `Repository`/`UseCase`/`ViewModel` registered in its DI module within the same diff, not deferred?
+12. **Blast-radius check**: Did I search the whole project for usages of every changed public symbol, not just the file I edited?
+13. **Build check**: Did I actually run the project's local build command and confirm it passed, or explicitly note that no build environment was available?
 
 If you cannot answer **yes** to all checks, refactor before shipping.
 

@@ -5,6 +5,22 @@ All notable changes to mobile-engineering-skills will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-07-03
+
+### Added
+- **install.sh**: one-liner installer (`curl -fsSL .../install.sh | bash`), with a `--project` flag for project-scoped installs. Tested locally end-to-end.
+- **.cursor/rules/**: one `.mdc` rule file per skill (6 total), each a thin pointer to its `skills/*/SKILL.md` rather than a duplicated copy, so Cursor and Claude Code always read the same ruleset. `ai-context-budget-guard.mdc` uses `alwaysApply: true`; the other five activate via `description`/`globs` matching.
+- CI: new check verifying every skill has a corresponding `.cursor/rules/*.mdc` pointer.
+- README: new "The Problem" / "The Solution" / "How to Use" framing near the top; Cursor section rewritten to describe the actual `.cursor/rules/` pointer files instead of a manual copy-paste snippet.
+
+### Changed
+
+#### Skills
+- **mobile-architecture-guard**: expanded from 22 to 24 imperatives
+  - Added: before modifying/removing a public symbol, search the whole project for its usages — not just the file being edited (prevents fixing one file while silently breaking three others)
+  - Added: run the project's actual local build command (`./gradlew assembleDebug`, `xcodebuild`, `flutter analyze`, etc.) and confirm it passes before presenting a final diff — or explicitly note if no build environment was available
+  - Self-check checklist extended with corresponding checks
+
 ## [1.2.0] - 2026-07-03
 
 ### Changed

@@ -5,6 +5,31 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Platforms: Android | Flutter | KMM](https://img.shields.io/badge/Platforms-Android%20%7C%20Flutter%20%7C%20KMM-brightgreen)](https://github.com/IbrahimHemaida/mobile-engineering-skills)
 
+## The Problem
+
+AI coding assistants (Claude Code, Cursor, Copilot) are fast — and left unguided, that speed is exactly what breaks a mobile codebase. Given a loose prompt, an AI tool will happily:
+- Flatten Clean Architecture into one god-file because it's faster than writing three
+- Pass a raw `@Serializable`/`@Entity` model straight to the UI instead of writing a mapper
+- Fix one file and silently break three others that depended on the old contract
+- Re-read your entire project history every session, burning tokens and losing track of decisions you already made
+- Ship code that "looks right" but was never actually compiled against your real build
+
+None of this shows up in the diff. It shows up three sprints later as a production bug or a codebase nobody wants to touch.
+
+## The Solution
+
+Six AI skill packages — plain-language system instructions that Claude Code and Cursor read automatically — that act as a strict senior reviewer sitting between the AI and your merge button. They don't write your code faster; they stop the AI from writing the wrong code confidently. Each skill is scoped, testable, and enforces one concern: architecture, testing, security, accessibility, KMM migration safety, or AI context/token discipline.
+
+## How to Use
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/IbrahimHemaida/mobile-engineering-skills/main/install.sh | bash
+```
+
+That's it for Claude Code — skills are auto-discovered from `~/.claude/skills/` with no restart needed. See [Installation](#-installation) below for Cursor, Claude.ai/Claude Desktop, and project-scoped (`--project`) setup.
+
+---
+
 Professional AI system instructions designed to enforce SOLID principles, Clean Architecture, and Test-Driven Development across Kotlin/Android and Flutter mobile applications. Built for **real engineering**, not vibe coding.
 
 Engineered for **13+ years** of production mobile development experience. Based on battle-tested patterns from hundreds of shipped features across healthcare, fintech, e-commerce, and enterprise mobile platforms.
@@ -45,7 +70,7 @@ Review Kotlin/Android and Flutter code for SOLID principles, Clean Architecture,
 - ✓ SOLID principles (SRP, OCP, LSP, ISP, DIP)
 - ✗ **Bans ViewModel Decorator anti-pattern** (breaks OS lifecycle)
 
-**22 Imperatives** governing architecture decisions with real-world examples, including explicit UI-model leakage prevention (no `@Serializable`/`@Entity` reaching the UI directly) and same-diff DI registration.
+**24 Imperatives** governing architecture decisions with real-world examples, including explicit UI-model leakage prevention (no `@Serializable`/`@Entity` reaching the UI directly), same-diff DI registration, a project-wide "blast radius" search before changing public symbols, and a required local build pass before presenting a final diff.
 
 ---
 
@@ -169,13 +194,27 @@ These skills integrate into your review workflow to:
 
 ## 🚀 Installation
 
+### One-liner (recommended)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/IbrahimHemaida/mobile-engineering-skills/main/install.sh | bash
+```
+
+Installs all six skills to `~/.claude/skills/` (available across every project). For a project-scoped install instead (shared with your team via git, this project only):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/IbrahimHemaida/mobile-engineering-skills/main/install.sh | bash -s -- --project
+```
+
+### Manual
+
 ```bash
 git clone https://github.com/IbrahimHemaida/mobile-engineering-skills.git
 mkdir -p ~/.claude/skills
 cp -r mobile-engineering-skills/skills/* ~/.claude/skills/
 ```
 
-This copies all four skills to your user-level Claude Code skills directory (`~/.claude/skills/`), where they're available across every project. To scope skills to a single project instead, copy them into `.claude/skills/` inside that project's repo.
+Both methods copy all six skills to your user-level Claude Code skills directory (`~/.claude/skills/`), where they're available across every project. To scope skills to a single project, copy them into `.claude/skills/` inside that project's repo, or use `--project` with the one-liner above.
 
 ---
 
@@ -205,30 +244,16 @@ You can also invoke a skill directly instead of waiting for automatic matching:
 
 ### **Cursor IDE**
 
-Create `.cursor/rules/mobile-guards.md`:
+This repo ships ready-to-use rule files in `.cursor/rules/` — one `.mdc` file per skill, each a thin pointer to the corresponding `skills/*/SKILL.md` rather than a duplicated copy, so the ruleset can't drift between the Claude Code and Cursor versions.
 
-```markdown
-# Mobile Engineering Guards
-
-## Architecture
-- Validate layer separation
-- Check dependency injection patterns
-- Ensure feature-based modules
-- Detect circular dependencies
-
-## Testing
-- Write failing test first (RED)
-- Implement minimal code (GREEN)
-- Refactor for clarity (REFACTOR)
+```bash
+git clone https://github.com/IbrahimHemaida/mobile-engineering-skills.git
+cp -r mobile-engineering-skills/.cursor path/to/your-project/
 ```
 
-Invoke with `@` mentions:
+Five of the six rules use `alwaysApply: false` with a `description` and `globs` — Cursor loads them automatically when you're working in a matching file (`.kt`, `.dart`, `commonMain/**`, etc.) or when the task description matches. `ai-context-budget-guard.mdc` is the one exception, set to `alwaysApply: true`, since its value depends on being loaded every session rather than only when a specific file type is open.
 
-```
-@mobile-architecture-guard Review this LoginFeature
-@mobile-tdd-guard Build payment processing with TDD
-@mobile-security-guard Audit this login flow for security issues
-```
+Commit `.cursor/rules/` to your project's git repo so the whole team shares the same rules.
 
 ---
 

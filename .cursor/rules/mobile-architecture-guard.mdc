@@ -1,0 +1,9 @@
+---
+description: Review Kotlin/Android and Flutter code for Clean Architecture, SOLID, and layer separation before merge. Use when reviewing feature implementations, refactoring modules, or after generating mobile code.
+globs: ["**/*.kt", "**/*.kts", "**/*.dart"]
+alwaysApply: false
+---
+
+Read and follow `skills/mobile-architecture-guard/SKILL.md` (relative to the project root) for this review. If your Cursor version supports `@` file mentions with relative paths, `@skills/mobile-architecture-guard/SKILL.md` also works — otherwise open the file directly.
+
+This is a thin pointer, not a copy — the full ruleset (22 imperatives, examples, and self-check checklist) lives in the referenced file so it stays in sync with the Claude Code version of this skill. See `skills/mobile-architecture-guard/references/` for extended Clean Architecture, DI, and SOLID reference material if a violation needs more context than the summary in SKILL.md provides.

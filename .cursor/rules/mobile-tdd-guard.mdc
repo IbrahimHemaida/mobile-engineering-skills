@@ -1,0 +1,9 @@
+---
+description: TDD workflow (red-green-refactor) for Kotlin/Android and Flutter mobile features. Use when implementing a new feature, fixing a bug, or when the user says "TDD this" or "write tests first".
+globs: ["**/*Test.kt", "**/*_test.dart", "**/*.kt", "**/*.dart"]
+alwaysApply: false
+---
+
+Read and follow `skills/mobile-tdd-guard/SKILL.md` (relative to the project root) for this task. If your Cursor version supports `@` file mentions with relative paths, `@skills/mobile-tdd-guard/SKILL.md` also works — otherwise open the file directly.
+
+This is a thin pointer, not a copy — the full ruleset (20 imperatives, findings report format, and self-check checklist) lives in the referenced file. See `skills/mobile-tdd-guard/references/` for extended Kotlin (JUnit/MockK) and Flutter (widget/BLoC/golden) testing patterns if more detail is needed than the summary in SKILL.md provides.
