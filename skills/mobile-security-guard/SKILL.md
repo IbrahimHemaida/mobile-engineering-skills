@@ -125,6 +125,10 @@ These are the vulnerability classes that actually get exploited in mobile apps, 
 20. **Minification and obfuscation are enabled for release builds handling sensitive logic.**
     R8/ProGuard (Android) or equivalent should be on for release, with rules that don't accidentally `-keep` the classes doing crypto/auth (defeating the point) nor break them (crashing in production). Obfuscation isn't a substitute for the items above — it raises the cost of static analysis, nothing more.
 
+21. **Models that rely on reflection — serialization DTOs, crypto/auth data classes — carry explicit keep annotations, not a hope that the default ProGuard/R8 rules cover them.**
+    `kotlinx.serialization`, Gson, and Moshi all use reflection or generated code that R8's default rules can silently strip or rename in a release build, producing a crash or, worse, a silent data-corruption bug that only appears in the release APK, not debug. Add `@Keep` (Android) — or the equivalent for the serialization library in use — to any model crossing a serialization or crypto boundary, and verify with an actual release-build test, not just a debug-build pass.
+    **Violation smell**: a security review approved in debug that crashes or silently mis-serializes in the release build because the DTO's fields got renamed by R8 and nothing in the code told it not to.
+
 ## Self-check before delivery
 
 Before marking a security review complete, confirm:
@@ -142,6 +146,7 @@ Before marking a security review complete, confirm:
 - [ ] Sensitive screens block screenshots / app-switcher preview where warranted
 - [ ] Biometric gates decrypt data, not just guard a screen
 - [ ] Debug bypasses and verbose logging are stripped from release builds
+- [ ] Serialization/crypto models carry `@Keep` (or equivalent) and were verified against an actual release build, not debug only
 
 ## Findings report format (Review mode)
 

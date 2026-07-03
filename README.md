@@ -45,7 +45,7 @@ Review Kotlin/Android and Flutter code for SOLID principles, Clean Architecture,
 - ✓ SOLID principles (SRP, OCP, LSP, ISP, DIP)
 - ✗ **Bans ViewModel Decorator anti-pattern** (breaks OS lifecycle)
 
-**20 Imperatives** governing architecture decisions with real-world examples.
+**22 Imperatives** governing architecture decisions with real-world examples, including explicit UI-model leakage prevention (no `@Serializable`/`@Entity` reaching the UI directly) and same-diff DI registration.
 
 ---
 
@@ -98,7 +98,7 @@ Review Kotlin/Android and Flutter code for security vulnerabilities before merge
 - ✓ Debug bypasses and verbose logging stripped from release builds
 - ✗ **Bans** disabled TrustManager/hostname verification "fixes"
 
-**20 Imperatives**, plus a severity-ranked findings report format (Critical/High/Medium/Low) for security reviews.
+**21 Imperatives**, plus a severity-ranked findings report format (Critical/High/Medium/Low) for security reviews. Includes `@Keep`/reflection-safety guidance for serialization and crypto models under R8/ProGuard.
 
 ---
 
@@ -135,7 +135,7 @@ Review Kotlin Multiplatform Mobile (KMM) code for platform leakage, unsafe `expe
 - ✓ Migration sequenced pure-logic-first, not attempted as a big-bang rewrite
 - ✗ **Bans** business logic duplicated across `actual` implementations
 
-**20 Imperatives**, plus a migration readiness report format for assessing whether a module is ready to move to shared code.
+**21 Imperatives**, plus a migration readiness report format for assessing whether a module is ready to move to shared code. Includes explicit `Flow`/`StateFlow`-to-Swift interop guidance (SKIE or equivalent) and a named Multiplatform Settings replacement for platform key-value storage.
 
 ---
 

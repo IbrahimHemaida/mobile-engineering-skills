@@ -70,9 +70,13 @@ These are prevented by enforcing Clean Architecture layering and SOLID principle
    
    **Anti-pattern**: Repository with if/else chains deciding business rules. That's a use case.
 
+4. **No `@Serializable` (DTO) or `@Entity` (database) model ever reaches the UI layer directly.** The Presentation layer consumes a dedicated `UIState`/`ViewState` type, produced by its own mapper from the Domain Entity — never the network or database model passed straight through because writing the mapper felt unnecessary for "just one extra field."
+   
+   **Violation smell**: a Composable/Widget parameter typed as `UserDto` or `UserEntity` instead of `UserUiState`; a screen that breaks because a backend field was renamed, when only the DTO↔Entity mapper should have needed to change.
+
 ### Dependency Injection (DIP — Dependency Inversion Principle)
 
-4. **Inject everything that changes; hardcode what doesn't.**
+5. **Inject everything that changes; hardcode what doesn't.**
    - Repository instance: **inject** (swappable for testing).
    - Logger instance: **inject** (swappable).
    - Shared preferences: **inject** (swappable).
@@ -81,7 +85,7 @@ These are prevented by enforcing Clean Architecture layering and SOLID principle
    
    **Anti-pattern**: Creating `UserRepository()` directly in a ViewModel. Violates testability and causes tight coupling.
 
-5. **Use constructor injection for required dependencies; never require optional deps. CRITICAL: Ban ViewModel Decorator/Wrapper pattern.**
+6. **Use constructor injection for required dependencies; never require optional deps. CRITICAL: Ban ViewModel Decorator/Wrapper pattern.**
    - If a class has optional dependencies (nullable, with defaults), split into two classes **OR** pass decoupled service interfaces.
    - Positional arguments in constructor ≤ 4; beyond that, use a builder or dependency injection container (Hilt, GetIt, etc.).
    - **CRITICAL ANTI-PATTERN TO BAN**: Do NOT wrap a base ViewModel inside a decorator ViewModel. This breaks OS lifecycle scopes and navigation backstacks.
@@ -117,16 +121,20 @@ These are prevented by enforcing Clean Architecture layering and SOLID principle
    
    **Why**: Wrapping ViewModels breaks the OS's ViewModel.Factory lifecycle binding. Each feature screen should have ONE ViewModel with all its dependencies cleanly injected. If you need optional analytics, pass the service interface (which can be a no-op impl for testing).
 
-6. **Abstractions (interfaces/contracts) live with the client, not the impl.**
+7. **Abstractions (interfaces/contracts) live with the client, not the impl.**
    - Domain layer defines `UserRepository` interface.
    - Data layer implements `UserRepository`.
    - Presentation layer uses `UserRepository` from domain, never imports the data impl.
    
    **Kotlin/Flutter**: Same principle. `:domain` defines the interface. `:data` implements it. `:presentation` only knows domain.
 
+8. **The DI module is updated in the same diff as the class it registers, not left for a follow-up.** Creating a new `Repository`, `UseCase`, or `ViewModel` and deferring its Hilt/Koin/GetIt registration to "after the code compiles" produces code that compiles but crashes at runtime with an unresolved dependency — a failure mode unit tests on the class itself won't catch. Register the binding as part of writing the class, not after.
+   
+   **Violation smell**: a diff that adds `class OrderRepository(...)` with no corresponding change to `NetworkModule`/`RepositoryModule`/the DI graph in the same output.
+
 ### Package & Module Structure
 
-7. **Feature-based modules, not layer-based modules.**
+9. **Feature-based modules, not layer-based modules.**
    - ✅ Good: `:feature:auth`, `:feature:profile`, `:feature:payments`
    - ❌ Bad: `:layer:presentation`, `:layer:domain`, `:layer:data` (these share feature boundaries; leads to god modules)
    
@@ -144,12 +152,12 @@ These are prevented by enforcing Clean Architecture layering and SOLID principle
        └── LoginScreen
    ```
 
-8. **No cross-feature direct imports without explicit contracts.**
+10. **No cross-feature direct imports without explicit contracts.**
    - FeatureA can import FeatureB only through a public interface (:feature:common provides shared contracts).
    - Deep imports (`feature.b.data.something`) from FeatureA = architecture smell.
    - Use navigation abstractions, callbacks, or shared domain models instead.
 
-9. **Circular dependencies are failures, not tolerated.**
+11. **Circular dependencies are failures, not tolerated.**
    - If FeatureA → FeatureB and FeatureB → FeatureA, refactor:
      - Extract shared domain model/interface to `:feature:common`.
      - Use event bus or navigation abstraction instead of direct imports.
@@ -157,7 +165,7 @@ These are prevented by enforcing Clean Architecture layering and SOLID principle
 
 ### ViewModel & State Management
 
-10. **Strict Unidirectional Data Flow (UDF): State flows DOWN immutable; Events flow UP via explicit actions.**
+12. **Strict Unidirectional Data Flow (UDF): State flows DOWN immutable; Events flow UP via explicit actions.**
     - **State flows DOWN to UI**: ViewModel/BLoC emits immutable state as `StateFlow<State>`, `LiveData<State>`, or streams.
     - **UI reads state ONLY**: Fragment/Activity/Widget observes state, NEVER mutates it.
     - **Events flow UP**: UI sends user actions to ViewModel via explicit methods (`login()`, `updateProfile()`), never direct state mutations.
@@ -244,19 +252,19 @@ These are prevented by enforcing Clean Architecture layering and SOLID principle
     
     **When reviewing state management**: Reject any pattern that passes mutable state objects down to the UI, or that allows the UI to directly mutate shared state. Flag violations with reference to this imperative (#10) in findings.
 
-11. **No state duplication; no multi-step prop drilling.**
+13. **No state duplication; no multi-step prop drilling.**
     - If state must travel through 3+ widget/composable layers, lift it to a shared state holder higher in the tree or use a state manager.
     - ✅ ViewModel → Composable → Composable (one level deep, OK).
     - ❌ ViewModel → Composable → Widget → Widget → Widget (4 hops, bad; use StateFlow or BLoC).
 
-12. **Side effects are explicit, not hidden in init or recomposition.**
+14. **Side effects are explicit, not hidden in init or recomposition.**
     - Kotlin: Use `LaunchedEffect`, `DisposableEffect`, initialization in `init {}` block, or explicit `.onStart()`.
     - Flutter: Use `initState()`, `didChangeDepencies()`, stream subscriptions managed in State.
     - **Anti-pattern**: Calling a use case directly in a Composable `body` or Flutter build method (causes repeated calls).
 
 ### Repository & Data Source Patterns
 
-13. **Repository is a single-responsibility orchestrator, not a god object.**
+15. **Repository is a single-responsibility orchestrator, not a god object.**
     - Repo job: "I fetch user data. Where? Local cache first, then remote, then memory. How? That's for data sources."
     - Not repo job: Business logic, validation, formatting, retry policies (unless the policy is truly about data access).
     
@@ -279,14 +287,14 @@ These are prevented by enforcing Clean Architecture layering and SOLID principle
     
     **Better**: LoginUseCase calls AuthRepository (which just fetches). UseCase handles validation and retry.
 
-14. **Data source interfaces, not concrete implementations, injected into Repository.**
+16. **Data source interfaces, not concrete implementations, injected into Repository.**
     - Good: `LocalUserDataSource` interface, `LocalUserDataSourceImpl` concrete, repo depends on interface.
     - Bad: Repo depends on `SharedPreferences` directly.
     - Allows testing: mock `LocalUserDataSource` without touching SharedPreferences.
 
 ### Testing Boundaries
 
-15. **Domain layer is testable without any framework.**
+17. **Domain layer is testable without any framework.**
     - A use case taking `Repository` (interface) + simple objects (String, Int, model classes) = testable with unit tests only.
     - If a use case needs `Context`, lifecycle, or scheduler, it's business logic bleeding into Presentation.
     
@@ -304,24 +312,24 @@ These are prevented by enforcing Clean Architecture layering and SOLID principle
 
 ### SOLID Principles in Mobile Context
 
-16. **Single Responsibility Principle (SRP)**: 
+18. **Single Responsibility Principle (SRP)**: 
     - One ViewModel per screen/feature, not one per layer.
     - One repository per domain concept (UserRepository, PaymentRepository), not one per data source type.
     - A mapper's job: DTO ↔ Entity transformation, nothing else.
 
-17. **Open/Closed Principle (OCP)**:
+19. **Open/Closed Principle (OCP)**:
     - Adding a new auth method (social login, biometric)? Extend via new use case + new strategy, not branches in LoginUseCase.
     - New data source (Firestore instead of REST)? New impl of repository interface, not if/else in existing repo.
 
-18. **Liskov Substitution Principle (LSP)**:
+20. **Liskov Substitution Principle (LSP)**:
     - A mock repository must be droppable in for the real one without breaking contracts.
     - If test repository returns null when prod returns empty list, LSP is violated.
 
-19. **Interface Segregation Principle (ISP)**:
+21. **Interface Segregation Principle (ISP)**:
     - Don't make a `DataRepository` interface that every data class implements. Make `UserRepository`, `PaymentRepository`, etc.
     - A screen needing a user shouldn't depend on an interface that also defines payment methods.
 
-20. **Dependency Inversion Principle (DIP)**:
+22. **Dependency Inversion Principle (DIP)**:
     - Presentation depends on Domain abstractions (interfaces), not Data implementations.
     - Good: `class LoginViewModel(val useCase: LoginUseCase)`
     - Bad: `class LoginViewModel(val api: RetrofitService)` (violates DIP; couples to framework)
@@ -389,6 +397,8 @@ Before merging or requesting review:
 7. **Testing check**: Can I test domain logic without any Android/Flutter imports? Can I unit test the ViewModel with mocked repo?
 8. **Circular dep check**: Do any two modules import each other? Use `:common` to break cycles.
 9. **Single truth check**: Is state defined in one place (ViewModel, BLoC, state holder), not duplicated across multiple classes?
+10. **UI model check**: Does any Composable/Widget receive a `@Serializable`/`@Entity` model directly, or does it go through a `UIState` + mapper?
+11. **DI registration check**: Is every new `Repository`/`UseCase`/`ViewModel` registered in its DI module within the same diff, not deferred?
 
 If you cannot answer **yes** to all checks, refactor before shipping.
 

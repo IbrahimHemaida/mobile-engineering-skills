@@ -63,41 +63,44 @@ KMM code that compiles is not the same as KMM code that works on both platforms 
 
 7. **`Dispatchers.Main` is verified to map to the real platform main thread on both targets**, especially in test code or custom dispatcher setups — a test dispatcher or coroutine scope that quietly no-ops on one platform gives false confidence that main-thread-affinity code is correct.
 
+8. **`Flow`/`StateFlow` exposed from `commonMain` to Swift is verified to actually be consumable there, not just assumed to work because it compiles.** Kotlin's `Flow` doesn't map to Swift's `AsyncSequence`/Combine automatically — plain Kotlin/Native export gives Swift an awkward callback-based API, not native `async`/`await` iteration. Either wrap the boundary explicitly (a `SKIE`-generated `AsyncSequence`, or a manual callback wrapper) or confirm with an actual Swift-side call that consuming the exposed `Flow` doesn't require fighting the generated API.
+   **Violation smell**: `commonMain` code exposing a raw `StateFlow<T>` at the public API boundary with no interop layer, and no one having actually written the Swift consumption code to confirm it's usable.
+
 ### Cross-Platform Library Choices
 
-8. **Date/time handling uses `kotlinx-datetime`, not `java.time`, anywhere in `commonMain`.** `java.time` is JVM-only and doesn't exist for Kotlin/Native — code using it compiles for Android and fails to compile (or isn't even attempted) for iOS.
+9. **Date/time handling uses `kotlinx-datetime`, not `java.time`, anywhere in `commonMain`.** `java.time` is JVM-only and doesn't exist for Kotlin/Native — code using it compiles for Android and fails to compile (or isn't even attempted) for iOS.
 
-9. **Networking in shared code uses a true multiplatform HTTP client (Ktor client or equivalent), not OkHttp/Retrofit directly.** OkHttp is a JVM library; shared networking logic needs a client with real Kotlin/Native engine support.
+10. **Networking in shared code uses a true multiplatform HTTP client (Ktor client or equivalent), not OkHttp/Retrofit directly.** OkHttp is a JVM library; shared networking logic needs a client with real Kotlin/Native engine support.
 
-10. **Serialization in shared code uses `kotlinx.serialization`, not `java.io.Serializable` or JVM-only Gson/Moshi.** Same JVM-only trap as #8 and #9 — these compile against Android and don't exist for the iOS target.
+11. **Serialization in shared code uses `kotlinx.serialization`, not `java.io.Serializable` or JVM-only Gson/Moshi.** Same JVM-only trap as #9 and #10 — these compile against Android and don't exist for the iOS target.
 
-11. **Local persistence in shared code uses SQLDelight (or an explicit `expect`/`actual` storage abstraction), not Room directly.** Room is an Android/JVM library; if persistence logic is meant to be shared, it needs a genuinely multiplatform storage layer or a clean platform boundary around it.
+12. **Local persistence in shared code uses SQLDelight (or an explicit `expect`/`actual` storage abstraction), not Room directly.** Room is an Android/JVM library; if persistence logic is meant to be shared, it needs a genuinely multiplatform storage layer or a clean platform boundary around it.
 
 ### iOS Interop Safety
 
-12. **Exceptions that can cross from `commonMain`/shared code into Swift are caught and converted, not left to propagate uncaught.** Kotlin's exception model doesn't map to Swift's error handling automatically — wrap boundary-crossing calls to convert exceptions into a `Result`-style return or an `NSError`, so a Swift caller gets a normal error instead of an uncatchable crash.
+13. **Exceptions that can cross from `commonMain`/shared code into Swift are caught and converted, not left to propagate uncaught.** Kotlin's exception model doesn't map to Swift's error handling automatically — wrap boundary-crossing calls to convert exceptions into a `Result`-style return or an `NSError`, so a Swift caller gets a normal error instead of an uncatchable crash.
 
-13. **Sealed classes and enums exposed across the Swift boundary are verified to actually produce a usable generated Swift API**, not just assumed to work because they compile in Kotlin. Generate and inspect the Obj-C/Swift header for anything exported and consumed from Swift — generic sealed class hierarchies in particular can generate awkward or unusable Swift interfaces.
+14. **Sealed classes and enums exposed across the Swift boundary are verified to actually produce a usable generated Swift API**, not just assumed to work because they compile in Kotlin. Generate and inspect the Obj-C/Swift header for anything exported and consumed from Swift — generic sealed class hierarchies in particular can generate awkward or unusable Swift interfaces.
 
-14. **Nullability at the interop boundary is explicit and tested for the specific types crossing it**, especially generics and collections. Kotlin nullable types map to Swift `Optional`, but the mapping for generic and collection types has enough edge cases that it should be verified with an actual Swift-side call, not assumed from the Kotlin signature alone.
+15. **Nullability at the interop boundary is explicit and tested for the specific types crossing it**, especially generics and collections. Kotlin nullable types map to Swift `Optional`, but the mapping for generic and collection types has enough edge cases that it should be verified with an actual Swift-side call, not assumed from the Kotlin signature alone.
 
 ### Testing
 
-15. **Shared logic in `commonMain` is tested once in `commonTest` and run against both platform targets**, not duplicated as separate Android and iOS test suites for the same logic. If a test only makes sense on one platform, it belongs in that platform's own test source set, not `commonTest`.
+16. **Shared logic in `commonMain` is tested once in `commonTest` and run against both platform targets**, not duplicated as separate Android and iOS test suites for the same logic. If a test only makes sense on one platform, it belongs in that platform's own test source set, not `commonTest`.
 
-16. **Platform-specific `actual` implementations have their own platform-side tests.** `commonTest` can exercise the `expect` contract's behavior through fakes, but it can't verify a real `actual` implementation is correct on-device — that needs `androidTest`/`iosTest` coverage of its own.
+17. **Platform-specific `actual` implementations have their own platform-side tests.** `commonTest` can exercise the `expect` contract's behavior through fakes, but it can't verify a real `actual` implementation is correct on-device — that needs `androidTest`/`iosTest` coverage of its own.
 
 ### Migration Strategy
 
-17. **Migration is incremental and module-by-module, not a big-bang rewrite of an entire feature at once.** Start with pure logic — validation, formatting, calculations, business rules with no I/O — before migrating networking or persistence, so early wins don't simultaneously hit every failure mode in this skill at once.
+18. **Migration is incremental and module-by-module, not a big-bang rewrite of an entire feature at once.** Start with pure logic — validation, formatting, calculations, business rules with no I/O — before migrating networking or persistence, so early wins don't simultaneously hit every failure mode in this skill at once.
 
-18. **A module is ready to migrate to shared code only once its remaining platform-specific dependencies have a clear `expect`/`actual` abstraction plan.** If a module can't currently be abstracted (e.g. it depends on a platform SDK feature with no multiplatform equivalent), it stays platform-specific rather than getting forced into `commonMain` with a leaky workaround.
+19. **A module is ready to migrate to shared code only once its remaining platform-specific dependencies have a clear `expect`/`actual` abstraction plan.** If a module can't currently be abstracted (e.g. it depends on a platform SDK feature with no multiplatform equivalent), it stays platform-specific rather than getting forced into `commonMain` with a leaky workaround.
 
 ### Build & Tooling
 
-19. **Gradle dependencies are declared once in the appropriate source set, not duplicated per-platform when they could be shared.** A dependency needed by both `androidMain` and `iosMain` but not truly platform-specific probably belongs in `commonMain`'s dependency declarations instead of being duplicated in both platform source sets.
+20. **Gradle dependencies are declared once in the appropriate source set, not duplicated per-platform when they could be shared.** A dependency needed by both `androidMain` and `iosMain` but not truly platform-specific probably belongs in `commonMain`'s dependency declarations instead of being duplicated in both platform source sets.
 
-20. **Kotlin/Native build time is monitored, not ignored until it becomes a team-wide velocity problem.** Enable Gradle build caching and Kotlin/Native compilation caching where available — KMM build times can regress significantly as shared code grows, and catching this early is cheaper than a later build-performance migration project.
+21. **Kotlin/Native build time is monitored, not ignored until it becomes a team-wide velocity problem.** Enable Gradle build caching and Kotlin/Native compilation caching where available — KMM build times can regress significantly as shared code grows, and catching this early is cheaper than a later build-performance migration project.
 
 ## Self-check before delivery
 
@@ -114,6 +117,7 @@ Before marking a KMM review complete, confirm:
 - [ ] `kotlinx.serialization`, not `Serializable`/Gson/Moshi, in `commonMain`
 - [ ] SQLDelight or an explicit abstraction for shared persistence, not Room directly
 - [ ] Exceptions crossing into Swift are caught and converted, not left uncaught
+- [ ] Any `Flow`/`StateFlow` exposed to Swift has been verified consumable there (SKIE, a wrapper, or an actual Swift-side test call), not just assumed to work
 - [ ] Sealed classes/enums exposed to Swift have been checked against the generated header
 - [ ] `commonTest` covers shared logic once; platform `actual`s have their own platform-side tests
 - [ ] Migration was sequenced pure-logic-first, not attempted as a single big-bang move

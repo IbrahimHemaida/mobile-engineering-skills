@@ -5,6 +5,21 @@ All notable changes to mobile-engineering-skills will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-07-03
+
+### Changed
+
+#### Skills
+- **mobile-architecture-guard**: expanded from 20 to 22 imperatives
+  - Added: explicit ban on `@Serializable`/`@Entity` models reaching the UI layer directly — Presentation must consume a dedicated `UIState` produced by its own mapper
+  - Added: DI module registration required in the same diff as the `Repository`/`UseCase`/`ViewModel` it registers, not deferred to a follow-up
+  - Self-check checklist extended with corresponding checks
+- **mobile-kmm-migration-guard**: expanded from 20 to 21 imperatives
+  - Added: `Flow`/`StateFlow` exposed to Swift must be verified actually consumable there (SKIE or a manual wrapper), not assumed to work because it compiles
+  - Added: Multiplatform Settings (`com.russhwolf:multiplatform-settings`) named as the multiplatform-safe replacement for `SharedPreferences`/`NSUserDefaults` direct calls
+- **mobile-security-guard**: expanded from 20 to 21 imperatives
+  - Added: `@Keep` (or equivalent) required on serialization/crypto models to survive R8/ProGuard obfuscation in release builds, verified against an actual release build rather than debug only
+
 ## [1.1.0] - 2026-07-03
 
 ### Fixed

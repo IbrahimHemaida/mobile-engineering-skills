@@ -122,4 +122,5 @@ If a full SQLDelight migration isn't feasible yet, an explicit `expect`/`actual`
 | `OkHttp`/`Retrofit` direct calls | Ktor client (`HttpClient`) |
 | `java.io.Serializable`, Gson, Moshi | `kotlinx.serialization` |
 | Room | SQLDelight, or an `expect`/`actual` storage interface |
+| `SharedPreferences`/`NSUserDefaults` direct calls | Multiplatform Settings (`com.russhwolf:multiplatform-settings`) for simple key-value storage |
 | `java.util.UUID` | `kotlin.uuid.Uuid` (stable since Kotlin 2.0.20) or a small `expect`/`actual` wrapper on older Kotlin versions |
