@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 #### Skills
+- **mobile-kmm-migration-guard**: Review Kotlin Multiplatform Mobile code for platform leakage, unsafe expect/actual usage, JVM-only dependencies in shared code, and iOS interop hazards
+  - 20 imperatives covering shared code boundaries, concurrency/memory model, cross-platform library choices (kotlinx-datetime, Ktor, kotlinx.serialization, SQLDelight), iOS interop safety, testing, migration sequencing, and build tooling
+  - Migration readiness report format for assessing whether a module is ready to move to shared code
+  - Reference guides: interop-and-concurrency.md, multiplatform-libraries.md
 - **mobile-accessibility-guard**: Review Kotlin/Android and Flutter code for WCAG 2.1 AA accessibility violations before merge
   - 20 imperatives covering content descriptions/semantics, touch target sizing, color contrast, screen reader reading order, form labeling, live-region announcements, and custom widget semantic roles
   - Severity-ranked findings report format referencing specific WCAG success criteria

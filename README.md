@@ -119,6 +119,24 @@ Review Kotlin/Android and Flutter code for WCAG 2.1 AA accessibility violations 
 
 ---
 
+### **6. mobile-kmm-migration-guard** 🔀
+
+Review Kotlin Multiplatform Mobile (KMM) code for platform leakage, unsafe `expect`/`actual` usage, JVM-only dependencies in shared code, and iOS interop hazards.
+
+**Validates:**
+- ✓ No `android.*`/`androidx.*` or Foundation/UIKit imports in `commonMain`
+- ✓ `expect`/`actual` used only for genuine platform divergence
+- ✓ `kotlinx-datetime`, `kotlinx.serialization`, and Ktor client instead of `java.time`, `Serializable`/Gson, and OkHttp/Retrofit directly in shared code
+- ✓ SQLDelight (or an explicit abstraction) instead of Room in shared persistence
+- ✓ No blocking calls on `Dispatchers.Main` (punished harder on iOS than Android)
+- ✓ Exceptions crossing into Swift are caught and converted, not left uncaught
+- ✓ Migration sequenced pure-logic-first, not attempted as a big-bang rewrite
+- ✗ **Bans** business logic duplicated across `actual` implementations
+
+**20 Imperatives**, plus a migration readiness report format for assessing whether a module is ready to move to shared code.
+
+---
+
 ## 💎 Why Use This?
 
 ### **Problem: Without These Guardrails**
@@ -167,7 +185,7 @@ Claude Code auto-discovers skills placed under `.claude/skills/<skill-name>/SKIL
 
 ```bash
 mkdir -p ~/.claude/skills
-cp -r skills/mobile-architecture-guard skills/mobile-tdd-guard skills/mobile-security-guard skills/mobile-accessibility-guard skills/ai-context-budget-guard ~/.claude/skills/
+cp -r skills/mobile-architecture-guard skills/mobile-tdd-guard skills/mobile-security-guard skills/mobile-accessibility-guard skills/mobile-kmm-migration-guard skills/ai-context-budget-guard ~/.claude/skills/
 ```
 
 You can also invoke a skill directly instead of waiting for automatic matching:
@@ -177,6 +195,7 @@ You can also invoke a skill directly instead of waiting for automatic matching:
 /mobile-tdd-guard TDD the payment retry logic
 /mobile-security-guard Audit this auth flow for security issues
 /mobile-accessibility-guard Check this screen for WCAG AA issues
+/mobile-kmm-migration-guard Review this commonMain code for platform leakage
 /ai-context-budget-guard Write a session digest before we wrap up
 ```
 
@@ -214,7 +233,7 @@ Invoke with `@` mentions:
 ### **Claude.ai / Claude Desktop**
 
 1. Go to **Settings → Capabilities** and enable **Code execution and file creation** (required for Skills; Team/Enterprise users enable it under Organization settings instead).
-2. Go to **Customize → Skills** and upload each skill folder as a zip — one skill per zip (`mobile-architecture-guard`, `mobile-tdd-guard`, `mobile-security-guard`, `mobile-accessibility-guard`, `ai-context-budget-guard`).
+2. Go to **Customize → Skills** and upload each skill folder as a zip — one skill per zip (`mobile-architecture-guard`, `mobile-tdd-guard`, `mobile-security-guard`, `mobile-accessibility-guard`, `mobile-kmm-migration-guard`, `ai-context-budget-guard`).
 3. Claude applies a skill automatically when it's relevant to your request — you don't need to reference it by name every time.
 
 Skill availability depends on your plan (Free/Pro/Max/Team/Enterprise); see [Anthropic's Skills documentation](https://support.claude.com/en/articles/12512180-use-skills-in-claude) for current details.
