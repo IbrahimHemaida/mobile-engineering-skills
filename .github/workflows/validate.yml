@@ -10,7 +10,7 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
       - name: Check SKILL.md files exist
         run: |
@@ -63,11 +63,11 @@ jobs:
   spell-check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
       - name: Spell check README and SKILLs
         uses: codespell-project/actions-codespell@v2
         with:
-          files: README.md skills/*/SKILL.md
+          path: .
           skip: ".git,node_modules"
           ignore_words_file: .codespellignore
