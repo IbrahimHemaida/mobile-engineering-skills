@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **.claude-plugin/plugin.json**: packaged the repo as an installable Claude Code plugin (`/mobile-engineering-skills:<skill-name>`), reusing the existing `skills/` directory as-is.
+- **.claude-plugin/marketplace.json**: self-hosted marketplace catalog so the plugin can be installed directly from GitHub (`/plugin marketplace add IbrahimHemaida/mobile-engineering-skills`) without waiting on the official community-marketplace review.
 - **references/state-management.md**: new reference file with full worked Kotlin (StateFlow + Compose) and Flutter (BLoC) UDF examples, extracted from `mobile-architecture-guard/SKILL.md`.
 
 ### Changed

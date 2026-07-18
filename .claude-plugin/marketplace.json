@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "ibrahimhemaida-mobile-skills",
+  "description": "Personal marketplace for Ibrahim Hemaida's Claude Code plugins: mobile engineering skills for Android/Kotlin and Flutter.",
+  "owner": {
+    "name": "Ibrahim Hemaida",
+    "email": "ibraheem.hmeda@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "mobile-engineering-skills",
+      "source": "./",
+      "description": "Professional AI agent skills for building Kotlin/Android and Flutter apps with SOLID principles, Clean Architecture, TDD, security, accessibility, and KMM migration guidance.",
+      "category": "development"
+    }
+  ]
+}

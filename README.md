@@ -227,6 +227,13 @@ claude --plugin-dir ./mobile-engineering-skills
 
 Skills load namespaced under the plugin name, e.g. `/mobile-engineering-skills:mobile-architecture-guard` instead of `/mobile-architecture-guard`.
 
+Once you've pushed this repo to GitHub, anyone can add it as a marketplace and install directly — no waiting on official review:
+
+```bash
+/plugin marketplace add IbrahimHemaida/mobile-engineering-skills
+/plugin install mobile-engineering-skills@ibrahimhemaida-mobile-skills
+```
+
 ---
 
 ## 📋 Implementation Guides
