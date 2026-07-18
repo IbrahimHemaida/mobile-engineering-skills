@@ -1,0 +1,9 @@
+---
+description: Wire a scaffolded Flutter feature into the real app — router (GoRouter/Navigator), app-level Injectable/GetIt DI graph, pubspec.yaml reconciliation, and a mandatory analyze/test verification pass. Use after scaffold-flutter-feature, or to make a feature actually runnable.
+globs: ["**/*.dart"]
+alwaysApply: false
+---
+
+Read and follow `skills/integrate-flutter-feature/SKILL.md` (relative to the project root) for this integration. If your Cursor version supports `@` file mentions with relative paths, `@skills/integrate-flutter-feature/SKILL.md` also works — otherwise open the file directly.
+
+This is a thin pointer, not a copy — the full integration workflow lives in the referenced file. See `skills/integrate-flutter-feature/references/flutter-integration-templates.md` for the exact router, DI, and pubspec.yaml wiring templates.

@@ -1,0 +1,9 @@
+---
+description: Scaffold a complete Android/Kotlin feature module (Domain, Data, Presentation, Hilt DI, full Unit + Compose UI tests) following Clean Architecture and the same 24 imperatives as mobile-architecture-guard. Use when creating a new Android feature or screen from scratch.
+globs: ["**/*.kt", "**/*.kts"]
+alwaysApply: false
+---
+
+Read and follow `skills/scaffold-android-feature/SKILL.md` (relative to the project root) to generate this feature. If your Cursor version supports `@` file mentions with relative paths, `@skills/scaffold-android-feature/SKILL.md` also works — otherwise open the file directly.
+
+This is a thin pointer, not a copy — the full generation workflow and code templates live in the referenced file. See `skills/scaffold-android-feature/references/kotlin-templates.md` for the complete Domain/Data/Presentation/DI/test code templates.

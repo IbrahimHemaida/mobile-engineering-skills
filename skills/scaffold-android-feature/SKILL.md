@@ -31,7 +31,7 @@ feature{name}/
 │   └── repository/{Name}RepositoryImpl.kt
 ├── presentation/
 │   ├── {Name}UiState.kt                      (sealed interface)
-│   ├── {Name}ViewModel.kt                    (StateFlow, UDF — see references/state-management.md in mobile-architecture-guard)
+│   ├── {Name}ViewModel.kt                    (StateFlow, UDF pattern — see the state-management reference material inside mobile-architecture-guard's skill folder for the full worked example)
 │   └── {Name}Screen.kt                       (Composable, reads state only)
 └── di/
     └── {Name}Module.kt                       (Hilt @Module, @InstallIn(SingletonComponent::class))
