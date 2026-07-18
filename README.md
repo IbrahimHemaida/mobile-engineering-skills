@@ -50,7 +50,7 @@ This is a **skill package** containing expertly-crafted AI system instructions t
 | 🎯 **Standardize Elite Patterns** | Team consistency: SOLID, Clean Architecture, Unidirectional Data Flow |
 | 🔍 **Catch Issues Early** | AI invokes skills before code review — saves 30+ minutes per PR |
 
-> **Note**: A few sections below reference `clean-code-guard` and `test-guard` as complementary skills (general-purpose code quality and test quality review, not mobile-specific). These are **optional companion skills and are not included in this repository** — the eight skills below are fully self-contained and don't require them. If you use them elsewhere in your own setup, they slot in alongside these for a fuller review pipeline.
+> **Note**: A few sections below reference `clean-code-guard` and `test-guard` as complementary skills (general-purpose code quality and test quality review, not mobile-specific). These are **optional companion skills and are not included in this repository** — the ten skills below are fully self-contained and don't require them. If you use them elsewhere in your own setup, they slot in alongside these for a fuller review pipeline.
 
 ---
 
@@ -196,6 +196,38 @@ Full code templates in `references/dart-templates.md`.
 
 ---
 
+### **9. integrate-android-feature** 🔌📱
+
+Wires a `scaffold-android-feature` output into the actual running app — not another scaffolding pass, an integration pass into your existing project files.
+
+**Does:**
+- ✓ Inspects the existing project first — detects the real navigation/DI pattern already in use, never assumes or duplicates one
+- ✓ Adds the feature's route to the existing NavHost (Compose Navigation)
+- ✓ Wires multi-module Gradle dependency edges (`settings.gradle.kts`, `:app` → `:feature:{name}`)
+- ✓ Reconciles Gradle/version-catalog dependencies — adds only what's missing, never downgrades pinned versions
+- ✓ Runs a mandatory build/compile verification pass before presenting the result — a broken build is never handed off with a "check this later" note
+
+Full templates in `references/android-integration-templates.md`.
+
+---
+
+### **10. integrate-flutter-feature** 🔌🎯
+
+Same idea, for Flutter — wires a `scaffold-flutter-feature` output into the real app.
+
+**Does:**
+- ✓ Inspects the existing project first — detects the real router (GoRouter/Navigator) and DI setup already in use
+- ✓ Adds the feature's route to the existing router config, with BlocProvider wiring
+- ✓ Confirms Injectable/GetIt registration via `build_runner`, not just assumed
+- ✓ Reconciles `pubspec.yaml` dependencies — adds only what's missing
+- ✓ Runs a mandatory `flutter analyze` + `flutter test` pass before presenting the result
+
+Full templates in `references/flutter-integration-templates.md`.
+
+**Together, `scaffold-*-feature` + `integrate-*-feature` + `mobile-architecture-guard` form the complete loop: scaffold → integrate → review — a feature goes from a name to a runnable, wired, tested, reviewed part of the app in one workflow.**
+
+---
+
 ## 💎 Why Use This?
 
 ### **Problem: Without These Guardrails**
@@ -232,7 +264,7 @@ These skills integrate into your review workflow to:
 curl -fsSL https://raw.githubusercontent.com/IbrahimHemaida/mobile-engineering-skills/main/install.sh | bash
 ```
 
-Installs all eight skills to `~/.claude/skills/` (available across every project). For a project-scoped install instead (shared with your team via git, this project only):
+Installs all ten skills to `~/.claude/skills/` (available across every project). For a project-scoped install instead (shared with your team via git, this project only):
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/IbrahimHemaida/mobile-engineering-skills/main/install.sh | bash -s -- --project
@@ -246,7 +278,7 @@ mkdir -p ~/.claude/skills
 cp -r mobile-engineering-skills/skills/* ~/.claude/skills/
 ```
 
-Both methods copy all eight skills to your user-level Claude Code skills directory (`~/.claude/skills/`), where they're available across every project. To scope skills to a single project, copy them into `.claude/skills/` inside that project's repo, or use `--project` with the one-liner above.
+Both methods copy all ten skills to your user-level Claude Code skills directory (`~/.claude/skills/`), where they're available across every project. To scope skills to a single project, copy them into `.claude/skills/` inside that project's repo, or use `--project` with the one-liner above.
 
 ### As a Claude Code Plugin
 

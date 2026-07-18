@@ -5,6 +5,13 @@ All notable changes to mobile-engineering-skills will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0]
+
+### Added
+- **integrate-android-feature** skill: wires a `scaffold-android-feature` output into the actual running app — navigation route, app-level Hilt DI graph (module dependency edges), Gradle dependency reconciliation, and a mandatory build-verification pass. Inspects the existing project first (never assumes or duplicates a navigation/DI setup). Templates in `references/android-integration-templates.md`.
+- **integrate-flutter-feature** skill: same, for Flutter — GoRouter/Navigator wiring, Injectable/GetIt DI graph confirmation via `build_runner`, pubspec.yaml reconciliation, and a mandatory `flutter analyze` + `flutter test` pass. Templates in `references/flutter-integration-templates.md`.
+- Together with `scaffold-*-feature`, this completes the full loop: **scaffold → integrate → review** (`mobile-architecture-guard`), so a feature goes from a name to a runnable, wired, tested, reviewed part of the app in one workflow.
+
 ## [1.4.0]
 
 ### Added

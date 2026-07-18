@@ -2,7 +2,7 @@
 # mobile-engineering-skills installer
 # Usage: curl -fsSL https://raw.githubusercontent.com/IbrahimHemaida/mobile-engineering-skills/main/install.sh | bash
 #
-# Copies all eight skills into ~/.claude/skills/ (Claude Code's user-level
+# Copies all ten skills into ~/.claude/skills/ (Claude Code's user-level
 # skill directory, auto-discovered across every project). Run with
 # --project to install into the current project's .claude/skills/ instead
 # (shared with your team via git, not just this machine).
