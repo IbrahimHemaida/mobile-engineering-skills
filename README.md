@@ -216,6 +216,17 @@ cp -r mobile-engineering-skills/skills/* ~/.claude/skills/
 
 Both methods copy all six skills to your user-level Claude Code skills directory (`~/.claude/skills/`), where they're available across every project. To scope skills to a single project, copy them into `.claude/skills/` inside that project's repo, or use `--project` with the one-liner above.
 
+### As a Claude Code Plugin
+
+This repo is also a valid Claude Code plugin (`.claude-plugin/plugin.json` at the root). Test it locally before installing anywhere else:
+
+```bash
+claude --plugin-dir ./mobile-engineering-skills
+/reload-plugins
+```
+
+Skills load namespaced under the plugin name, e.g. `/mobile-engineering-skills:mobile-architecture-guard` instead of `/mobile-architecture-guard`.
+
 ---
 
 ## 📋 Implementation Guides

@@ -22,6 +22,7 @@ This SKILL.md covers the core rules and checklists. For deeper treatment, load t
 - `references/clean-architecture.md` — extended layer-separation patterns, real-world layer leakage examples, and migration strategies for legacy modules.
 - `references/dependency-injection.md` — DI container comparisons (Hilt, Koin, GetIt, Riverpod), constructor vs field injection tradeoffs, and testing with fakes vs mocks.
 - `references/solid-kotlin.md` — SOLID principles worked through with larger Kotlin/Flutter examples than the summaries below.
+- `references/state-management.md` — full worked Kotlin (StateFlow + Compose) and Flutter (BLoC) UDF examples.
 
 Read the relevant reference file when a violation needs more context than the summary here provides, or when the user asks for a deeper explanation of a specific principle.
 
@@ -88,38 +89,9 @@ These are prevented by enforcing Clean Architecture layering and SOLID principle
 6. **Use constructor injection for required dependencies; never require optional deps. CRITICAL: Ban ViewModel Decorator/Wrapper pattern.**
    - If a class has optional dependencies (nullable, with defaults), split into two classes **OR** pass decoupled service interfaces.
    - Positional arguments in constructor ≤ 4; beyond that, use a builder or dependency injection container (Hilt, GetIt, etc.).
-   - **CRITICAL ANTI-PATTERN TO BAN**: Do NOT wrap a base ViewModel inside a decorator ViewModel. This breaks OS lifecycle scopes and navigation backstacks.
+   - **CRITICAL ANTI-PATTERN TO BAN**: Do NOT wrap a base ViewModel inside a decorator ViewModel (e.g. `AnalyticsWrappedLoginViewModel`) to bolt on a cross-cutting concern. This breaks the OS's ViewModel.Factory lifecycle scope and navigation backstack. Instead, pass the extra concern (analytics, logging) as a decoupled service interface via constructor DI, alongside the other dependencies.
    
-   **❌ CRITICAL ANTI-PATTERN — ViewModel Wrapper (DO NOT DO THIS)**:
-   ```kotlin
-   // BREAKS LIFECYCLE & NAVIGATION
-   class LoginViewModel(val authUseCase: AuthUseCase)
-   
-   class AnalyticsWrappedLoginViewModel(  // ❌ ANTI-PATTERN
-     val baseViewModel: LoginViewModel,
-     val analyticsService: AnalyticsService
-   ) : ViewModel()
-   
-   // Problem: Navigation uses AnalyticsWrappedLoginViewModel, but lifecycle is broken
-   // OS doesn't know about baseViewModel's scope — memory leaks & lifecycle violations
-   ```
-   
-   **✅ CORRECT: Pass decoupled service interfaces via Constructor DI**:
-   ```kotlin
-   class LoginViewModel(
-     val authUseCase: AuthUseCase,
-     val analyticsService: AnalyticsService  // ✓ Clean interface dependency
-   ) : ViewModel() {
-     fun login(email: String, password: String) {
-       viewModelScope.launch {
-         val result = authUseCase.login(email, password)
-         analyticsService.trackLoginAttempt(email)  // ✓ Called explicitly
-       }
-     }
-   }
-   ```
-   
-   **Why**: Wrapping ViewModels breaks the OS's ViewModel.Factory lifecycle binding. Each feature screen should have ONE ViewModel with all its dependencies cleanly injected. If you need optional analytics, pass the service interface (which can be a no-op impl for testing).
+   See `references/dependency-injection.md` for the full before/after code example and rationale.
 
 7. **Abstractions (interfaces/contracts) live with the client, not the impl.**
    - Domain layer defines `UserRepository` interface.
@@ -179,84 +151,9 @@ These are prevented by enforcing Clean Architecture layering and SOLID principle
     - **Android**: LiveData, StateFlow, or MutableState held by ViewModel. Fragment/Activity observes, never mutates.
     - **Flutter**: State held in BLoC, Provider, or state manager. Widget reads, dispatches events/methods.
     
-    **Kotlin UDF example — CORRECT**:
-    ```kotlin
-    // ViewModel owns state, emits DOWN
-    class LoginViewModel(val authUseCase: AuthUseCase) : ViewModel() {
-      private val _state = MutableStateFlow<LoginState>(LoginState.Idle)
-      val state: StateFlow<LoginState> = _state.asStateFlow()
-      
-      // Events flow UP via explicit actions
-      fun login(email: String, password: String) {
-        viewModelScope.launch {
-          _state.value = LoginState.Loading
-          val result = authUseCase.login(email, password)
-          _state.value = result.fold(
-            { LoginState.Success(it) },
-            { LoginState.Error(it) }
-          )
-        }
-      }
-    }
+    **When reviewing state management**: Reject any pattern that passes mutable state objects down to the UI, or that allows the UI to directly mutate shared state. Flag violations with reference to this imperative (#14) in findings.
     
-    // UI reads state ONLY, never mutates
-    @Composable
-    fun LoginScreen(viewModel: LoginViewModel) {
-      val state by viewModel.state.collectAsState()
-      
-      when (state) {
-        is LoginState.Idle -> LoginForm(onLoginClick = { email, password ->
-          viewModel.login(email, password)  // ✓ Call ViewModel action
-        })
-        is LoginState.Loading -> LoadingIndicator()
-        is LoginState.Success -> SuccessScreen()
-        is LoginState.Error -> ErrorDialog()
-      }
-    }
-    ```
-    
-    **Flutter UDF example — CORRECT**:
-    ```dart
-    // BLoC emits state DOWN
-    class LoginBloc extends Bloc<LoginEvent, LoginState> {
-      LoginBloc(this._authUseCase) : super(LoginInitial()) {
-        on<LoginPressed>(_onLoginPressed);
-      }
-      
-      FutureOr<void> _onLoginPressed(
-        LoginPressed event,
-        Emitter<LoginState> emit,
-      ) async {
-        emit(LoginLoading());
-        final result = await _authUseCase.login(event.email, event.password);
-        emit(result.fold(
-          (user) => LoginSuccess(user),
-          (error) => LoginFailure(error),
-        ));
-      }
-    }
-    
-    // Widget reads state ONLY
-    @override
-    Widget build(BuildContext context) {
-      return BlocBuilder<LoginBloc, LoginState>(
-        builder: (context, state) {
-          if (state is LoginLoading) return LoadingIndicator();
-          if (state is LoginSuccess) return SuccessScreen();
-          if (state is LoginFailure) return ErrorDialog();
-          
-          return LoginForm(
-            onLoginClick: (email, password) {
-              // ✓ Dispatch event UP
-              context.read<LoginBloc>().add(LoginPressed(email, password));
-            },
-          );
-        },
-      );
-    }
-    ```
-    
-    **When reviewing state management**: Reject any pattern that passes mutable state objects down to the UI, or that allows the UI to directly mutate shared state. Flag violations with reference to this imperative (#10) in findings.
+    See `references/state-management.md` for full worked Kotlin (StateFlow + Compose) and Flutter (BLoC) UDF examples.
 
 15. **No state duplication; no multi-step prop drilling.**
     - If state must travel through 3+ widget/composable layers, lift it to a shared state holder higher in the tree or use a state manager.

@@ -5,6 +5,16 @@ All notable changes to mobile-engineering-skills will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **.claude-plugin/plugin.json**: packaged the repo as an installable Claude Code plugin (`/mobile-engineering-skills:<skill-name>`), reusing the existing `skills/` directory as-is.
+- **references/state-management.md**: new reference file with full worked Kotlin (StateFlow + Compose) and Flutter (BLoC) UDF examples, extracted from `mobile-architecture-guard/SKILL.md`.
+
+### Changed
+- **mobile-architecture-guard/SKILL.md**: trimmed from 435 to 332 lines by moving the ViewModel Wrapper anti-pattern example to `references/dependency-injection.md` and the full UDF code examples to the new `references/state-management.md`. No imperatives were added, removed, or renumbered — only long code blocks moved to reference files, replaced with a short summary and pointer.
+- **references/dependency-injection.md**: added the ViewModel Wrapper anti-pattern section (moved from SKILL.md).
+
 ## [1.3.0] - 2026-07-03
 
 ### Added

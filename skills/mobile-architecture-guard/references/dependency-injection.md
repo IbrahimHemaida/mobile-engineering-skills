@@ -379,6 +379,41 @@ class LoginViewModelTest {
 
 ---
 
+## ViewModel Wrapper Anti-Pattern (CRITICAL)
+
+Do NOT wrap a base ViewModel inside a decorator ViewModel to add a cross-cutting concern like analytics. This breaks OS lifecycle scopes and navigation backstacks.
+
+**❌ ANTI-PATTERN — do not do this**:
+```kotlin
+// BREAKS LIFECYCLE & NAVIGATION
+class LoginViewModel(val authUseCase: AuthUseCase)
+
+class AnalyticsWrappedLoginViewModel(  // ❌ ANTI-PATTERN
+  val baseViewModel: LoginViewModel,
+  val analyticsService: AnalyticsService
+) : ViewModel()
+
+// Problem: Navigation uses AnalyticsWrappedLoginViewModel, but lifecycle is broken
+// OS doesn't know about baseViewModel's scope — memory leaks & lifecycle violations
+```
+
+**✅ CORRECT — pass decoupled service interfaces via constructor DI instead**:
+```kotlin
+class LoginViewModel(
+  val authUseCase: AuthUseCase,
+  val analyticsService: AnalyticsService  // ✓ Clean interface dependency
+) : ViewModel() {
+  fun login(email: String, password: String) {
+    viewModelScope.launch {
+      val result = authUseCase.login(email, password)
+      analyticsService.trackLoginAttempt(email)  // ✓ Called explicitly
+    }
+  }
+}
+```
+
+**Why**: Wrapping ViewModels breaks the OS's ViewModel.Factory lifecycle binding. Each feature screen should have ONE ViewModel with all its dependencies cleanly injected. If you need optional analytics, pass the service interface (which can be a no-op impl for testing).
+
 ## DI Checklist
 
 - [ ] All external dependencies are injected (constructor)
