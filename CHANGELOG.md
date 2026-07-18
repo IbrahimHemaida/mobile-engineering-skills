@@ -5,6 +5,13 @@ All notable changes to mobile-engineering-skills will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0]
+
+### Added
+- **scaffold-android-feature** skill: generates a complete Clean Architecture Android/Kotlin feature module (Domain, Data, Presentation, Hilt DI) plus full Unit and Compose UI tests, following the same 24 imperatives enforced by `mobile-architecture-guard`. Full code templates in `references/kotlin-templates.md`.
+- **scaffold-flutter-feature** skill: same scaffolding, for Flutter — Clean Architecture, BLoC, GetIt/Injectable DI, plus Unit and Widget tests. Full code templates in `references/dart-templates.md`.
+- Both new skills bake in security (encrypted storage for PII/tokens) and accessibility (semantics labels, minimum tap targets) requirements at generation time rather than relying on a later review pass.
+
 ## [Unreleased]
 
 ### Added

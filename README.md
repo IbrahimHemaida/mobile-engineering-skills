@@ -50,7 +50,7 @@ This is a **skill package** containing expertly-crafted AI system instructions t
 | 🎯 **Standardize Elite Patterns** | Team consistency: SOLID, Clean Architecture, Unidirectional Data Flow |
 | 🔍 **Catch Issues Early** | AI invokes skills before code review — saves 30+ minutes per PR |
 
-> **Note**: A few sections below reference `clean-code-guard` and `test-guard` as complementary skills (general-purpose code quality and test quality review, not mobile-specific). These are **optional companion skills and are not included in this repository** — the six skills below are fully self-contained and don't require them. If you use them elsewhere in your own setup, they slot in alongside these for a fuller review pipeline.
+> **Note**: A few sections below reference `clean-code-guard` and `test-guard` as complementary skills (general-purpose code quality and test quality review, not mobile-specific). These are **optional companion skills and are not included in this repository** — the eight skills below are fully self-contained and don't require them. If you use them elsewhere in your own setup, they slot in alongside these for a fuller review pipeline.
 
 ---
 
@@ -164,6 +164,38 @@ Review Kotlin Multiplatform Mobile (KMM) code for platform leakage, unsafe `expe
 
 ---
 
+### **7. scaffold-android-feature** 🏗️📱
+
+Generates a complete, production-ready Android/Kotlin feature module from a single feature name — Domain, Data, Presentation layers, Hilt DI, and full Unit + Compose UI tests — built to pass `mobile-architecture-guard` review with zero findings on the first try.
+
+**Generates:**
+- ✓ Domain layer (model, repository interface, use cases) — zero Android framework imports
+- ✓ Data layer (Retrofit API, Room DAO, mapper, repository implementation)
+- ✓ Presentation layer (sealed `UiState`, `StateFlow`-based ViewModel, Composable screen)
+- ✓ Hilt module wiring the repository binding
+- ✓ Unit tests (use cases, repository, ViewModel with Turbine) and Compose UI tests
+- ✓ Encrypted storage for tokens/PII and accessibility semantics baked in at generation time
+
+Full code templates in `references/kotlin-templates.md`.
+
+---
+
+### **8. scaffold-flutter-feature** 🏗️🎯
+
+Same idea, for Flutter — Domain, Data, Presentation layers, GetIt/Injectable DI, and full Unit + Widget tests, following BLoC and Clean Architecture.
+
+**Generates:**
+- ✓ Domain layer (entity, abstract repository, use cases) — pure Dart, zero Flutter imports
+- ✓ Data layer (remote/local data sources, model, repository implementation)
+- ✓ Presentation layer (BLoC events/states, page widget that reads state only)
+- ✓ Injectable/GetIt annotations for DI registration
+- ✓ Unit tests (`mocktail`), BLoC tests (`bloc_test`), and widget tests
+- ✓ `flutter_secure_storage` for tokens/PII and `Semantics` labels baked in at generation time
+
+Full code templates in `references/dart-templates.md`.
+
+---
+
 ## 💎 Why Use This?
 
 ### **Problem: Without These Guardrails**
@@ -200,7 +232,7 @@ These skills integrate into your review workflow to:
 curl -fsSL https://raw.githubusercontent.com/IbrahimHemaida/mobile-engineering-skills/main/install.sh | bash
 ```
 
-Installs all six skills to `~/.claude/skills/` (available across every project). For a project-scoped install instead (shared with your team via git, this project only):
+Installs all eight skills to `~/.claude/skills/` (available across every project). For a project-scoped install instead (shared with your team via git, this project only):
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/IbrahimHemaida/mobile-engineering-skills/main/install.sh | bash -s -- --project
@@ -214,7 +246,7 @@ mkdir -p ~/.claude/skills
 cp -r mobile-engineering-skills/skills/* ~/.claude/skills/
 ```
 
-Both methods copy all six skills to your user-level Claude Code skills directory (`~/.claude/skills/`), where they're available across every project. To scope skills to a single project, copy them into `.claude/skills/` inside that project's repo, or use `--project` with the one-liner above.
+Both methods copy all eight skills to your user-level Claude Code skills directory (`~/.claude/skills/`), where they're available across every project. To scope skills to a single project, copy them into `.claude/skills/` inside that project's repo, or use `--project` with the one-liner above.
 
 ### As a Claude Code Plugin
 
