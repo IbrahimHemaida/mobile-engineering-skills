@@ -50,7 +50,7 @@ This is a **skill package** containing expertly-crafted AI system instructions t
 | 🎯 **Standardize Elite Patterns** | Team consistency: SOLID, Clean Architecture, Unidirectional Data Flow |
 | 🔍 **Catch Issues Early** | AI invokes skills before code review — saves 30+ minutes per PR |
 
-> **Note**: A few sections below reference `clean-code-guard` and `test-guard` as complementary skills (general-purpose code quality and test quality review, not mobile-specific). These are **optional companion skills and are not included in this repository** — the ten skills below are fully self-contained and don't require them. If you use them elsewhere in your own setup, they slot in alongside these for a fuller review pipeline.
+> **Note**: A few sections below reference `clean-code-guard` and `test-guard` as complementary skills (general-purpose code quality and test quality review, not mobile-specific). These are **optional companion skills and are not included in this repository** — the thirteen skills below are fully self-contained and don't require them. If you use them elsewhere in your own setup, they slot in alongside these for a fuller review pipeline.
 
 ---
 
@@ -228,6 +228,57 @@ Full templates in `references/flutter-integration-templates.md`.
 
 ---
 
+### **11. scaffold-android-foundation** 🎨📱
+
+Run **once**, early in a project, before `scaffold-android-feature` — sets up the shared infrastructure every feature depends on so features don't each reinvent theming, localization, or a network client.
+
+**Generates:**
+- ✓ Material 3 design system: colors (light/dark, brand-seeded), typography scale, 4dp spacing scale, `AppTheme`
+- ✓ Glass-effect `NavigationBar` — colors pulled from the same `ColorScheme`, so it reads as this app's nav bar, not a generic effect
+- ✓ Localization: `strings.xml` + an Arabic RTL scaffold, `LocaleManager` for in-app language switching
+- ✓ Shared components: `ShimmerBox` (shape-matching), buttons, cards, loading/error/empty states
+- ✓ Core network/data layer: single Retrofit/OkHttp client, `NetworkResult` wrapper, `BaseRepository`
+- ✓ Central `AppConstants` backed by per-build-variant `BuildConfig` fields
+- ✓ `WindowSizeClass`-based responsive layout support
+- ✓ Hardened `.gitignore` (keystores, `google-services.json`, `.env`, etc.)
+
+Full templates in `references/android-foundation-templates.md`.
+
+---
+
+### **12. scaffold-flutter-foundation** 🎨🎯
+
+Same idea, for Flutter — run once before `scaffold-flutter-feature`.
+
+**Generates:**
+- ✓ `ColorScheme.fromSeed` theming (light/dark), `AppTheme`, 4px spacing scale (`AppDimens`)
+- ✓ Glass nav bar built with `BackdropFilter`/`ImageFilter.blur` — Flutter SDK primitives only, no unverified third-party package
+- ✓ Localization: `intl`/`.arb` with an Arabic RTL scaffold, `l10n.yaml` wiring
+- ✓ Shared widgets: `AppShimmer` (shape-matching), buttons, cards, loading/error/empty states
+- ✓ Core network/data layer: single `Dio` client, `Failure` hierarchy for `Either<Failure, T>`
+- ✓ Central `AppConstants` backed by `--dart-define` environment values
+- ✓ Breakpoint-based responsive layout support
+- ✓ Hardened `.gitignore` (`.env`, `key.properties`, `GoogleService-Info.plist`, etc.)
+
+Full templates in `references/flutter-foundation-templates.md`.
+
+---
+
+### **13. release-compliance-guard** 🛡️🏪
+
+Pre-submission review for both Apple App Store and Google Play — not a scaffolder, a gate before upload.
+
+**Checks:**
+- ✓ Cross-references actual API usage (camera, location, contacts, etc.) against declared Android permissions and iOS `Info.plist` keys — flags both **missing** and **unused-but-declared** permissions
+- ✓ Runtime permission-request code exists for dangerous permissions, not just a manifest declaration
+- ✓ iOS Privacy Manifest (`PrivacyInfo.xcprivacy`) and App Tracking Transparency requirements
+- ✓ Google Play Data Safety form accuracy and target API level currency
+- ✓ Common App Store first-submission rejection patterns (placeholder content, broken URLs, missing demo account, launch crashes)
+
+Full reference tables in `references/permission-mapping.md` and `references/store-requirements.md`.
+
+---
+
 ## 💎 Why Use This?
 
 ### **Problem: Without These Guardrails**
@@ -264,7 +315,7 @@ These skills integrate into your review workflow to:
 curl -fsSL https://raw.githubusercontent.com/IbrahimHemaida/mobile-engineering-skills/main/install.sh | bash
 ```
 
-Installs all ten skills to `~/.claude/skills/` (available across every project). For a project-scoped install instead (shared with your team via git, this project only):
+Installs all thirteen skills to `~/.claude/skills/` (available across every project). For a project-scoped install instead (shared with your team via git, this project only):
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/IbrahimHemaida/mobile-engineering-skills/main/install.sh | bash -s -- --project
@@ -278,7 +329,7 @@ mkdir -p ~/.claude/skills
 cp -r mobile-engineering-skills/skills/* ~/.claude/skills/
 ```
 
-Both methods copy all ten skills to your user-level Claude Code skills directory (`~/.claude/skills/`), where they're available across every project. To scope skills to a single project, copy them into `.claude/skills/` inside that project's repo, or use `--project` with the one-liner above.
+Both methods copy all thirteen skills to your user-level Claude Code skills directory (`~/.claude/skills/`), where they're available across every project. To scope skills to a single project, copy them into `.claude/skills/` inside that project's repo, or use `--project` with the one-liner above.
 
 ### As a Claude Code Plugin
 

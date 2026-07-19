@@ -1,0 +1,9 @@
+---
+description: Scaffold the app-wide foundation an Android/Kotlin app needs before any feature is built — design system (colors, typography, spacing, dark mode, glass nav bar), localization, shared component library, core network/data layer, central constants, responsive support, and hardened .gitignore. Use once, early in a project, before scaffold-android-feature.
+globs: ["**/*.kt", "**/*.kts"]
+alwaysApply: false
+---
+
+Read and follow `skills/scaffold-android-foundation/SKILL.md` (relative to the project root) to generate this foundation. If your Cursor version supports `@` file mentions with relative paths, `@skills/scaffold-android-foundation/SKILL.md` also works — otherwise open the file directly.
+
+This is a thin pointer, not a copy — the full generation workflow lives in the referenced file. See `skills/scaffold-android-foundation/references/android-foundation-templates.md` for the complete design-system, localization, shared-component, network, and constants code templates.

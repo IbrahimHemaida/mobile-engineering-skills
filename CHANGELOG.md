@@ -5,6 +5,14 @@ All notable changes to mobile-engineering-skills will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0]
+
+### Added
+- **scaffold-android-foundation** skill: one-time app-wide setup before any feature is built — Material 3 design system (colors, typography, 4dp spacing scale, light/dark theme), a glass-effect `NavigationBar`, localization (`strings.xml` + Arabic RTL scaffold + `LocaleManager`), a shared component library (`ShimmerBox` with shape matching, buttons, cards, loading/error/empty states), a core network/data layer (`NetworkModule`, `NetworkResult`, `BaseRepository`), a central `AppConstants` object backed by per-variant `BuildConfig` fields, `WindowSizeClass`-based responsive layout support, and a hardened `.gitignore`. Templates in `references/android-foundation-templates.md`.
+- **scaffold-flutter-foundation** skill: the same foundation, for Flutter — `ColorScheme.fromSeed` theming, a glass nav bar built with `BackdropFilter` (SDK-only, no unverified third-party package), `intl`/`.arb` localization with an Arabic scaffold, a shared widget library, a `Dio`-based network layer with a `Failure` hierarchy, `--dart-define`-backed constants, breakpoint-based responsive support, and a hardened `.gitignore`. Templates in `references/flutter-foundation-templates.md`.
+- **release-compliance-guard** skill: pre-submission review covering both platforms — cross-references actual API usage against declared Android permissions (flagging both missing *and* unused-but-declared permissions) and iOS `Info.plist` usage-description keys, checks Privacy Manifest / App Tracking Transparency requirements, Google Play Data Safety form and target-API-level currency, and common App Store first-submission rejection patterns. Reference tables in `references/permission-mapping.md` and `references/store-requirements.md`.
+- `scaffold-*-feature` and `integrate-*-feature` now assume the corresponding `-foundation` skill has already been run once per project (they consume `AppTheme`, `Dimens`/`AppDimens`, and the shared component library rather than each reinventing them).
+
 ## [1.5.0]
 
 ### Added
