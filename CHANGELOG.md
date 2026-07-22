@@ -5,6 +5,15 @@ All notable changes to mobile-engineering-skills will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.1]
+
+### Fixed
+- README: the "Six AI skill packages" intro line was stale from the repo's first release and hadn't been updated through five version bumps — now says "Fourteen" and the concern list covers scaffolding, integration, and release compliance/build diagnosis, not just the original five review guards.
+- `plugin.json` / `marketplace.json` descriptions now mention autonomous build-failure diagnosis (`mobile-build-doctor`) — previously ended at "KMM migration guidance," so the first line a plugin-directory visitor reads was already out of date.
+
+### Added
+- A three-line "shape of this repo" summary near the top of the README (`scaffold → guards → doctor`) — a faster mental model for a new reader than scanning all 14 skills individually.
+
 ## [1.7.0]
 
 ### Added

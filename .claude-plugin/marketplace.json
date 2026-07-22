@@ -10,7 +10,7 @@
     {
       "name": "mobile-engineering-skills",
       "source": "./",
-      "description": "Professional AI agent skills for building Kotlin/Android and Flutter apps with SOLID principles, Clean Architecture, TDD, security, accessibility, and KMM migration guidance.",
+      "description": "Professional AI agent skills for building Kotlin/Android and Flutter apps with SOLID principles, Clean Architecture, TDD, security, accessibility, KMM migration guidance, and autonomous build-failure diagnosis.",
       "category": "development"
     }
   ]

@@ -5,6 +5,14 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Platforms: Android | Flutter | KMM](https://img.shields.io/badge/Platforms-Android%20%7C%20Flutter%20%7C%20KMM-brightgreen)](https://github.com/IbrahimHemaida/mobile-engineering-skills)
 
+**The shape of this repo in one line:**
+
+```
+scaffold (build it right)  →  guards (catch what's wrong)  →  doctor (fix it when it breaks)
+```
+
+14 skills, three roles. `scaffold-*-foundation` and `scaffold-*-feature` build the app the right way from the start. `mobile-architecture-guard`, `mobile-security-guard`, `mobile-accessibility-guard`, `mobile-tdd-guard`, `mobile-kmm-migration-guard`, and `release-compliance-guard` catch violations before they merge or ship. `mobile-build-doctor` is the one skill that runs *after* something's already on fire — diagnosing build/environment failures instead of reviewing code. See "What's Included" below for all 14.
+
 ## The Problem
 
 AI coding assistants (Claude Code, Cursor, Copilot) are fast — and left unguided, that speed is exactly what breaks a mobile codebase. Given a loose prompt, an AI tool will happily:
@@ -18,7 +26,7 @@ None of this shows up in the diff. It shows up three sprints later as a producti
 
 ## The Solution
 
-Six AI skill packages — plain-language system instructions that Claude Code and Cursor read automatically — that act as a strict senior reviewer sitting between the AI and your merge button. They don't write your code faster; they stop the AI from writing the wrong code confidently. Each skill is scoped, testable, and enforces one concern: architecture, testing, security, accessibility, KMM migration safety, or AI context/token discipline.
+Fourteen AI skill packages — plain-language system instructions that Claude Code and Cursor read automatically — that act as a strict senior reviewer (and, when things go wrong, an incident responder) sitting between the AI and your merge button. They don't write your code faster; they stop the AI from writing the wrong code confidently, wiring it incorrectly, shipping it non-compliant, or leaving a build failure for you to untangle alone. Each skill is scoped, testable, and enforces one concern — from app-foundation setup and feature scaffolding, through architecture, testing, security, accessibility, and KMM migration safety, to release compliance and autonomous build-failure diagnosis.
 
 ## How to Use
 

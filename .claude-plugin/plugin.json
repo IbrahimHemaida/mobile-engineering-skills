@@ -1,7 +1,7 @@
 {
   "name": "mobile-engineering-skills",
-  "description": "Professional AI agent skills for building Kotlin/Android and Flutter apps with SOLID principles, Clean Architecture, TDD, security, accessibility, and KMM migration guidance.",
-  "version": "1.7.0",
+  "description": "Professional AI agent skills for building Kotlin/Android and Flutter apps with SOLID principles, Clean Architecture, TDD, security, accessibility, KMM migration guidance, and autonomous build-failure diagnosis.",
+  "version": "1.7.1",
   "author": {
     "name": "Ibrahim Hemaida",
     "url": "https://github.com/IbrahimHemaida"
