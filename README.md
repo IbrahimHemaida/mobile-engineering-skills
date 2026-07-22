@@ -50,7 +50,7 @@ This is a **skill package** containing expertly-crafted AI system instructions t
 | 🎯 **Standardize Elite Patterns** | Team consistency: SOLID, Clean Architecture, Unidirectional Data Flow |
 | 🔍 **Catch Issues Early** | AI invokes skills before code review — saves 30+ minutes per PR |
 
-> **Note**: A few sections below reference `clean-code-guard` and `test-guard` as complementary skills (general-purpose code quality and test quality review, not mobile-specific). These are **optional companion skills and are not included in this repository** — the thirteen skills below are fully self-contained and don't require them. If you use them elsewhere in your own setup, they slot in alongside these for a fuller review pipeline.
+> **Note**: A few sections below reference `clean-code-guard` and `test-guard` as complementary skills (general-purpose code quality and test quality review, not mobile-specific). These are **optional companion skills and are not included in this repository** — the fourteen skills below are fully self-contained and don't require them. If you use them elsewhere in your own setup, they slot in alongside these for a fuller review pipeline.
 
 ---
 
@@ -279,6 +279,22 @@ Full reference tables in `references/permission-mapping.md` and `references/stor
 
 ---
 
+### **14. mobile-build-doctor** 🩺
+
+Diagnose and fix Android/iOS/Flutter build, environment, and checkout failures autonomously — the incident-response counterpart to the review-time guards. When the build is red, this skill stops the AI from guessing and stacking speculative fixes, and walks it through premise verification, evidence-based root-cause identification, the proven fix, and a named verification signal.
+
+**Diagnoses & fixes:**
+- ✓ CocoaPods × Swift Package Manager duplicate-symbol link failures (project-level opt-out, verified against the pinned SDK)
+- ✓ Plugin-vs-native-SDK version mismatches (global Podfile version overrides — the "Using user specified SDK version" trap — stale lockfiles, cache-poisoned pods, with an escalation ladder)
+- ✓ Windows/Linux case-sensitivity breaks (green local analyze, red CI) via git-index-vs-import audits and safe two-step renames
+- ✓ "Asset not found" on clean checkouts (never-committed vs case-mismatch vs stale-build triage)
+- ✓ Stale/zip-extract checkouts, spaces-in-path Xcode failures, `flutter clean` blind spots, silently debug-signed releases
+- ✗ **Bans machine-local fixes** — every cure must land as a tracked repo change so all clones and CI behave identically
+
+**22 Imperatives** covering the diagnostic method (absence-as-evidence, premise verification, authoritative sources over memory, one-fix-per-attempt), the iOS and Android/cross-platform failure catalogs with per-failure verify signals, and multi-machine coordination rules (one writer per branch, lockfile discipline, the cross-machine fix protocol). Ends with a symptom → suspect quick-reference table.
+
+---
+
 ## 💎 Why Use This?
 
 ### **Problem: Without These Guardrails**
@@ -315,7 +331,7 @@ These skills integrate into your review workflow to:
 curl -fsSL https://raw.githubusercontent.com/IbrahimHemaida/mobile-engineering-skills/main/install.sh | bash
 ```
 
-Installs all thirteen skills to `~/.claude/skills/` (available across every project). For a project-scoped install instead (shared with your team via git, this project only):
+Installs all fourteen skills to `~/.claude/skills/` (available across every project). For a project-scoped install instead (shared with your team via git, this project only):
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/IbrahimHemaida/mobile-engineering-skills/main/install.sh | bash -s -- --project
@@ -329,7 +345,7 @@ mkdir -p ~/.claude/skills
 cp -r mobile-engineering-skills/skills/* ~/.claude/skills/
 ```
 
-Both methods copy all thirteen skills to your user-level Claude Code skills directory (`~/.claude/skills/`), where they're available across every project. To scope skills to a single project, copy them into `.claude/skills/` inside that project's repo, or use `--project` with the one-liner above.
+Both methods copy all fourteen skills to your user-level Claude Code skills directory (`~/.claude/skills/`), where they're available across every project. To scope skills to a single project, copy them into `.claude/skills/` inside that project's repo, or use `--project` with the one-liner above.
 
 ### As a Claude Code Plugin
 

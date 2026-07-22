@@ -5,6 +5,11 @@ All notable changes to mobile-engineering-skills will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.0]
+
+### Added
+- **mobile-build-doctor** skill: incident-response counterpart to the review-time guards — diagnoses and fixes Android/iOS/Flutter build, environment, and checkout failures autonomously. Distilled from real recurring failures on a production Flutter app (`life_long`): CocoaPods/Swift Package Manager duplicate-symbol conflicts, Podfile global-version-override traps that silently re-pin Firebase/native SDKs, Windows/Linux case-sensitivity breaks that pass locally but fail CI, "asset not found" triage on clean checkouts, spaces-in-path Xcode failures, `flutter clean` blind spots, and silently debug-signed release builds. 22 imperatives: a diagnostic method (verify premises, treat absence as evidence, one fix per attempt, name the verify signal before running a fix) plus iOS and Android/cross-platform failure catalogs and multi-machine coordination rules. Each failure entry ends with a named, checkable "you know it worked when…" signal instead of a hope.
+
 ## [1.6.0]
 
 ### Added

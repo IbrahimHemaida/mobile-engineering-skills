@@ -1,0 +1,9 @@
+---
+description: Diagnose and fix Android, iOS, and Flutter build/environment/checkout failures autonomously — verify premises, identify the root cause from evidence, apply the proven fix, and confirm the cure. Use when a build fails, when CI fails but local passes (or the reverse), or when a plugin/native-SDK version mismatch appears.
+globs: ["**/*.kt", "**/*.dart", "**/Podfile", "**/*.gradle*", "**/pubspec.yaml"]
+alwaysApply: false
+---
+
+Read and follow `skills/mobile-build-doctor/SKILL.md` (relative to the project root) to diagnose this build failure. If your Cursor version supports `@` file mentions with relative paths, `@skills/mobile-build-doctor/SKILL.md` also works — otherwise open the file directly.
+
+This is a thin pointer, not a copy — the full diagnostic method, iOS/Android failure catalogs, and coordination rules live in the referenced file.
