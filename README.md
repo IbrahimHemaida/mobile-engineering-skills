@@ -58,7 +58,7 @@ This is a **skill package** containing expertly-crafted AI system instructions t
 | 🎯 **Standardize Elite Patterns** | Team consistency: SOLID, Clean Architecture, Unidirectional Data Flow |
 | 🔍 **Catch Issues Early** | AI invokes skills before code review — saves 30+ minutes per PR |
 
-> **Note**: A few sections below reference `clean-code-guard` and `test-guard` as complementary skills (general-purpose code quality and test quality review, not mobile-specific). These are **optional companion skills and are not included in this repository** — the fourteen skills below are fully self-contained and don't require them. If you use them elsewhere in your own setup, they slot in alongside these for a fuller review pipeline.
+> **Note**: Four skills in this repo mention `clean-code-guard` (and `mobile-architecture-guard` also mentions `test-guard`) as complementary general-purpose reviewers; both are **optional companion skills, not included in this repository**, and every skill here is self-contained without them.
 
 ---
 
@@ -408,7 +408,7 @@ git clone https://github.com/IbrahimHemaida/mobile-engineering-skills.git
 cp -r mobile-engineering-skills/.cursor path/to/your-project/
 ```
 
-Five of the six rules use `alwaysApply: false` with a `description` and `globs` — Cursor loads them automatically when you're working in a matching file (`.kt`, `.dart`, `commonMain/**`, etc.) or when the task description matches. `ai-context-budget-guard.mdc` is the one exception, set to `alwaysApply: true`, since its value depends on being loaded every session rather than only when a specific file type is open.
+Thirteen of the fourteen rules use `alwaysApply: false` with a `description` and `globs` — Cursor loads them automatically when you're working in a matching file (`.kt`, `.dart`, `commonMain/**`, etc.) or when the task description matches. `ai-context-budget-guard.mdc` is the one exception, set to `alwaysApply: true`, since its value depends on being loaded every session rather than only when a specific file type is open.
 
 Commit `.cursor/rules/` to your project's git repo so the whole team shares the same rules.
 
