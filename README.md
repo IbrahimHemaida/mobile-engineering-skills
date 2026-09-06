@@ -4,6 +4,14 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Platforms: Android | Flutter | KMM](https://img.shields.io/badge/Platforms-Android%20%7C%20Flutter%20%7C%20KMM-brightgreen)](https://github.com/IbrahimHemaida/mobile-engineering-skills)
+[![Version 1.7.1](https://img.shields.io/badge/version-1.7.1-blue)](CHANGELOG.md)
+[![14 skills](https://img.shields.io/badge/skills-14-informational)](#-whats-included)
+[![Claude Code plugin](https://img.shields.io/badge/Claude%20Code-plugin-8A2BE2)](#as-a-claude-code-plugin)
+[![Cursor rules](https://img.shields.io/badge/Cursor-rules%20included-black)](#cursor-ide)
+
+![mobile-architecture-guard refusing a commit that let the presentation layer read straight from the server](docs/guard-refuses-commit.gif)
+
+*What a refusal looks like. Four guards run before every commit on a production Flutter app; this one found a layering leak and stopped the commit. Rendered from the guard's actual report format on a real finding.*
 
 **The shape of this repo in one line:**
 
@@ -34,7 +42,16 @@ Fourteen AI skill packages — plain-language system instructions that Claude Co
 curl -fsSL https://raw.githubusercontent.com/IbrahimHemaida/mobile-engineering-skills/main/install.sh | bash
 ```
 
-That's it for Claude Code — skills are auto-discovered from `~/.claude/skills/` with no restart needed. See [Installation](#-installation) below for Cursor, Claude.ai/Claude Desktop, and project-scoped (`--project`) setup.
+That's it for Claude Code — skills are auto-discovered from `~/.claude/skills/` with no restart needed.
+
+Prefer it as a **plugin**? The same fourteen skills install namespaced from the repo's own marketplace, no review queue:
+
+```bash
+/plugin marketplace add IbrahimHemaida/mobile-engineering-skills
+/plugin install mobile-engineering-skills@ibrahimhemaida-mobile-skills
+```
+
+See [Installation](#-installation) below for Cursor, Claude.ai/Claude Desktop, and project-scoped (`--project`) setup.
 
 ---
 
@@ -46,7 +63,7 @@ Engineered for **13+ years** of production mobile development experience. Based 
 
 ## 🎯 What This Repository Contains
 
-This is a **skill package** containing expertly-crafted AI system instructions that **automate architecture reviews** and **enforce TDD discipline** across your mobile development workflow. Instead of manually reviewing every PR against the same architectural rules, these guardrails let AI-assisted coding tools catch violations in seconds.
+This is a **Claude Code plugin and a set of fourteen standalone skills** (with matching Cursor rules) containing expertly-crafted AI system instructions that **automate architecture reviews** and **enforce TDD discipline** across your mobile development workflow. Instead of manually reviewing every PR against the same architectural rules, these guardrails let AI-assisted coding tools catch violations in seconds.
 
 ### ✨ Core Benefits
 
@@ -366,7 +383,7 @@ claude --plugin-dir ./mobile-engineering-skills
 
 Skills load namespaced under the plugin name, e.g. `/mobile-engineering-skills:mobile-architecture-guard` instead of `/mobile-architecture-guard`.
 
-Once you've pushed this repo to GitHub, anyone can add it as a marketplace and install directly — no waiting on official review:
+Anyone can add this repo as a marketplace and install the plugin directly — no waiting on official review:
 
 ```bash
 /plugin marketplace add IbrahimHemaida/mobile-engineering-skills
