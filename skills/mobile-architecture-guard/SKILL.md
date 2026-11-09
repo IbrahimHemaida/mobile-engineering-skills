@@ -10,6 +10,7 @@ You are reviewing mobile code architecture before it ships. Apply the rules belo
 ## Compatibility
 
 This skill works with:
+
 - **Kotlin/Android**: MVVM, Clean Architecture, Jetpack Compose, traditional XML layouts
 - **Flutter**: BLoC, Provider, GetX, Clean Architecture patterns
 - **Shared**: KMM (Kotlin Multiplatform Mobile), domain-driven design patterns
@@ -19,24 +20,33 @@ This skill complements clean-code-guard and test-guard. Use clean-code-guard for
 ## Reference files
 
 This SKILL.md covers the core rules and checklists. For deeper treatment, load these as needed:
+
 - `references/clean-architecture.md` — extended layer-separation patterns, real-world layer leakage examples, and migration strategies for legacy modules.
 - `references/dependency-injection.md` — DI container comparisons (Hilt, Koin, GetIt, Riverpod), constructor vs field injection tradeoffs, and testing with fakes vs mocks.
 - `references/solid-kotlin.md` — SOLID principles worked through with larger Kotlin/Flutter examples than the summaries below.
 - `references/state-management.md` — full worked Kotlin (StateFlow + Compose) and Flutter (BLoC) UDF examples.
 
-Read the relevant reference file when a violation needs more context than the summary here provides, or when the user asks for a deeper explanation of a specific principle.
+Read the relevant reference file when a violation needs more context than the summary here provides, or when the user asks for a deeper explanation of a specific principle. If a reference file is missing in this installation, do not stop or report it; this file is sufficient on its own.
 
 ## How to use this skill
 
+**Stack detection first** (every mode): read `pubspec.yaml` or the Gradle files and name the state holder the project uses (Android ViewModel, BLoC, GetX controller, Riverpod Notifier) before reviewing. Apply every imperative below to that state holder; never report "not using BLoC" or "not using Hilt" as a finding. Framework-specific smells to look for:
+
+- **GetX**: `Get.find` for repositories or data sources inside a widget's `build`; business logic in `GetView` widgets; controllers that call Firestore/HTTP directly instead of use cases; streams or workers not closed in `onClose`; `Get.put` of data classes from widgets instead of a Binding.
+- **BLoC**: events handled in the widget; a BLoC reading another BLoC's state directly instead of through a use case or a shared stream.
+- **Riverpod**: providers that build repositories inline; Notifiers holding widget references.
+- **Android**: `Dispatchers.IO` hardcoded; a Fragment or Composable constructing a repository.
+
 **Guard-pass mode** (recommended): After implementing a feature or refactoring a module, check the code structure against the architecture imperatives below. Validate layer separation, dependency injection, and package boundaries before merging.
 
-**Live mode** (explicit): When designing a new feature or module, apply these imperatives while architecting, then run the *Self-check before delivery* checklist.
+**Live mode** (explicit): When designing a new feature or module, apply these imperatives while architecting, then run the _Self-check before delivery_ checklist.
 
 **Review mode**: Walk the code and provide a structured findings report on architectural violations, layer leakage, circular dependencies, and state management issues.
 
 ## Why this skill exists
 
 Mobile architecture failures are systematic:
+
 - **Layer leakage**: Presentation logic in domain layer, repository calls in UI
 - **God objects**: ViewModels with 500+ lines, models with too many responsibilities
 - **Circular dependencies**: Feature A imports Feature B, Feature B imports Feature A
@@ -50,29 +60,29 @@ These are prevented by enforcing Clean Architecture layering and SOLID principle
 
 ### Layer Separation (Clean Architecture)
 
-1. **Three clear layers, not mixed.** 
+1. **Three clear layers, not mixed.**
    - **Presentation**: UI components (Activities, Fragments, Composables, Widgets), ViewModels, state holders. Nothing here directly calls repositories or domain logic.
    - **Domain**: Business rules, entities, use cases, repository interfaces. Zero Android/Flutter imports. Zero database imports. Pure Kotlin/Dart.
    - **Data**: Repositories, data sources (local/remote), mappers, API clients. Implements domain repository interfaces.
-   
+
    **Violation smell**: A ViewModel calling a database query directly, or a use case importing `android.content.Context`, or a widget calling an API.
 
-2. **No layer can depend on a layer "above" it.** 
+2. **No layer can depend on a layer "above" it.**
    - Domain never knows about Presentation or Data implementation.
    - Data can know about Domain (implements its interfaces).
    - Presentation knows about both, but uses Domain use cases, never raw data.
-   
+
    **Test**: Can I run domain logic without initializing Android/Flutter framework? Yes = correct. No = layer violation.
 
-3. **Data layer is plumbing, not business.** 
+3. **Data layer is plumbing, not business.**
    - Repositories orchestrate data sources (local cache, remote API, preferences).
    - Mappers transform DTOs ↔ Entities (one-way only: network DTO → domain Entity).
-   - Business logic about *when* to cache, *when* to refresh lives in use cases, not repositories.
-   
+   - Business logic about _when_ to cache, _when_ to refresh lives in use cases, not repositories.
+
    **Anti-pattern**: Repository with if/else chains deciding business rules. That's a use case.
 
 4. **No `@Serializable` (DTO) or `@Entity` (database) model ever reaches the UI layer directly.** The Presentation layer consumes a dedicated `UIState`/`ViewState` type, produced by its own mapper from the Domain Entity — never the network or database model passed straight through because writing the mapper felt unnecessary for "just one extra field."
-   
+
    **Violation smell**: a Composable/Widget parameter typed as `UserDto` or `UserEntity` instead of `UserUiState`; a screen that breaks because a backend field was renamed, when only the DTO↔Entity mapper should have needed to change.
 
 ### Dependency Injection (DIP — Dependency Inversion Principle)
@@ -83,25 +93,25 @@ These are prevented by enforcing Clean Architecture layering and SOLID principle
    - Shared preferences: **inject** (swappable).
    - Android Context needed for Resources: **OK to pass in constructor** if unavoidable; prefer passing string resources instead.
    - Framework services: inject or mock.
-   
+
    **Anti-pattern**: Creating `UserRepository()` directly in a ViewModel. Violates testability and causes tight coupling.
 
 6. **Use constructor injection for required dependencies; never require optional deps. CRITICAL: Ban ViewModel Decorator/Wrapper pattern.**
    - If a class has optional dependencies (nullable, with defaults), split into two classes **OR** pass decoupled service interfaces.
    - Positional arguments in constructor ≤ 4; beyond that, use a builder or dependency injection container (Hilt, GetIt, etc.).
    - **CRITICAL ANTI-PATTERN TO BAN**: Do NOT wrap a base ViewModel inside a decorator ViewModel (e.g. `AnalyticsWrappedLoginViewModel`) to bolt on a cross-cutting concern. This breaks the OS's ViewModel.Factory lifecycle scope and navigation backstack. Instead, pass the extra concern (analytics, logging) as a decoupled service interface via constructor DI, alongside the other dependencies.
-   
+
    See `references/dependency-injection.md` for the full before/after code example and rationale.
 
 7. **Abstractions (interfaces/contracts) live with the client, not the impl.**
    - Domain layer defines `UserRepository` interface.
    - Data layer implements `UserRepository`.
    - Presentation layer uses `UserRepository` from domain, never imports the data impl.
-   
+
    **Kotlin/Flutter**: Same principle. `:domain` defines the interface. `:data` implements it. `:presentation` only knows domain.
 
 8. **The DI module is updated in the same diff as the class it registers, not left for a follow-up.** Creating a new `Repository`, `UseCase`, or `ViewModel` and deferring its Hilt/Koin/GetIt registration to "after the code compiles" produces code that compiles but crashes at runtime with an unresolved dependency — a failure mode unit tests on the class itself won't catch. Register the binding as part of writing the class, not after.
-   
+
    **Violation smell**: a diff that adds `class OrderRepository(...)` with no corresponding change to `NetworkModule`/`RepositoryModule`/the DI graph in the same output.
 
 ### Package & Module Structure
@@ -109,8 +119,9 @@ These are prevented by enforcing Clean Architecture layering and SOLID principle
 9. **Feature-based modules, not layer-based modules.**
    - ✅ Good: `:feature:auth`, `:feature:profile`, `:feature:payments`
    - ❌ Bad: `:layer:presentation`, `:layer:domain`, `:layer:data` (these share feature boundaries; leads to god modules)
-   
+
    Within each feature module:
+
    ```
    feature/auth/
    ├── domain/
@@ -125,21 +136,23 @@ These are prevented by enforcing Clean Architecture layering and SOLID principle
    ```
 
 10. **No cross-feature direct imports without explicit contracts.**
-   - FeatureA can import FeatureB only through a public interface (:feature:common provides shared contracts).
-   - Deep imports (`feature.b.data.something`) from FeatureA = architecture smell.
-   - Use navigation abstractions, callbacks, or shared domain models instead.
+
+- FeatureA can import FeatureB only through a public interface (:feature:common provides shared contracts).
+- Deep imports (`feature.b.data.something`) from FeatureA = architecture smell.
+- Use navigation abstractions, callbacks, or shared domain models instead.
 
 11. **Circular dependencies are failures, not tolerated.**
-   - If FeatureA → FeatureB and FeatureB → FeatureA, refactor:
-     - Extract shared domain model/interface to `:feature:common`.
-     - Use event bus or navigation abstraction instead of direct imports.
-     - Split into smaller features with clearer boundaries.
+
+- If FeatureA → FeatureB and FeatureB → FeatureA, refactor:
+  - Extract shared domain model/interface to `:feature:common`.
+  - Use event bus or navigation abstraction instead of direct imports.
+  - Split into smaller features with clearer boundaries.
 
 12. **Before modifying or removing a public class, function, or interface, search the whole project for its usages — not just the file being edited.** A fix applied to one file that silently breaks three call sites elsewhere is the single most common way an AI coding session ships a regression that compiles cleanly. Run a project-wide search (grep, IDE "Find Usages", or equivalent) for the symbol being changed before finalizing the diff, and confirm every call site still compiles against the new signature/contract — not just the one that motivated the change.
-   **Violation smell**: a diff that changes a `Repository` interface method signature with no corresponding changes shown for its implementations and callers, or a confident "this should be fine" with no actual search performed.
+    **Violation smell**: a diff that changes a `Repository` interface method signature with no corresponding changes shown for its implementations and callers, or a confident "this should be fine" with no actual search performed.
 
 13. **Before presenting a final diff, run the project's actual local build command and confirm it succeeds — don't rely on read-through review alone to catch compile errors.** Use the real build tool for the target platform: `./gradlew assembleDebug`/`compileDebugKotlin` for Android, `xcodebuild` (or `swift build`) for iOS/KMM native targets, `flutter analyze`/`flutter build` for Flutter. A diff that "looks correct" but wasn't actually compiled is not verified — presenting one as ready to merge without running the build is a bare assertion, not a fact.
-   **Exception**: if no build environment is available in the current session, say so explicitly in the output rather than silently skipping this step and presenting the diff as verified.
+    **Exception**: if no build environment is available in the current session, say so explicitly in the output rather than silently skipping this step and presenting the diff as verified.
 
 ### ViewModel & State Management
 
@@ -150,9 +163,9 @@ These are prevented by enforcing Clean Architecture layering and SOLID principle
     - **Single source of truth per screen/feature**: One ViewModel per screen, not scattered across fragments or widgets.
     - **Android**: LiveData, StateFlow, or MutableState held by ViewModel. Fragment/Activity observes, never mutates.
     - **Flutter**: State held in BLoC, Provider, or state manager. Widget reads, dispatches events/methods.
-    
+
     **When reviewing state management**: Reject any pattern that passes mutable state objects down to the UI, or that allows the UI to directly mutate shared state. Flag violations with reference to this imperative (#14) in findings.
-    
+
     See `references/state-management.md` for full worked Kotlin (StateFlow + Compose) and Flutter (BLoC) UDF examples.
 
 15. **No state duplication; no multi-step prop drilling.**
@@ -170,15 +183,16 @@ These are prevented by enforcing Clean Architecture layering and SOLID principle
 17. **Repository is a single-responsibility orchestrator, not a god object.**
     - Repo job: "I fetch user data. Where? Local cache first, then remote, then memory. How? That's for data sources."
     - Not repo job: Business logic, validation, formatting, retry policies (unless the policy is truly about data access).
-    
+
     **Example — bad**:
+
     ```kotlin
     class UserRepository {
       suspend fun loginUser(email: String, password: String): Result<User> {
         // Validation (domain responsibility)
         if (email.isEmpty()) throw ValidationException()
         // Complex retry logic (policy responsibility)
-        repeat(3) { 
+        repeat(3) {
           try {
             return remoteSource.login(email, password)
           } catch (e: Exception) { }
@@ -187,7 +201,7 @@ These are prevented by enforcing Clean Architecture layering and SOLID principle
       }
     }
     ```
-    
+
     **Better**: LoginUseCase calls AuthRepository (which just fetches). UseCase handles validation and retry.
 
 18. **Data source interfaces, not concrete implementations, injected into Repository.**
@@ -200,8 +214,9 @@ These are prevented by enforcing Clean Architecture layering and SOLID principle
 19. **Domain layer is testable without any framework.**
     - A use case taking `Repository` (interface) + simple objects (String, Int, model classes) = testable with unit tests only.
     - If a use case needs `Context`, lifecycle, or scheduler, it's business logic bleeding into Presentation.
-    
+
     **Kotlin test example**:
+
     ```kotlin
     @Test
     fun loginUseCaseReturnsUserOnValidCreds() {
@@ -215,7 +230,7 @@ These are prevented by enforcing Clean Architecture layering and SOLID principle
 
 ### SOLID Principles in Mobile Context
 
-20. **Single Responsibility Principle (SRP)**: 
+20. **Single Responsibility Principle (SRP)**:
     - One ViewModel per screen/feature, not one per layer.
     - One repository per domain concept (UserRepository, PaymentRepository), not one per data source type.
     - A mapper's job: DTO ↔ Entity transformation, nothing else.
@@ -240,6 +255,7 @@ These are prevented by enforcing Clean Architecture layering and SOLID principle
 ## Output format for AI assistants
 
 When reviewing architecture or suggesting refactors using this skill:
+
 - Output diffs only — not full files. Show only changed or new lines.
 - No preamble like "Here's your complete updated LoginViewModel" or "I've restructured the entire module."
 - Format: old line prefixed with `-`, new line prefixed with `+`.
@@ -248,6 +264,7 @@ When reviewing architecture or suggesting refactors using this skill:
 **Why**: With Prompt Caching, diffs-only output saves 40–60% of tokens when reviewing multiple features.
 
 **❌ BAD**:
+
 ```
 Here's your complete AuthRepository with improved error handling:
 
@@ -260,6 +277,7 @@ class AuthRepository(
 ```
 
 **✅ GOOD**:
+
 ```kotlin
 // AuthRepository: Add retry policy to login method
 

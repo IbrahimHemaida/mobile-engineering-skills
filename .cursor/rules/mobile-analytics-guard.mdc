@@ -1,0 +1,9 @@
+---
+description: Review Flutter/Android analytics and attribution instrumentation before release — purchase events fire once with value and currency, customer id reaches the MMP, iOS ATT and SKAdNetwork, deferred deep links, test traffic excluded. Use when touching tracking code, when marketing numbers look wrong, or before a release.
+globs: ["**/*.dart", "**/*.kt", "**/pubspec.yaml", "**/Info.plist"]
+alwaysApply: false
+---
+
+Read and follow `skills/mobile-analytics-guard/SKILL.md` (relative to the project root) for this review. If your Cursor version supports `@` file mentions with relative paths, `@skills/mobile-analytics-guard/SKILL.md` also works — otherwise open the file directly.
+
+This is a thin pointer, not a copy — the full ruleset (10 imperatives, a findings report format that states the effect on the numbers, and a monthly reconciliation rule: backend for accounting, MMP for allocation, platform dashboards for optimization only) lives in the referenced file.

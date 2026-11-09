@@ -1,0 +1,9 @@
+---
+description: Reconcile ad-platform reported conversions (Meta, Snap, TikTok, Google) against the MMP (Singular, AppsFlyer, Adjust) and the backend's own orders — click vs view-through tables, gap decomposition, new-vs-returning checks, cost per order per source, ranked diagnosis and a dated plan. Use when marketing numbers disagree or when deciding budget allocation.
+globs: ["**/*.csv", "**/*.xlsx", "**/*.md"]
+alwaysApply: false
+---
+
+Read and follow `skills/attribution-gap-analysis/SKILL.md` (relative to the project root) for this analysis. If your Cursor version supports `@` file mentions with relative paths, `@skills/attribution-gap-analysis/SKILL.md` also works — otherwise open the file directly.
+
+This is a thin pointer, not a copy — the full method (inputs to collect, normalization rules, tables A to E in order, the ranked diagnosis checklist, decision rules and the plan template) lives in the referenced file. Write the result for a business owner: tables first, one-line reading under each.

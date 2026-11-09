@@ -1,24 +1,25 @@
 ---
 name: ai-context-budget-guard
-description: Manage AI context budget across long-running mobile engineering sessions by writing compact session digests instead of re-reading full chat history. Use this at the end of a work session, before running /compact, when starting a new session on an existing project, when the user asks to "summarize progress" or "save context", or when a project has accumulated multiple AI coding sessions and context usage is climbing. Works with Claude Code (CLAUDE.md, auto-memory), Cursor rules, and any AI coding tool that re-reads project files at session start. Trigger this whenever token usage, context window limits, or "the AI keeps forgetting/re-reading everything" comes up.
+description: Manage AI context budget across long-running mobile engineering sessions: compact session digests instead of re-reading chat history, an index read first, and command-output discipline (test and build logs to files, tails only). Use this at the end of a work session, before running /compact, when starting a new session on an existing project, when the user asks to "summarize progress" or "save context", or when a project has accumulated multiple AI coding sessions and context usage is climbing. Works with Claude Code (CLAUDE.md, auto-memory), Cursor rules, and any AI coding tool that re-reads project files at session start. Trigger this whenever token usage, context window limits, or "the AI keeps forgetting/re-reading everything" comes up.
 ---
 
 # ai-context-budget-guard
 
-You are managing AI context budget across a multi-session mobile engineering project. This skill does not replace your AI tool's built-in memory (CLAUDE.md, auto-memory, /compact) — it disciplines *what* goes into those mechanisms so each session starts focused instead of bloated. A session that ends without a digest forces the next session to either re-read the whole history or lose the thread entirely; this skill prevents both.
+You are managing AI context budget across a multi-session mobile engineering project. This skill does not replace your AI tool's built-in memory (CLAUDE.md, auto-memory, /compact) — it disciplines _what_ goes into those mechanisms so each session starts focused instead of bloated. A session that ends without a digest forces the next session to either re-read the whole history or lose the thread entirely; this skill prevents both.
 
 ## Compatibility
 
 This skill works with:
+
 - **Claude Code**: writes into `CLAUDE.md` / project auto-memory so the native mechanism carries the digest forward — this skill does not duplicate that system, it feeds it.
 - **Cursor / other AI IDEs**: writes into `.cursor/rules/` or an equivalent project-context file the tool re-reads at session start.
 - **Any AI coding tool**: works as a plain-file convention (`.ai/context/`) even without native memory support.
 
-This skill complements mobile-architecture-guard and mobile-tdd-guard: those two guard *what* the code looks like; this one guards *how much history* the AI has to carry to reason about it correctly.
+This skill complements mobile-architecture-guard and mobile-tdd-guard: those two guard _what_ the code looks like; this one guards _how much history_ the AI has to carry to reason about it correctly.
 
 ## Reference files
 
-- `references/templates.md` — copy-paste templates for the Session Digest, the Index file, and a compressed "archived digest" format. Load this when creating the first digest in a new project or when the inline templates below need the full annotated version.
+- `references/templates.md` — copy-paste templates for the Session Digest, the Index file, and a compressed "archived digest" format. Load this when creating the first digest in a new project or when the inline templates below need the full annotated version. If it is missing in this installation, do not stop or report it; the inline examples below are enough.
 
 ## How to use this skill
 
@@ -26,16 +27,17 @@ This skill complements mobile-architecture-guard and mobile-tdd-guard: those two
 
 **New-session mode**: When starting work on a project that already has `.ai/context/INDEX.md`, read the index first (not the individual digests), and only open a specific digest if the current task clearly relates to it.
 
-**Pre-compact mode**: If the AI tool is about to auto-summarize (e.g. Claude Code's `/compact`), write the digest *before* compaction runs, since compaction is lossy and a written digest survives it while a mental summary does not.
+**Pre-compact mode**: If the AI tool is about to auto-summarize (e.g. Claude Code's `/compact`), write the digest _before_ compaction runs, since compaction is lossy and a written digest survives it while a mental summary does not.
 
 ## Why this skill exists
 
 Long-running AI-assisted mobile projects fail on context, not just on code:
+
 - **Full re-reads every session**: the AI opens every file and re-derives decisions already made, burning tokens and time before doing any actual work.
 - **Lost decisions**: "we already tried X and rejected it" gets re-proposed because nothing recorded the rejection.
 - **Context window exhaustion**: long sessions hit the limit mid-task, forcing a lossy auto-summary at the worst possible moment.
 - **No link between sessions**: session 5 doesn't know what session 2 decided about the auth module, so it silently contradicts it.
-- **Digest bloat**: teams that *do* write summaries often write full transcripts instead of decisions, which defeats the purpose — a 2,000-word "summary" is not a summary.
+- **Digest bloat**: teams that _do_ write summaries often write full transcripts instead of decisions, which defeats the purpose — a 2,000-word "summary" is not a summary.
 
 A short, structured digest plus a one-line index solves all five without inventing a new storage system — it just uses the ones your AI tool already reads.
 
@@ -48,6 +50,7 @@ A short, structured digest plus a one-line index solves all five without inventi
 2. **Digests record decisions and state, never full content.** No pasted code, no full diffs, no reproduced conversation. Reference file paths and line numbers instead of quoting the file. If a decision needs justification, one sentence, not the reasoning chain that led there.
 
    **Anti-pattern**:
+
    ```
    ## Session 4
    We discussed the auth module for a while. First I looked at using Firebase,
@@ -56,6 +59,7 @@ A short, structured digest plus a one-line index solves all five without inventi
    ```
 
    **Correct**:
+
    ```
    ## Session 4 — Auth token refresh
    Decision: refresh token in interceptor, not ViewModel (keeps it framework-agnostic).
@@ -65,6 +69,7 @@ A short, structured digest plus a one-line index solves all five without inventi
    ```
 
    **Correct — mobile-optimized, when the session touched DI or module boundaries**:
+
    ```
    ## Session 4 — Auth token refresh
    Decision: refresh token in interceptor, not ViewModel (keeps it framework-agnostic).
@@ -109,11 +114,23 @@ A short, structured digest plus a one-line index solves all five without inventi
 
 13. **On Claude Code: write the digest's "Next" line and open decisions into `CLAUDE.md` or auto-memory, not just a standalone file.** A digest sitting in `.ai/context/` that nothing auto-loads still requires someone to remember to read it. Feed the parts that should persist into the mechanism the tool already reads at session start.
 
-14. **Don't duplicate what auto-memory already captures.** If the AI tool has its own auto-memory (e.g. Claude Code's), don't hand-write a digest entry for something it already recorded — check `/memory` (or equivalent) first. This skill's job is the *decisions and rejections* layer; let native auto-memory handle preference/style learning it already does well.
+14. **Don't duplicate what auto-memory already captures.** If the AI tool has its own auto-memory (e.g. Claude Code's), don't hand-write a digest entry for something it already recorded — check `/memory` (or equivalent) first. This skill's job is the _decisions and rejections_ layer; let native auto-memory handle preference/style learning it already does well.
 
 15. **Respect the host tool's size limits.** If the memory file has a line cap (e.g. Claude Code's project memory file has a documented ~200-line load limit), don't let digest content push it over — that's what the archive step (rule 10) is for.
 
-16. **Enforce bootstrapping.** Infuse a directive into `.cursorrules` or `CLAUDE.md` stating: *"At the start of ANY session, your very first action is to read `.ai/context/INDEX.md`. Do not read any code files or historical logs until you have evaluated the index."* Rule 13 says to feed decisions into the native memory file; this rule ensures the AI actually reads that file before doing anything else, rather than defaulting to a full project scan out of habit.
+16. **Enforce bootstrapping.** Infuse a directive into `.cursorrules` or `CLAUDE.md` stating: _"At the start of ANY session, your very first action is to read `.ai/context/INDEX.md`. Do not read any code files or historical logs until you have evaluated the index."_ Rule 13 says to feed decisions into the native memory file; this rule ensures the AI actually reads that file before doing anything else, rather than defaulting to a full project scan out of habit.
+
+### Command Output Discipline
+
+The largest single waste of context in a coding session is not history; it is the raw output of test, build and lint commands landing in the conversation.
+
+17. **Long command output goes to a file, never into the conversation.** Test runs, builds, analyzers, dependency resolution and code generation are redirected (`> build/logs/<step>.log 2>&1` or the platform equivalent, in a directory that is git-ignored and never staged). Then print only the last 40 lines. On failure, search the log for the failing test names and their error lines and print only those. Never `cat` a log.
+
+18. **Run the smallest test set that answers the question.** Per step: the affected test files. Full suite: once, at the point the project's instructions name (before merge or push), with the exact CI command. The frequency rule itself belongs in the project's instruction file (CLAUDE.md or equivalent), not in this skill; this rule only says not to exceed it.
+
+19. **Read code by search, not by directory.** `grep -n` for the symbol, then open only the lines around the hits. Open a whole file only when you are about to edit most of it. Never open generated files (rule 4).
+
+20. **Report by summary, not by transcript.** When a step ends, state the result in one or two lines (what passed, what failed, the commit hash) and never paste the tool output that produced it.
 
 ## Quick Trigger
 
@@ -128,6 +145,7 @@ description: Write a session digest and update the context index before ending t
 
 Halt active work. Evaluate this session against ai-context-budget-guard's
 Digest Discipline and Index Discipline rules, then output:
+
 1. A Session Digest (30-50 lines, decisions/rejections/Scope-DI-if-applicable/files/Next)
 2. The single Index line to append
 
@@ -140,6 +158,7 @@ This makes `/save-context` an actual tool-level command rather than a phrase the
 ## Output format for AI assistants
 
 When writing a digest or index entry:
+
 - Output the digest as a single fenced block, ready to append — not prose describing what the digest should contain.
 - No preamble like "Here's a summary of everything we discussed."
 - If updating `CLAUDE.md` or auto-memory directly, show only the new lines being added, same diffs-only convention as mobile-architecture-guard and mobile-tdd-guard.
@@ -157,6 +176,7 @@ When writing a digest or index entry:
 9. **Is the Index still under ~40 lines, or is an archive pass due?**
 10. **Did I mark any decision this session reversed as superseded in its original digest?**
 11. **Does `CLAUDE.md`/`.cursorrules` contain the bootstrap directive telling the AI to read the Index first?** If not, add it — this is a one-time setup step per project, not per session.
+12. **Did every test, build and lint run this session go to a log file, with only the tail or the failures read back?** If raw output entered the conversation, note the command so the project's instructions can add the redirect.
 
 If you cannot answer yes to all of these, the digest isn't ready.
 
@@ -177,5 +197,5 @@ If you cannot answer yes to all of these, the digest isn't ready.
 
 - Replace your AI tool's native memory system — it feeds it.
 - Store secrets, credentials, or sensitive data in digests (same rules as committing to git — digests are typically version-controlled).
-- Guarantee token savings on its own; savings come from the discipline of *not* re-reading full history, which requires the index actually being consulted.
+- Guarantee token savings on its own; savings come from the discipline of _not_ re-reading full history, which requires the index actually being consulted.
 - Manage code-level or architecture-level quality — use mobile-architecture-guard and mobile-tdd-guard for that.

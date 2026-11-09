@@ -4,14 +4,14 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Platforms: Android | Flutter | KMM](https://img.shields.io/badge/Platforms-Android%20%7C%20Flutter%20%7C%20KMM-brightgreen)](https://github.com/IbrahimHemaida/mobile-engineering-skills)
-[![Version 1.7.1](https://img.shields.io/badge/version-1.7.1-blue)](CHANGELOG.md)
-[![14 skills](https://img.shields.io/badge/skills-14-informational)](#-whats-included)
+[![Version 1.8.0](https://img.shields.io/badge/version-1.8.0-blue)](CHANGELOG.md)
+[![16 skills](https://img.shields.io/badge/skills-16-informational)](#-whats-included)
 [![Claude Code plugin](https://img.shields.io/badge/Claude%20Code-plugin-8A2BE2)](#as-a-claude-code-plugin)
 [![Cursor rules](https://img.shields.io/badge/Cursor-rules%20included-black)](#cursor-ide)
 
 ![mobile-architecture-guard refusing a commit that let the presentation layer read straight from the server](docs/guard-refuses-commit.gif)
 
-*What a refusal looks like. Four guards run before every commit on a production Flutter app; this one found a layering leak and stopped the commit. Rendered from the guard's actual report format on a real finding.*
+_What a refusal looks like. Four guards run before every commit on a production Flutter app; this one found a layering leak and stopped the commit. Rendered from the guard's actual report format on a real finding._
 
 **The shape of this repo in one line:**
 
@@ -19,11 +19,12 @@
 scaffold (build it right)  →  guards (catch what's wrong)  →  doctor (fix it when it breaks)
 ```
 
-14 skills, three roles. `scaffold-*-foundation` and `scaffold-*-feature` build the app the right way from the start. `mobile-architecture-guard`, `mobile-security-guard`, `mobile-accessibility-guard`, `mobile-tdd-guard`, `mobile-kmm-migration-guard`, and `release-compliance-guard` catch violations before they merge or ship. `mobile-build-doctor` is the one skill that runs *after* something's already on fire — diagnosing build/environment failures instead of reviewing code. See "What's Included" below for all 14.
+16 skills, three roles. `scaffold-*-foundation` and `scaffold-*-feature` build the app the right way from the start. `mobile-architecture-guard`, `mobile-security-guard`, `mobile-accessibility-guard`, `mobile-tdd-guard`, `mobile-kmm-migration-guard`, `release-compliance-guard`, and `mobile-analytics-guard` catch violations before they merge or ship. `mobile-build-doctor` runs _after_ something's already on fire — diagnosing build/environment failures instead of reviewing code — and `attribution-gap-analysis` does the same for marketing numbers that disagree. See "What's Included" below for all 16.
 
 ## The Problem
 
 AI coding assistants (Claude Code, Cursor, Copilot) are fast — and left unguided, that speed is exactly what breaks a mobile codebase. Given a loose prompt, an AI tool will happily:
+
 - Flatten Clean Architecture into one god-file because it's faster than writing three
 - Pass a raw `@Serializable`/`@Entity` model straight to the UI instead of writing a mapper
 - Fix one file and silently break three others that depended on the old contract
@@ -34,7 +35,7 @@ None of this shows up in the diff. It shows up three sprints later as a producti
 
 ## The Solution
 
-Fourteen AI skill packages — plain-language system instructions that Claude Code and Cursor read automatically — that act as a strict senior reviewer (and, when things go wrong, an incident responder) sitting between the AI and your merge button. They don't write your code faster; they stop the AI from writing the wrong code confidently, wiring it incorrectly, shipping it non-compliant, or leaving a build failure for you to untangle alone. Each skill is scoped, testable, and enforces one concern — from app-foundation setup and feature scaffolding, through architecture, testing, security, accessibility, and KMM migration safety, to release compliance and autonomous build-failure diagnosis.
+Sixteen AI skill packages — plain-language system instructions that Claude Code and Cursor read automatically — that act as a strict senior reviewer (and, when things go wrong, an incident responder) sitting between the AI and your merge button. They don't write your code faster; they stop the AI from writing the wrong code confidently, wiring it incorrectly, shipping it non-compliant, or leaving a build failure for you to untangle alone. Each skill is scoped, testable, and enforces one concern — from app-foundation setup and feature scaffolding, through architecture, testing, security, accessibility, and KMM migration safety, to release compliance and autonomous build-failure diagnosis.
 
 ## How to Use
 
@@ -44,7 +45,7 @@ curl -fsSL https://raw.githubusercontent.com/IbrahimHemaida/mobile-engineering-s
 
 That's it for Claude Code — skills are auto-discovered from `~/.claude/skills/` with no restart needed.
 
-Prefer it as a **plugin**? The same fourteen skills install namespaced from the repo's own marketplace, no review queue:
+Prefer it as a **plugin**? The same sixteen skills install namespaced from the repo's own marketplace, no review queue:
 
 ```bash
 /plugin marketplace add IbrahimHemaida/mobile-engineering-skills
@@ -63,17 +64,17 @@ Engineered for **13+ years** of production mobile development experience. Based 
 
 ## 🎯 What This Repository Contains
 
-This is a **Claude Code plugin and a set of fourteen standalone skills** (with matching Cursor rules) containing expertly-crafted AI system instructions that **automate architecture reviews** and **enforce TDD discipline** across your mobile development workflow. Instead of manually reviewing every PR against the same architectural rules, these guardrails let AI-assisted coding tools catch violations in seconds.
+This is a **Claude Code plugin and a set of sixteen standalone skills** (with matching Cursor rules) containing expertly-crafted AI system instructions that **automate architecture reviews** and **enforce TDD discipline** across your mobile development workflow. Instead of manually reviewing every PR against the same architectural rules, these guardrails let AI-assisted coding tools catch violations in seconds.
 
 ### ✨ Core Benefits
 
-| Benefit | Description |
-|---------|-------------|
-| 🏗️ **Automate Architecture Reviews** | Catch layer leakage, circular dependencies, DI violations before code review |
-| 🧪 **Enforce TDD Red-Green-Refactor** | Guide AI through test-first development with structured discipline |
-| ⚡ **Lower Token Overhead** | Diffs-only output, imperative references instead of full re-explanations, and session digests instead of full history replays |
-| 🎯 **Standardize Elite Patterns** | Team consistency: SOLID, Clean Architecture, Unidirectional Data Flow |
-| 🔍 **Catch Issues Early** | AI invokes skills before code review — saves 30+ minutes per PR |
+| Benefit                               | Description                                                                                                                   |
+| ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| 🏗️ **Automate Architecture Reviews**  | Catch layer leakage, circular dependencies, DI violations before code review                                                  |
+| 🧪 **Enforce TDD Red-Green-Refactor** | Guide AI through test-first development with structured discipline                                                            |
+| ⚡ **Lower Token Overhead**           | Diffs-only output, imperative references instead of full re-explanations, and session digests instead of full history replays |
+| 🎯 **Standardize Elite Patterns**     | Team consistency: SOLID, Clean Architecture, Unidirectional Data Flow                                                         |
+| 🔍 **Catch Issues Early**             | AI invokes skills before code review — saves 30+ minutes per PR                                                               |
 
 > **Note**: Four skills in this repo mention `clean-code-guard` (and `mobile-architecture-guard` also mentions `test-guard`) as complementary general-purpose reviewers; both are **optional companion skills, not included in this repository**, and every skill here is self-contained without them.
 
@@ -86,6 +87,7 @@ This is a **Claude Code plugin and a set of fourteen standalone skills** (with m
 Review Kotlin/Android and Flutter code for SOLID principles, Clean Architecture, modular design, and architectural anti-patterns before merge.
 
 **Validates:**
+
 - ✓ Layer separation (Presentation → Domain → Data, no upward dependencies)
 - ✓ Dependency Injection (constructor injection, no hardcoded dependencies)
 - ✓ Feature-based modules (no circular imports or cross-feature leakage)
@@ -104,16 +106,17 @@ Review Kotlin/Android and Flutter code for SOLID principles, Clean Architecture,
 Test-driven development workflow for Kotlin/Android and Flutter: red-green-refactor cycle with proper mocking, boundary testing, and visual regression testing.
 
 **Enforces:**
+
 - ✓ Red-Green-Refactor discipline (test first, minimal code, refactor)
-- ✓ Unit vs. integration testing boundaries
-- ✓ Mock contracts, not implementations (Mockito, MockK, mockito-dart)
+- ✓ Per-step test scope: affected tests per step, full suite once with the exact CI command, logs to a file
+- ✓ Mock contracts, not implementations (MockK, Mockito, mocktail)
 - ✓ Test naming clarity (scenario + outcome, not method name)
 - ✓ Boundary condition testing (empty, null, zero, max, edge cases)
-- ✓ Flutter Widget & Golden Testing (visual regression prevention)
-- ✓ Kotlin coroutine testing (runTest, suspend function mocking)
-- ✓ Stub class pattern (for compiled languages like Kotlin/Java)
+- ✓ Flutter Widget & Golden Testing (goldens for unintended visual change, not design fidelity)
+- ✓ State holders (BLoC, GetX controller, Riverpod Notifier) tested as plain Dart
+- ✓ Kotlin coroutine testing (runTest, suspend function mocking, injected dispatchers)
 
-**20 Imperatives** guiding TDD cycles with framework-specific patterns.
+**22 Imperatives** guiding TDD cycles with framework-specific patterns.
 
 ---
 
@@ -122,6 +125,7 @@ Test-driven development workflow for Kotlin/Android and Flutter: red-green-refac
 Manage AI context budget across long-running mobile engineering sessions by writing compact session digests instead of re-reading full chat history every time.
 
 **Solves:**
+
 - ✓ AI re-reading entire project history at the start of every session
 - ✓ Decisions and rejected approaches getting silently re-litigated
 - ✓ Context window exhaustion mid-task from unmanaged session length
@@ -129,7 +133,7 @@ Manage AI context budget across long-running mobile engineering sessions by writ
 
 **How:** one short Session Digest (30–50 lines) per meaningful session, linked from a single Index file. Only the Index is read at session start; digests are opened on demand. Feeds directly into Claude Code's `CLAUDE.md` / auto-memory instead of duplicating it.
 
-**16 Imperatives** covering digest discipline (including mobile-specific DI/module-boundary tracking and exclusion of generated build artifacts), index discipline, compression, native tool integration, and enforced session-start bootstrapping. Includes a `::save-context` quick trigger and a ready-to-use Claude Code `/save-context` slash command.
+**20 Imperatives** covering digest discipline (including mobile-specific DI/module-boundary tracking and exclusion of generated build artifacts), index discipline, compression, native tool integration, enforced session-start bootstrapping, and command-output discipline (test and build logs go to a file; only the tail or the failures are read back). Includes a `::save-context` quick trigger and a ready-to-use Claude Code `/save-context` slash command.
 
 ---
 
@@ -138,6 +142,7 @@ Manage AI context budget across long-running mobile engineering sessions by writ
 Review Kotlin/Android and Flutter code for security vulnerabilities before merge — exposed secrets, missing certificate pinning, insecure local storage, and unsafe WebView/deep-link/IPC surfaces.
 
 **Validates:**
+
 - ✓ No secrets, API keys, or credentials in tracked source
 - ✓ Certificate pinning on auth/sensitive endpoints, with a backup pin
 - ✓ Cleartext traffic default-denied; no disabled TLS validation
@@ -146,9 +151,12 @@ Review Kotlin/Android and Flutter code for security vulnerabilities before merge
 - ✓ Deep link and intent inputs validated as untrusted, with server-side authorization
 - ✓ WebView JS bridges scoped to trusted origins
 - ✓ Debug bypasses and verbose logging stripped from release builds
+- ✓ Backend-as-a-service security rules and callable input checks reviewed as part of the app review
+- ✓ App attestation (App Check, Play Integrity, App Attest) rolled out in monitoring mode first, never enforced in the release that introduces it
+- ✓ No signing material or production service config tracked in git
 - ✗ **Bans** disabled TrustManager/hostname verification "fixes"
 
-**21 Imperatives**, plus a severity-ranked findings report format (Critical/High/Medium/Low) for security reviews. Includes `@Keep`/reflection-safety guidance for serialization and crypto models under R8/ProGuard.
+**24 Imperatives**, plus a severity-ranked findings report format (Critical/High/Medium/Low) for security reviews. Includes `@Keep`/reflection-safety guidance for serialization and crypto models under R8/ProGuard.
 
 ---
 
@@ -157,6 +165,7 @@ Review Kotlin/Android and Flutter code for security vulnerabilities before merge
 Review Kotlin/Android and Flutter code for WCAG 2.1 AA accessibility violations before merge — missing content descriptions/semantics, undersized touch targets, insufficient color contrast, and broken screen reader flow.
 
 **Validates:**
+
 - ✓ Content descriptions/semantics on all meaningful non-text elements
 - ✓ Touch targets ≥48dp/44pt-equivalent
 - ✓ Color contrast: 4.5:1 text, 3:1 large text/UI components — checked against rendered colors
@@ -176,6 +185,7 @@ Review Kotlin/Android and Flutter code for WCAG 2.1 AA accessibility violations 
 Review Kotlin Multiplatform Mobile (KMM) code for platform leakage, unsafe `expect`/`actual` usage, JVM-only dependencies in shared code, and iOS interop hazards.
 
 **Validates:**
+
 - ✓ No `android.*`/`androidx.*` or Foundation/UIKit imports in `commonMain`
 - ✓ `expect`/`actual` used only for genuine platform divergence
 - ✓ `kotlinx-datetime`, `kotlinx.serialization`, and Ktor client instead of `java.time`, `Serializable`/Gson, and OkHttp/Retrofit directly in shared code
@@ -194,6 +204,7 @@ Review Kotlin Multiplatform Mobile (KMM) code for platform leakage, unsafe `expe
 Generates a complete, production-ready Android/Kotlin feature module from a single feature name — Domain, Data, Presentation layers, Hilt DI, and full Unit + Compose UI tests — built to pass `mobile-architecture-guard` review with zero findings on the first try.
 
 **Generates:**
+
 - ✓ Domain layer (model, repository interface, use cases) — zero Android framework imports
 - ✓ Data layer (Retrofit API, Room DAO, mapper, repository implementation)
 - ✓ Presentation layer (sealed `UiState`, `StateFlow`-based ViewModel, Composable screen)
@@ -207,14 +218,15 @@ Full code templates in `references/kotlin-templates.md`.
 
 ### **8. scaffold-flutter-feature** 🏗️🎯
 
-Same idea, for Flutter — Domain, Data, Presentation layers, GetIt/Injectable DI, and full Unit + Widget tests, following BLoC and Clean Architecture.
+Same idea, for Flutter — Domain, Data, Presentation layers, DI, and full Unit + Widget tests, in the project's **existing** stack (GetX, BLoC or Riverpod, detected from `pubspec.yaml`) and Clean Architecture. Never introduces a second state-management, DI or mocking framework.
 
 **Generates:**
+
 - ✓ Domain layer (entity, abstract repository, use cases) — pure Dart, zero Flutter imports
 - ✓ Data layer (remote/local data sources, model, repository implementation)
-- ✓ Presentation layer (BLoC events/states, page widget that reads state only)
-- ✓ Injectable/GetIt annotations for DI registration
-- ✓ Unit tests (`mocktail`), BLoC tests (`bloc_test`), and widget tests
+- ✓ Presentation layer per stack: BLoC events/states, or GetX controller + binding + page, or Riverpod Notifier + providers
+- ✓ DI per stack: Injectable/GetIt annotations, GetX `Bindings`, or Riverpod providers
+- ✓ Unit tests with the project's existing mocking library, state-holder tests (`bloc_test` or plain Dart), and widget tests
 - ✓ `flutter_secure_storage` for tokens/PII and `Semantics` labels baked in at generation time
 
 Full code templates in `references/dart-templates.md`.
@@ -226,6 +238,7 @@ Full code templates in `references/dart-templates.md`.
 Wires a `scaffold-android-feature` output into the actual running app — not another scaffolding pass, an integration pass into your existing project files.
 
 **Does:**
+
 - ✓ Inspects the existing project first — detects the real navigation/DI pattern already in use, never assumes or duplicates one
 - ✓ Adds the feature's route to the existing NavHost (Compose Navigation)
 - ✓ Wires multi-module Gradle dependency edges (`settings.gradle.kts`, `:app` → `:feature:{name}`)
@@ -241,11 +254,12 @@ Full templates in `references/android-integration-templates.md`.
 Same idea, for Flutter — wires a `scaffold-flutter-feature` output into the real app.
 
 **Does:**
-- ✓ Inspects the existing project first — detects the real router (GoRouter/Navigator) and DI setup already in use
-- ✓ Adds the feature's route to the existing router config, with BlocProvider wiring
-- ✓ Confirms Injectable/GetIt registration via `build_runner`, not just assumed
-- ✓ Reconciles `pubspec.yaml` dependencies — adds only what's missing
-- ✓ Runs a mandatory `flutter analyze` + `flutter test` pass before presenting the result
+
+- ✓ Inspects the existing project first — detects the real stack (GetX pages and bindings, GoRouter + Injectable/GetIt, Riverpod, plain Navigator) and never defaults to a framework
+- ✓ Adds the feature's route to the existing router config, wired the way neighbouring routes are
+- ✓ Confirms DI registration per stack: the GetX Binding, `build_runner` output for Injectable/GetIt, or Riverpod `ProviderScope` reachability
+- ✓ Reconciles `pubspec.yaml` dependencies — adds only what's missing for the detected stack
+- ✓ Runs `flutter analyze` plus the affected tests before presenting the result; the full suite only when the project's gate rule calls for it
 
 Full templates in `references/flutter-integration-templates.md`.
 
@@ -258,6 +272,7 @@ Full templates in `references/flutter-integration-templates.md`.
 Run **once**, early in a project, before `scaffold-android-feature` — sets up the shared infrastructure every feature depends on so features don't each reinvent theming, localization, or a network client.
 
 **Generates:**
+
 - ✓ Material 3 design system: colors (light/dark, brand-seeded), typography scale, 4dp spacing scale, `AppTheme`
 - ✓ Glass-effect `NavigationBar` — colors pulled from the same `ColorScheme`, so it reads as this app's nav bar, not a generic effect
 - ✓ Localization: `strings.xml` + an Arabic RTL scaffold, `LocaleManager` for in-app language switching
@@ -276,6 +291,7 @@ Full templates in `references/android-foundation-templates.md`.
 Same idea, for Flutter — run once before `scaffold-flutter-feature`.
 
 **Generates:**
+
 - ✓ `ColorScheme.fromSeed` theming (light/dark), `AppTheme`, 4px spacing scale (`AppDimens`)
 - ✓ Glass nav bar built with `BackdropFilter`/`ImageFilter.blur` — Flutter SDK primitives only, no unverified third-party package
 - ✓ Localization: `intl`/`.arb` with an Arabic RTL scaffold, `l10n.yaml` wiring
@@ -294,11 +310,13 @@ Full templates in `references/flutter-foundation-templates.md`.
 Pre-submission review for both Apple App Store and Google Play — not a scaffolder, a gate before upload.
 
 **Checks:**
+
 - ✓ Cross-references actual API usage (camera, location, contacts, etc.) against declared Android permissions and iOS `Info.plist` keys — flags both **missing** and **unused-but-declared** permissions
 - ✓ Runtime permission-request code exists for dangerous permissions, not just a manifest declaration
 - ✓ iOS Privacy Manifest (`PrivacyInfo.xcprivacy`) and App Tracking Transparency requirements
 - ✓ Google Play Data Safety form accuracy and target API level currency
 - ✓ Common App Store first-submission rejection patterns (placeholder content, broken URLs, missing demo account, launch crashes)
+- ✓ Release readiness: production (not test) backend config, version bump, force-update path, staged rollout plan, crash-symbol upload, app attestation rollout, deep-link verification files, analytics check, pre-launch report, dependency end-of-life notices
 
 Full reference tables in `references/permission-mapping.md` and `references/store-requirements.md`.
 
@@ -309,6 +327,7 @@ Full reference tables in `references/permission-mapping.md` and `references/stor
 Diagnose and fix Android/iOS/Flutter build, environment, and checkout failures autonomously — the incident-response counterpart to the review-time guards. When the build is red, this skill stops the AI from guessing and stacking speculative fixes, and walks it through premise verification, evidence-based root-cause identification, the proven fix, and a named verification signal.
 
 **Diagnoses & fixes:**
+
 - ✓ CocoaPods × Swift Package Manager duplicate-symbol link failures (project-level opt-out, verified against the pinned SDK)
 - ✓ Plugin-vs-native-SDK version mismatches (global Podfile version overrides — the "Using user specified SDK version" trap — stale lockfiles, cache-poisoned pods, with an escalation ladder)
 - ✓ Windows/Linux case-sensitivity breaks (green local analyze, red CI) via git-index-vs-import audits and safe two-step renames
@@ -317,6 +336,42 @@ Diagnose and fix Android/iOS/Flutter build, environment, and checkout failures a
 - ✗ **Bans machine-local fixes** — every cure must land as a tracked repo change so all clones and CI behave identically
 
 **22 Imperatives** covering the diagnostic method (absence-as-evidence, premise verification, authoritative sources over memory, one-fix-per-attempt), the iOS and Android/cross-platform failure catalogs with per-failure verify signals, and multi-machine coordination rules (one writer per branch, lockfile discipline, the cross-machine fix protocol). Ends with a symptom → suspect quick-reference table.
+
+---
+
+### **15. mobile-analytics-guard** 📈
+
+Review Flutter/Android analytics and attribution instrumentation before release — the analytics SDK, the MMP (Singular, AppsFlyer, Adjust, Branch) and any direct ad-platform SDKs. A wrong line here does not crash the app; it silently corrupts a month of marketing numbers.
+
+**Validates:**
+
+- ✓ One purchase event per order, per SDK — guarded by order id against retries, rebuilt widgets and re-entered success screens
+- ✓ Value and currency on every revenue event, in the currency the backend charges
+- ✓ A stable customer id reaches the MMP at login and is cleared at logout
+- ✓ One event dictionary — identical names and parameters across SDKs
+- ✓ iOS App Tracking Transparency before any IDFA use; SKAdNetwork ids present
+- ✓ Deferred deep links and UTM parameters forwarded with the first order
+- ✓ Debug builds, test backends and internal testers excluded from production analytics
+- ✓ Tests for the money path (purchase emitted exactly once; logout clears the user id)
+- ✗ **Bans** PII in event parameters
+
+**10 Imperatives**, plus a findings report format that states the effect on the numbers (which metric, which direction, roughly how much) and a monthly reconciliation rule: backend for accounting, MMP for allocation, platform dashboards for optimization only.
+
+---
+
+### **16. attribution-gap-analysis** 📊
+
+Reconcile ad-platform reported conversions (Meta, Snap, TikTok, Google) against the MMP and the backend's own orders — written for a business owner, with a one-line reading under every table.
+
+**Produces:**
+
+- ✓ Click-only vs MMP and click + view vs MMP tables per platform
+- ✓ Share of the gap explained by view-through counting
+- ✓ New vs all customers sanity check (claims above 100% of new customers prove returning customers are being claimed)
+- ✓ Cost per order per source on platform, click-only and MMP numbers; cost per new customer overall
+- ✓ Ranked diagnosis: view-through, attribution windows, returning customers, double counting, app/web scope, gaps on our side
+- ✓ Decision rules (accounting, allocation and optimization numbers; holdout test as arbiter) and a dated plan with KPIs
+- ✗ **Bans** calling numbers "fake" — names the counting rule that produced them instead
 
 ---
 
@@ -339,10 +394,12 @@ You're using an AI-assisted coding tool. Code compiles, tests pass locally—but
 These skills integrate into your review workflow to:
 
 #### 3. **Catch Issues Early**
+
 - AI invokes skill before sharing code
 - Saves human reviewers 30+ minutes per PR
 
 #### 4. **TDD-First Development**
+
 - Guardrail guides red-green-refactor cycle
 - Visual regression testing automated (golden files)
 
@@ -356,7 +413,7 @@ These skills integrate into your review workflow to:
 curl -fsSL https://raw.githubusercontent.com/IbrahimHemaida/mobile-engineering-skills/main/install.sh | bash
 ```
 
-Installs all fourteen skills to `~/.claude/skills/` (available across every project). For a project-scoped install instead (shared with your team via git, this project only):
+Installs all sixteen skills to `~/.claude/skills/` (available across every project). For a project-scoped install instead (shared with your team via git, this project only):
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/IbrahimHemaida/mobile-engineering-skills/main/install.sh | bash -s -- --project
@@ -370,7 +427,7 @@ mkdir -p ~/.claude/skills
 cp -r mobile-engineering-skills/skills/* ~/.claude/skills/
 ```
 
-Both methods copy all fourteen skills to your user-level Claude Code skills directory (`~/.claude/skills/`), where they're available across every project. To scope skills to a single project, copy them into `.claude/skills/` inside that project's repo, or use `--project` with the one-liner above.
+Both methods copy all sixteen skills to your user-level Claude Code skills directory (`~/.claude/skills/`), where they're available across every project. To scope skills to a single project, copy them into `.claude/skills/` inside that project's repo, or use `--project` with the one-liner above.
 
 ### As a Claude Code Plugin
 
@@ -425,7 +482,7 @@ git clone https://github.com/IbrahimHemaida/mobile-engineering-skills.git
 cp -r mobile-engineering-skills/.cursor path/to/your-project/
 ```
 
-Thirteen of the fourteen rules use `alwaysApply: false` with a `description` and `globs` — Cursor loads them automatically when you're working in a matching file (`.kt`, `.dart`, `commonMain/**`, etc.) or when the task description matches. `ai-context-budget-guard.mdc` is the one exception, set to `alwaysApply: true`, since its value depends on being loaded every session rather than only when a specific file type is open.
+Fifteen of the sixteen rules use `alwaysApply: false` with a `description` and `globs` — Cursor loads them automatically when you're working in a matching file (`.kt`, `.dart`, `commonMain/**`, etc.) or when the task description matches. `ai-context-budget-guard.mdc` is the one exception, set to `alwaysApply: true`, since its value depends on being loaded every session rather than only when a specific file type is open.
 
 Commit `.cursor/rules/` to your project's git repo so the whole team shares the same rules.
 
@@ -446,6 +503,7 @@ Regardless of which surface you use, keeping prompts to diffs and specific imper
 ## 🎓 Foundations
 
 Based on proven principles:
+
 - **Clean Architecture** — Robert C. Martin, 2012
 - **SOLID Principles** — Robert C. Martin
 - **Test-Driven Development: By Example** — Kent Beck, 2002
@@ -488,7 +546,7 @@ MIT License. See [LICENSE](LICENSE) for details.
 
 Based on 13+ years of mobile engineering excellence.
 
-*For real engineers, not vibe coding.*
+_For real engineers, not vibe coding._
 
 [![Made with ❤️](https://img.shields.io/badge/Made%20with-%E2%9D%A4%EF%B8%8F-red)](https://github.com/IbrahimHemaida/mobile-engineering-skills)
 
