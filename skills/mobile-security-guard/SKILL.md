@@ -1,6 +1,6 @@
 ---
 name: mobile-security-guard
-description: Review Kotlin/Android and Flutter code for security vulnerabilities before merge — insecure storage, exposed secrets, missing certificate pinning, weak network configs, and unsafe IPC. Use when reviewing feature implementations that touch authentication, local storage, networking, or deep links, when preparing for a security audit, or after a coding agent generated code that handles sensitive data. Apply this for API key handling, certificate pinning, encrypted storage, WebView configuration, and Network Security Config validation. Use for "review this for security issues", "is this storage safe?", "check certificate pinning", "audit this for a security review", or after implementing auth/networking features.
+description: Review Kotlin/Android and Flutter code for security vulnerabilities before merge: insecure storage, exposed secrets, missing certificate pinning, weak network configs, unsafe IPC, backend-as-a-service rules, app attestation (App Check, Play Integrity, App Attest) and signing material hygiene. Use when reviewing feature implementations that touch authentication, local storage, networking, or deep links, when preparing for a security audit, or after a coding agent generated code that handles sensitive data. Apply this for API key handling, certificate pinning, encrypted storage, WebView configuration, and Network Security Config validation. Use for "review this for security issues", "is this storage safe?", "check certificate pinning", "audit this for a security review", or after implementing auth/networking features.
 ---
 
 # mobile-security-guard
@@ -10,6 +10,7 @@ You are reviewing mobile code for security vulnerabilities before it ships. Appl
 ## Compatibility
 
 This skill works with:
+
 - **Kotlin/Android**: Network Security Config, EncryptedSharedPreferences/Jetpack Security, OkHttp CertificatePinner, Keystore
 - **Flutter**: flutter_secure_storage, dio/http interceptors for pinning, platform channel boundary checks
 - **Shared**: KMM (Kotlin Multiplatform Mobile) — expect/actual security boundaries between platforms
@@ -19,23 +20,25 @@ This skill complements mobile-architecture-guard and clean-code-guard. Use archi
 ## Reference files
 
 This SKILL.md covers the core rules and checklists. For deeper treatment, load these as needed:
+
 - `references/certificate-pinning.md` — Network Security Config XML patterns, OkHttp CertificatePinner setup, pin rotation strategy, and Flutter pinning via dio/http_certificate_pinning.
 - `references/secure-storage.md` — EncryptedSharedPreferences vs Keystore vs flutter_secure_storage tradeoffs, biometric-gated storage, and what never belongs on-device at all.
 - `references/webview-and-ipc.md` — WebView JavaScript bridge risks, deep link/intent validation, exported component checks, and clipboard/screenshot leakage.
 
-Read the relevant reference file when a violation needs more context than the summary here provides, or when the user asks for a deeper explanation of a specific mechanism.
+Read the relevant reference file when a violation needs more context than the summary here provides, or when the user asks for a deeper explanation of a specific mechanism. If a reference file is missing in this installation, do not stop or report it; this file is sufficient on its own.
 
 ## How to use this skill
 
 **Guard-pass mode** (recommended): After implementing a feature touching auth, storage, networking, or external input (deep links, WebViews, IPC), check the code against the imperatives below before merging.
 
-**Live mode** (explicit): When designing a new auth flow, storage layer, or network client, apply these imperatives while building, then run the *Self-check before delivery* checklist.
+**Live mode** (explicit): When designing a new auth flow, storage layer, or network client, apply these imperatives while building, then run the _Self-check before delivery_ checklist.
 
 **Review mode**: Walk the code and provide a structured findings report, severity-ranked (Critical / High / Medium / Low), with the exploit scenario for each finding — not just "this is insecure" but "an attacker with X access could do Y."
 
 ## Why this skill exists
 
 Mobile security failures are systematic and repeat across teams:
+
 - **Secrets in the client**: API keys, signing secrets, or backend credentials hardcoded or bundled in the APK/IPA, extractable by anyone with `apktool` or a jailbroken device.
 - **Silent trust of the network**: No certificate pinning, so a MITM proxy (rogue Wi-Fi, compromised CA) can read or alter traffic invisibly.
 - **Plaintext-adjacent local storage**: Tokens, PII, or health data sitting in unencrypted SharedPreferences, plist files, or SQLite — recoverable from any backup or rooted device.
@@ -53,7 +56,7 @@ These are the vulnerability classes that actually get exploited in mobile apps, 
    **Violation smell**: `const val API_KEY = "sk-..."` anywhere in a tracked file. A single `git log -p | grep -i key` finding is a shipped incident, not a style nit.
 
 2. **Client-side secrets are not secrets.**
-   Anything bundled into the APK/IPA is extractable — treat every embedded string as public. If an API truly needs a secret, the secret belongs on your backend, with the client authenticating as a *user*, not as itself.
+   Anything bundled into the APK/IPA is extractable — treat every embedded string as public. If an API truly needs a secret, the secret belongs on your backend, with the client authenticating as a _user_, not as itself.
    **Test**: "If this string were posted on GitHub tomorrow, would anything bad happen?" If yes, it doesn't belong client-side.
 
 3. **Never log sensitive data, not even at DEBUG level.**
@@ -112,7 +115,7 @@ These are the vulnerability classes that actually get exploited in mobile apps, 
     A "biometric lock" that only guards navigation (user can still read cached data via a different path, a backup, or a debugger) is theater. Gate the actual decryption key behind biometric/Keystore auth so the data is unreadable without it, not just unreachable through the normal UI.
 
 17. **Root/jailbreak and debugger detection is a defense-in-depth signal, not a security boundary — treat it accordingly.**
-    It's reasonable to detect and respond to (warn, restrict high-risk features) a rooted device for apps handling payments or health data, but never rely on it as the *only* protection for sensitive data — it's bypassable and should sit alongside encryption and pinning, not replace them.
+    It's reasonable to detect and respond to (warn, restrict high-risk features) a rooted device for apps handling payments or health data, but never rely on it as the _only_ protection for sensitive data — it's bypassable and should sit alongside encryption and pinning, not replace them.
 
 18. **Rate-limit and lock out client-side auth attempts, but treat client-side limits as UX only.**
     Client-side attempt counters improve UX (reduce needless requests) but the real limit enforcement is server-side. Don't let a security review conclude "brute force is prevented" based solely on a client-side counter that a modified APK trivially bypasses.
@@ -128,6 +131,20 @@ These are the vulnerability classes that actually get exploited in mobile apps, 
 21. **Models that rely on reflection — serialization DTOs, crypto/auth data classes — carry explicit keep annotations, not a hope that the default ProGuard/R8 rules cover them.**
     `kotlinx.serialization`, Gson, and Moshi all use reflection or generated code that R8's default rules can silently strip or rename in a release build, producing a crash or, worse, a silent data-corruption bug that only appears in the release APK, not debug. Add `@Keep` (Android) — or the equivalent for the serialization library in use — to any model crossing a serialization or crypto boundary, and verify with an actual release-build test, not just a debug-build pass.
     **Violation smell**: a security review approved in debug that crashes or silently mis-serializes in the release build because the DTO's fields got renamed by R8 and nothing in the code told it not to.
+
+### Backend-as-a-Service & App Attestation
+
+22. **Security rules and server-side validation are the real boundary; the client is never trusted.**
+    With Firebase, Supabase or any BaaS, Firestore/Realtime Database/Storage rules and callable-function input checks are the authorization layer. A client-side role flag, a hidden button or an `if (isAdmin)` in Dart protects nothing. Review the rules file and the functions' auth checks as part of the app review, and flag any collection readable or writable without `request.auth` and ownership checks.
+    **Violation smell**: `allow read, write: if true;` or a callable that trusts a `userId` field from the request body instead of `context.auth.uid`.
+
+23. **App attestation is rolled out, not switched on.**
+    Firebase App Check (Play Integrity on Android; App Attest with DeviceCheck fallback on iOS) or an equivalent: the provider factory is registered before the SDK initializes (on iOS before `FirebaseApp.configure()`), the debug provider is compiled only into debug builds, and enforcement stays in monitoring mode until most of the install base runs a version that ships the provider. Enforcing in the same release that introduces the provider locks out every user on the old version.
+    **Violation smell**: `AppCheckDebugProviderFactory` reachable from a release build, or enforcement enabled while the store version predates the provider.
+
+24. **Signing material and production service config never enter the repository.**
+    `*.jks`, `*.keystore`, `*.p8`, `*.p12`, `*.mobileprovision`, the production `google-services.json`/`GoogleService-Info.plist`, `.env` files and CI secrets live in the CI secret store or the signing machine, listed in `.gitignore`, and are injected at build time. Release signing SHA-256 fingerprints and the Apple team id are registered wherever they gate a feature (deep-link verification files, Play Integrity, App Check), not only the debug ones.
+    **Violation smell**: a tracked test-project config that the release script does not replace, or a keystore committed "temporarily".
 
 ## Self-check before delivery
 
@@ -147,6 +164,9 @@ Before marking a security review complete, confirm:
 - [ ] Biometric gates decrypt data, not just guard a screen
 - [ ] Debug bypasses and verbose logging are stripped from release builds
 - [ ] Serialization/crypto models carry `@Keep` (or equivalent) and were verified against an actual release build, not debug only
+- [ ] BaaS security rules and callable input checks reviewed; no collection open without auth and ownership checks
+- [ ] App attestation provider registered before SDK init; debug provider absent from release; enforcement only after the install base migrated
+- [ ] No signing material or production service config tracked in git; release fingerprints registered where they gate features
 
 ## Findings report format (Review mode)
 
