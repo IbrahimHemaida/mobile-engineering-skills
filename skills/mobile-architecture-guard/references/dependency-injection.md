@@ -20,11 +20,12 @@
 ## Why Dependency Injection (DI)?
 
 Without DI:
+
 ```kotlin
 class LoginViewModel : ViewModel() {
   // Hard-coded dependency: can't test, can't change
   private val authRepository = RetrofitAuthRepository()
-  
+
   fun login(email: String, password: String) {
     val user = authRepository.login(email, password)
     // Can't test without hitting real API
@@ -33,6 +34,7 @@ class LoginViewModel : ViewModel() {
 ```
 
 With DI:
+
 ```kotlin
 class LoginViewModel(
   private val authRepository: AuthRepository  // Injected
@@ -72,11 +74,13 @@ val viewModel = LoginViewModel(
 ```
 
 **Pros**:
+
 - Immutable dependencies
 - Clear which dependencies are needed
 - Easy to test
 
 **Cons**:
+
 - More parameters (solved with DI container)
 
 ---
@@ -86,7 +90,7 @@ val viewModel = LoginViewModel(
 ```kotlin
 class LoginViewModel : ViewModel() {
   var authRepository: AuthRepository? = null
-  
+
   fun login(email: String, password: String) {
     authRepository?.login(email, password)  // Nullable!
   }
@@ -98,6 +102,7 @@ viewModel.authRepository = RealAuthRepository()
 ```
 
 **Cons**:
+
 - Nullable dependencies = bugs
 - No guarantee dependencies are set
 - Hard to test
@@ -109,11 +114,11 @@ viewModel.authRepository = RealAuthRepository()
 ```kotlin
 object ServiceLocator {
   private val services = mutableMapOf<Class<*>, Any>()
-  
+
   fun register(clazz: Class<*>, instance: Any) {
     services[clazz] = instance
   }
-  
+
   fun <T> get(clazz: Class<T>): T = services[clazz] as T
 }
 
@@ -123,6 +128,7 @@ class LoginViewModel : ViewModel() {
 ```
 
 **Cons**:
+
 - Hard to test (global state)
 - Dependencies not visible
 - Runtime errors if dependency missing
@@ -142,23 +148,23 @@ class AuthModule {
       .build()
     return retrofit.create(AuthApi::class.java)
   }
-  
+
   fun provideAuthDataSource(): RemoteAuthDataSource {
     return RemoteAuthDataSource(provideAuthApi())
   }
-  
+
   fun provideLocalAuthDataSource(context: Context): LocalAuthDataSource {
     val prefs = context.getSharedPreferences("auth", Context.MODE_PRIVATE)
     return LocalAuthDataSource(prefs)
   }
-  
+
   fun provideAuthRepository(
     remote: RemoteAuthDataSource,
     local: LocalAuthDataSource
   ): AuthRepository {
     return AuthRepositoryImpl(remote, local)
   }
-  
+
   fun provideLoginUseCase(repo: AuthRepository): LoginUseCase {
     return LoginUseCase(repo)
   }
@@ -168,14 +174,14 @@ class AuthModule {
 class LoginActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    
+
     val authModule = AuthModule()
     val authApi = authModule.provideAuthApi()
     val remoteDataSource = authModule.provideAuthDataSource()
     val localDataSource = authModule.provideLocalAuthDataSource(this)
     val authRepository = authModule.provideAuthRepository(remoteDataSource, localDataSource)
     val loginUseCase = authModule.provideLoginUseCase(authRepository)
-    
+
     val viewModel = LoginViewModel(loginUseCase)
   }
 }
@@ -202,7 +208,7 @@ object AuthModule {
       .build()
       .create(AuthApi::class.java)
   }
-  
+
   @Provides
   @Singleton
   fun provideAuthRepository(api: AuthApi): AuthRepository {
@@ -235,7 +241,7 @@ class LoginViewModel @Inject constructor(
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
   private val viewModel: LoginViewModel by viewModels()
-  
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     // viewModel is ready with all dependencies injected
@@ -244,6 +250,7 @@ class LoginActivity : AppCompatActivity() {
 ```
 
 **Pros**:
+
 - Automatic wiring
 - Scope management (Singleton, ViewModelScope, etc.)
 - Less boilerplate
@@ -264,12 +271,12 @@ void setupServiceLocator() {
       localDataSource: getIt<LocalUserDataSource>(),
     ),
   );
-  
+
   // Register use cases
   getIt.registerSingleton<LoginUseCase>(
     LoginUseCase(getIt<UserRepository>()),
   );
-  
+
   // Register view models / BLoCs
   getIt.registerSingleton<LoginBloc>(
     LoginBloc(getIt<LoginUseCase>()),
@@ -348,30 +355,30 @@ class OrderViewModel(
 class LoginViewModelTest {
   private lateinit var viewModel: LoginViewModel
   private val mockUseCase = mockk<LoginUseCase>()
-  
+
   @Before
   fun setUp() {
     // Inject mock
     viewModel = LoginViewModel(mockUseCase)
   }
-  
+
   @Test
   fun loginWithValidCreds() = runTest {
     coEvery { mockUseCase("a@b.c", "pass") } returns Result.success(User("123"))
-    
+
     viewModel.login("a@b.c", "pass")
     advanceUntilIdle()
-    
+
     assertTrue(viewModel.state.value is LoginState.Success)
   }
-  
+
   @Test
   fun loginWithInvalidCreds() = runTest {
     coEvery { mockUseCase("", "pass") } returns Result.failure(InvalidCredentialsException())
-    
+
     viewModel.login("", "pass")
     advanceUntilIdle()
-    
+
     assertTrue(viewModel.state.value is LoginState.Error)
   }
 }
@@ -384,6 +391,7 @@ class LoginViewModelTest {
 Do NOT wrap a base ViewModel inside a decorator ViewModel to add a cross-cutting concern like analytics. This breaks OS lifecycle scopes and navigation backstacks.
 
 **❌ ANTI-PATTERN — do not do this**:
+
 ```kotlin
 // BREAKS LIFECYCLE & NAVIGATION
 class LoginViewModel(val authUseCase: AuthUseCase)
@@ -398,6 +406,7 @@ class AnalyticsWrappedLoginViewModel(  // ❌ ANTI-PATTERN
 ```
 
 **✅ CORRECT — pass decoupled service interfaces via constructor DI instead**:
+
 ```kotlin
 class LoginViewModel(
   val authUseCase: AuthUseCase,

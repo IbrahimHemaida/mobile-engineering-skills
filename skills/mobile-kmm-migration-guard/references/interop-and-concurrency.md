@@ -81,6 +81,7 @@ Kotlin sealed classes and enums do export to Swift, but the generated API can be
 ## Nullability across the boundary
 
 Kotlin nullable types (`String?`) map to Swift `Optional` (`String?`) for simple cases, but verify this explicitly for:
+
 - **Generic types**: `List<String?>` vs `List<String>?` — the nullability position matters and isn't always intuitive after export.
 - **Function types / lambdas** crossing the boundary — optional closures have their own Swift interop quirks.
 - **Platform collection types** — verify a `Map<K, V>` behaves as expected on the Swift side rather than assuming Kotlin and Swift collection semantics are identical.

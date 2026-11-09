@@ -10,6 +10,7 @@ You are reviewing mobile code for accessibility violations before it ships. Appl
 ## Compatibility
 
 This skill works with:
+
 - **Android**: `contentDescription`, `importantForAccessibility`, `AccessibilityNodeInfo`, TalkBack, Android Accessibility Scanner, Espresso Accessibility Checks
 - **Flutter**: `Semantics` widget, `semanticsLabel`, `ExcludeSemantics`/`MergeSemantics`, TalkBack/VoiceOver via platform accessibility bridges, `SemanticsTester` in widget tests
 - **Shared**: WCAG 2.1 AA success criteria, mapped to their mobile equivalents rather than applied literally
@@ -19,6 +20,7 @@ This skill complements mobile-architecture-guard, clean-code-guard, and mobile-s
 ## Reference files
 
 This SKILL.md covers the core rules and checklists. For deeper treatment, load these as needed:
+
 - `references/screen-reader-patterns.md` — TalkBack/VoiceOver testing walkthroughs, semantic grouping with `MergeSemantics`/`AccessibilityNodeInfo`, live region announcements, and custom widget semantics setup.
 - `references/touch-and-visual.md` — touch target sizing math, WCAG contrast ratio calculation with worked examples, and dynamic text scaling (`sp` units, `MediaQuery.textScaler`) across both platforms.
 
@@ -28,13 +30,14 @@ Read the relevant reference file when a violation needs more context than the su
 
 **Guard-pass mode** (recommended): After implementing any new screen, dialog, or interactive component, check it against the imperatives below before merging.
 
-**Live mode**: When designing a new screen or custom widget, apply these imperatives while building, then run the *Self-check before delivery* checklist.
+**Live mode**: When designing a new screen or custom widget, apply these imperatives while building, then run the _Self-check before delivery_ checklist.
 
 **Review mode**: Walk the code and provide a structured findings report, severity-ranked, referencing the specific WCAG success criterion — not just "this isn't accessible" but which criterion it fails and who it blocks.
 
 ## Why this skill exists
 
 Mobile accessibility failures follow a small number of repeating patterns:
+
 - **Visual-only components**: a `Text` widget wrapped in a `GestureDetector` that looks like a button but has no button semantics — a screen reader announces it as plain text, giving no indication it's tappable.
 - **Missing or wrong content descriptions**: icons and images with no `contentDescription`/`semanticsLabel`, or worse, a generic one ("image", "icon") that tells a screen reader user nothing.
 - **Touch targets sized for sighted precision, not real thumbs**: 24dp icon buttons that are hard to hit even without a motor impairment.
@@ -48,7 +51,7 @@ These aren't edge cases — they're the default output of UI code that was never
 
 ### Perceivable
 
-1. **Every meaningful non-text element has a text alternative.** Icons, images, and icon-only buttons carry `contentDescription` (Android) or `semanticsLabel`/`Semantics(label:)` (Flutter) describing their *function*, not their appearance. "Delete item" not "trash icon."
+1. **Every meaningful non-text element has a text alternative.** Icons, images, and icon-only buttons carry `contentDescription` (Android) or `semanticsLabel`/`Semantics(label:)` (Flutter) describing their _function_, not their appearance. "Delete item" not "trash icon."
    **Violation smell**: `Image(painter = ...)` or `IconButton` with no `contentDescription`, or one that just restates the icon name.
 
 2. **Decorative images are explicitly excluded from the accessibility tree, not silently mislabeled.** A background pattern or purely visual flourish gets `contentDescription = null` with `importantForAccessibility = "no"` (Android) or `ExcludeSemantics` (Flutter) — not an empty string, which some screen readers still announce as "image."
@@ -135,6 +138,6 @@ Severity guide: **Critical** = blocks task completion entirely for screen reader
 
 ## Troubleshooting
 
-- If TalkBack announces an element twice, check for both a `contentDescription` on a container *and* on its focusable child — merge or exclude one.
+- If TalkBack announces an element twice, check for both a `contentDescription` on a container _and_ on its focusable child — merge or exclude one.
 - If a custom widget is skipped entirely by the screen reader, check `importantForAccessibility`/`ExcludeSemantics` isn't set on it or an ancestor by mistake.
 - If contrast checks pass in isolation but look wrong in the running app, check for opacity/alpha applied at render time that isn't reflected in the source color value used for the calculation.

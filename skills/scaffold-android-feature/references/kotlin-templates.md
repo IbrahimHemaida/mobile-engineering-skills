@@ -5,6 +5,7 @@ Placeholders: `{Name}` = PascalCase feature name (e.g. `Profile`), `{name}` = ca
 ## Domain Layer
 
 **domain/model/{Name}.kt**
+
 ```kotlin
 data class {Name}(
     val id: String,
@@ -13,6 +14,7 @@ data class {Name}(
 ```
 
 **domain/repository/{Name}Repository.kt**
+
 ```kotlin
 interface {Name}Repository {
     suspend fun get{Name}(id: String): Result<{Name}>
@@ -21,6 +23,7 @@ interface {Name}Repository {
 ```
 
 **domain/usecase/Get{Name}UseCase.kt**
+
 ```kotlin
 class Get{Name}UseCase @Inject constructor(
     private val repository: {Name}Repository
@@ -30,6 +33,7 @@ class Get{Name}UseCase @Inject constructor(
 ```
 
 **domain/usecase/Update{Name}UseCase.kt**
+
 ```kotlin
 class Update{Name}UseCase @Inject constructor(
     private val repository: {Name}Repository
@@ -41,6 +45,7 @@ class Update{Name}UseCase @Inject constructor(
 ## Data Layer
 
 **data/remote/{Name}Dto.kt**
+
 ```kotlin
 data class {Name}Dto(
     val id: String,
@@ -49,6 +54,7 @@ data class {Name}Dto(
 ```
 
 **data/remote/{Name}Api.kt**
+
 ```kotlin
 interface {Name}Api {
     @GET("{name}s/{id}")
@@ -60,6 +66,7 @@ interface {Name}Api {
 ```
 
 **data/local/{Name}Entity.kt** (Room)
+
 ```kotlin
 @Entity(tableName = "{name}s")
 data class {Name}Entity(
@@ -69,6 +76,7 @@ data class {Name}Entity(
 ```
 
 **data/local/{Name}Dao.kt**
+
 ```kotlin
 @Dao
 interface {Name}Dao {
@@ -81,6 +89,7 @@ interface {Name}Dao {
 ```
 
 **data/mapper/{Name}Mapper.kt**
+
 ```kotlin
 fun {Name}Dto.toDomain(): {Name} = {Name}(id = id)
 fun {Name}Entity.toDomain(): {Name} = {Name}(id = id)
@@ -88,6 +97,7 @@ fun {Name}.toEntity(): {Name}Entity = {Name}Entity(id = id)
 ```
 
 **data/repository/{Name}RepositoryImpl.kt**
+
 ```kotlin
 class {Name}RepositoryImpl @Inject constructor(
     private val api: {Name}Api,
@@ -110,6 +120,7 @@ class {Name}RepositoryImpl @Inject constructor(
 ## Presentation Layer
 
 **presentation/{Name}UiState.kt**
+
 ```kotlin
 sealed interface {Name}UiState {
     data object Loading : {Name}UiState
@@ -119,6 +130,7 @@ sealed interface {Name}UiState {
 ```
 
 **presentation/{Name}ViewModel.kt**
+
 ```kotlin
 @HiltViewModel
 class {Name}ViewModel @Inject constructor(
@@ -148,6 +160,7 @@ class {Name}ViewModel @Inject constructor(
 ```
 
 **presentation/{Name}Screen.kt**
+
 ```kotlin
 @Composable
 fun {Name}Screen(viewModel: {Name}ViewModel = hiltViewModel()) {
@@ -172,6 +185,7 @@ fun {Name}Screen(viewModel: {Name}ViewModel = hiltViewModel()) {
 ## DI
 
 **di/{Name}Module.kt**
+
 ```kotlin
 @Module
 @InstallIn(SingletonComponent::class)
@@ -184,6 +198,7 @@ abstract class {Name}Module {
 ## Tests
 
 **domain/usecase/Get{Name}UseCaseTest.kt**
+
 ```kotlin
 class Get{Name}UseCaseTest {
     private val repository = mockk<{Name}Repository>()
@@ -211,6 +226,7 @@ class Get{Name}UseCaseTest {
 ```
 
 **presentation/{Name}ViewModelTest.kt**
+
 ```kotlin
 class {Name}ViewModelTest {
     private val get{Name}UseCase = mockk<Get{Name}UseCase>()
@@ -237,6 +253,7 @@ class {Name}ViewModelTest {
 ```
 
 **presentation/{Name}ScreenTest.kt**
+
 ```kotlin
 @get:Rule
 val composeRule = createComposeRule()

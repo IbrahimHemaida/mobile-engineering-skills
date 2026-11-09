@@ -26,6 +26,7 @@ webView.webViewClient = object : WebViewClient() {
 The bridge class itself should expose the minimum surface — not a generic "eval this" method, and every exposed method validates its arguments as if they came from an attacker, because in a hostile-content scenario, they did.
 
 **Additional hardening:**
+
 - `setAllowFileAccess(false)` and `setAllowContentAccess(false)` unless the app specifically needs to load local files into the WebView.
 - Never load `file://` URLs alongside an active JS bridge — this is a well-known path to reading arbitrary app-private files via crafted JS.
 - If the WebView only ever needs to render first-party content (e.g. a ToS page, a help center you control), consider whether a WebView is even necessary versus a native screen or a stripped-down rendering with JS disabled entirely.
@@ -68,7 +69,7 @@ The validation isn't just format-checking — the backend call that follows must
 </activity>
 ```
 
-Since Android 12, `exported` must be explicitly declared for any component with an intent-filter, which helps catch accidental exposure at build time — but components *without* an intent-filter can still be marked `exported="true"` by mistake and remain silently reachable. Audit all four component types (Activity, Service, BroadcastReceiver, ContentProvider), not just Activities.
+Since Android 12, `exported` must be explicitly declared for any component with an intent-filter, which helps catch accidental exposure at build time — but components _without_ an intent-filter can still be marked `exported="true"` by mistake and remain silently reachable. Audit all four component types (Activity, Service, BroadcastReceiver, ContentProvider), not just Activities.
 
 **ContentProviders deserve extra scrutiny**: an exported provider with broad `<path-permission>` or no permission at all can leak an entire local database to any app that queries it. If a provider only needs to serve data to your own app's components, don't export it — use `FileProvider` scoped grants for the specific cross-app sharing case (e.g. sharing a file with another app via `Intent.ACTION_SEND`) instead of a broadly exported provider.
 

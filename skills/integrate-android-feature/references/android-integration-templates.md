@@ -3,6 +3,7 @@
 ## Compose Navigation — adding a route to an existing NavHost
 
 **Before (existing `AppNavHost.kt`, do not replace — extend it):**
+
 ```kotlin
 NavHost(navController = navController, startDestination = Routes.HOME) {
     composable(Routes.HOME) { HomeScreen(navController) }
@@ -11,6 +12,7 @@ NavHost(navController = navController, startDestination = Routes.HOME) {
 ```
 
 **After (added {Name} route + navigation call site):**
+
 ```kotlin
 NavHost(navController = navController, startDestination = Routes.HOME) {
     composable(Routes.HOME) { HomeScreen(navController) }
@@ -37,11 +39,13 @@ navController.navigate("${Routes.{NAME_UPPER}}/$userId")
 ## Multi-module Gradle wiring
 
 **settings.gradle.kts** — add the feature module:
+
 ```kotlin
 include(":feature:{name}")
 ```
 
 **app/build.gradle.kts** — add the feature as a dependency of :app:
+
 ```kotlin
 dependencies {
     implementation(project(":feature:{name}"))
@@ -49,6 +53,7 @@ dependencies {
 ```
 
 **feature/{name}/build.gradle.kts** — the feature module's own dependencies (adjust to match the project's existing version catalog references, don't hardcode versions if `libs.versions.toml` exists):
+
 ```kotlin
 plugins {
     id("com.android.library")
@@ -77,11 +82,13 @@ dependencies {
 ## Build verification command
 
 Single-module project:
+
 ```bash
 ./gradlew compileDebugKotlin
 ```
 
 Multi-module project (verify just the new feature module first, faster feedback):
+
 ```bash
 ./gradlew :feature:{name}:compileDebugKotlin
 ./gradlew :app:assembleDebug   # full integration check

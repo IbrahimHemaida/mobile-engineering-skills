@@ -62,6 +62,7 @@ enum class PaymentStatus {
 ```
 
 **Rules**:
+
 - No Android imports (`android.*`)
 - No database imports (`androidx.room.*`)
 - No framework code
@@ -84,10 +85,10 @@ class LoginUseCase(
     // Validation (business rule)
     require(email.isNotEmpty()) { "Email is required" }
     require(password.isNotEmpty()) { "Password is required" }
-    
+
     // Call repository (data access)
     val user = authRepository.login(email, password)
-    
+
     Result.success(user)
   } catch (e: Exception) {
     Result.failure(e)
@@ -101,13 +102,13 @@ class GetUserProfileUseCase(
   suspend operator fun invoke(userId: String): Result<UserProfile> = try {
     val user = userRepository.getUser(userId)
     val payments = paymentRepository.getPaymentsForUser(userId)
-    
+
     val profile = UserProfile(
       user = user,
       totalSpent = payments.sumOf { it.amount },
       paymentCount = payments.size
     )
-    
+
     Result.success(profile)
   } catch (e: Exception) {
     Result.failure(e)
@@ -116,6 +117,7 @@ class GetUserProfileUseCase(
 ```
 
 **Rules**:
+
 - No Android imports
 - No database calls directly
 - Uses repository interfaces (abstractions)
@@ -150,12 +152,12 @@ class UserRepositoryImpl(
       localCache.get(id) ?: throw e
     }
   }
-  
+
   override suspend fun saveUser(user: User) {
     remoteSource.saveUser(user)
     localCache.save(user)
   }
-  
+
   override suspend fun deleteUser(id: String) {
     remoteSource.deleteUser(id)
     localCache.delete(id)
@@ -190,13 +192,13 @@ class LoginViewModel(
 ) : ViewModel() {
   private val _state = MutableStateFlow<LoginState>(LoginState.Idle)
   val state: StateFlow<LoginState> = _state.asStateFlow()
-  
+
   fun login(email: String, password: String) {
     viewModelScope.launch {
       _state.value = LoginState.Loading
-      
+
       val result = loginUseCase(email, password)
-      
+
       _state.value = result.fold(
         onSuccess = { user ->
           analyticsService.trackLoginSuccess(user.id)
@@ -229,7 +231,7 @@ sealed class LoginState {
 @Composable
 fun LoginScreen(viewModel: LoginViewModel) {
   val state by viewModel.state.collectAsState()
-  
+
   when (state) {
     is LoginState.Idle -> LoginForm(onLoginClick = { email, password ->
       viewModel.login(email, password)
@@ -261,7 +263,7 @@ Activity/Fragment/Composable
   Repository (interface)
          ↓
   Data Sources (API, Database)
-         
+
 Domain Layer: UseCase + Entities + Repository Interfaces
 ├── No Android imports ✓
 ├── No database imports ✓
@@ -319,6 +321,7 @@ app/
 ```
 
 **Key points**:
+
 - Feature-based modules (auth, profile, payments)
 - Clear layer separation within each feature
 - Common module for shared domain models + API setup
@@ -336,9 +339,9 @@ Because of Clear Architecture:
 fun loginUseCaseRejectsInvalidEmail() = runTest {
   val mockRepo = mockk<AuthRepository>()
   val useCase = LoginUseCase(mockRepo)
-  
+
   val result = useCase("", "password")
-  
+
   assertTrue(result.isFailure)
   verify(inverse = true) { mockRepo.login(any(), any()) }
 }
@@ -348,13 +351,13 @@ fun loginUseCaseRejectsInvalidEmail() = runTest {
 fun repositoryFallsBackToLocalOnNetworkError() = runTest {
   val mockRemote = mockk<RemoteAuthDataSource>()
   val mockLocal = mockk<LocalAuthDataSource>()
-  
+
   coEvery { mockRemote.getUser("123") } throws NetworkException()
   coEvery { mockLocal.get("123") } returns User("123")
-  
+
   val repo = UserRepositoryImpl(mockRemote, mockLocal)
   val result = repo.getUser("123")
-  
+
   assertEquals("123", result.id)
 }
 
@@ -363,11 +366,11 @@ fun repositoryFallsBackToLocalOnNetworkError() = runTest {
 fun viewModelEmitsSuccessOnLoginSuccess() = runTest {
   val mockUseCase = mockk<LoginUseCase>()
   coEvery { mockUseCase("a@b.c", "pass") } returns Result.success(User("123"))
-  
+
   val viewModel = LoginViewModel(mockUseCase, mockAnalytics)
   viewModel.login("a@b.c", "pass")
   advanceUntilIdle()
-  
+
   assertEquals(LoginState.Success(User("123")), viewModel.state.value)
 }
 ```

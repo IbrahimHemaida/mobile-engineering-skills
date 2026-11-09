@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Check SKILL.md files exist
         run: |
           test -f skills/mobile-architecture-guard/SKILL.md || exit 1
@@ -21,7 +21,7 @@ jobs:
           test -f skills/mobile-accessibility-guard/SKILL.md || exit 1
           test -f skills/mobile-kmm-migration-guard/SKILL.md || exit 1
           echo "✓ All SKILL.md files exist"
-      
+
       - name: Validate SKILL.md frontmatter
         run: |
           for skill in skills/*/SKILL.md; do
@@ -30,7 +30,7 @@ jobs:
             grep -q "^description:" "$skill" || (echo "Missing 'description:' in $skill" && exit 1)
           done
           echo "✓ All SKILL.md files have valid frontmatter"
-      
+
       - name: Check for broken reference links
         run: |
           fail=0
@@ -49,12 +49,12 @@ jobs:
           fi
           echo "✓ No broken reference links found"
           echo "✓ Reference files validated"
-      
+
       - name: Ensure README.md exists
         run: |
           test -f README.md || exit 1
           echo "✓ README.md exists"
-      
+
       - name: Ensure LICENSE exists
         run: |
           test -f LICENSE || exit 1
@@ -80,7 +80,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Spell check README and SKILLs
         uses: codespell-project/actions-codespell@v2
         with:

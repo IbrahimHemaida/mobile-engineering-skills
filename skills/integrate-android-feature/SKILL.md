@@ -34,6 +34,7 @@ The feature's `{Name}Module.kt` (from `scaffold-android-feature`) is `@InstallIn
 ## Step 4 — Reconcile Gradle dependencies
 
 Check the feature's generated code against `build.gradle.kts` (or the version catalog `libs.versions.toml`) and add **only what's missing** — don't duplicate or downgrade existing pinned versions:
+
 - Hilt, Hilt Navigation Compose
 - Retrofit + a converter (Moshi/kotlinx.serialization)
 - Room + Room KTX

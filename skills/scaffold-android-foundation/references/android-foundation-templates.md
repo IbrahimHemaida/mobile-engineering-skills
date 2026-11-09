@@ -212,6 +212,7 @@ object AppConstants {
 ```
 
 **build.gradle.kts (app module) — per-variant `BuildConfig` field example:**
+
 ```kotlin
 buildTypes {
     debug {
