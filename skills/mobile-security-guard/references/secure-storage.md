@@ -6,13 +6,13 @@ Not "how do I encrypt this?" but **"does this need to be on the device at all?"*
 
 ## Android options, ranked by sensitivity
 
-| Data | Recommended storage | Notes |
-|---|---|---|
-| Auth/refresh tokens | `EncryptedSharedPreferences` (Jetpack Security) or Keystore-backed | Never plain `SharedPreferences` |
-| User PII (name, email, address) | `EncryptedSharedPreferences` or encrypted Room (SQLCipher) | Depends on volume — small fields vs. structured records |
-| Health/financial records | Encrypted Room (SQLCipher) + Keystore-wrapped key | Regulatory-grade data gets the strongest layer available |
-| Non-sensitive prefs (theme, locale) | Plain `SharedPreferences` | Encrypting this is wasted complexity |
-| Cached images/API responses with PII | Encrypted cache dir, or don't cache to disk at all | Glide/Coil disk caches are plaintext by default |
+| Data                                 | Recommended storage                                                | Notes                                                    |
+| ------------------------------------ | ------------------------------------------------------------------ | -------------------------------------------------------- |
+| Auth/refresh tokens                  | `EncryptedSharedPreferences` (Jetpack Security) or Keystore-backed | Never plain `SharedPreferences`                          |
+| User PII (name, email, address)      | `EncryptedSharedPreferences` or encrypted Room (SQLCipher)         | Depends on volume — small fields vs. structured records  |
+| Health/financial records             | Encrypted Room (SQLCipher) + Keystore-wrapped key                  | Regulatory-grade data gets the strongest layer available |
+| Non-sensitive prefs (theme, locale)  | Plain `SharedPreferences`                                          | Encrypting this is wasted complexity                     |
+| Cached images/API responses with PII | Encrypted cache dir, or don't cache to disk at all                 | Glide/Coil disk caches are plaintext by default          |
 
 ### EncryptedSharedPreferences setup
 
@@ -63,7 +63,7 @@ This wraps Android Keystore / iOS Keychain under the hood — it is not just an 
 
 ## Biometric-gated storage
 
-Gating *decryption*, not just UI navigation, is the distinction that matters:
+Gating _decryption_, not just UI navigation, is the distinction that matters:
 
 ```kotlin
 val cipher = getKeystoreBackedCipher() // Cipher tied to a BiometricPrompt.CryptoObject
@@ -80,6 +80,7 @@ If biometric success just flips a boolean that unlocks a screen — while the un
 ## Session lifecycle and clearing data
 
 On logout, clear in this order:
+
 1. Secure storage (tokens, credentials) — `storage.deleteAll()` / `EncryptedSharedPreferences.edit().clear()`.
 2. In-memory app state (user object in memory, cached auth headers on the HTTP client).
 3. Disk caches that may contain PII — image loader disk cache (Glide/Coil `clearDiskCache()`), any manually-written cache files.

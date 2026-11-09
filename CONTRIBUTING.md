@@ -18,6 +18,7 @@ Thank you for your interest in improving mobile-engineering-skills! This guide w
 ## Types of Contributions
 
 ### Bug Reports
+
 - File an issue on GitHub describing:
   - What you expected to happen
   - What actually happened
@@ -25,22 +26,26 @@ Thank you for your interest in improving mobile-engineering-skills! This guide w
   - Platform (Kotlin, Flutter, or both)
 
 ### Feature Requests
+
 - Suggest new skills or improvements
 - Include use cases and examples
 - Reference existing principles/patterns if applicable
 
 ### Documentation Improvements
+
 - Clarify confusing sections
 - Add examples
 - Fix typos or formatting
 - Update outdated references
 
 ### New Reference Guides
+
 - Add platform-specific patterns (Swift, Dart-specific)
 - Add domain-specific examples (healthcare, fintech, e-commerce)
 - Add new anti-patterns and how to fix them
 
 ### Code Examples
+
 - Add Kotlin/Flutter examples for existing imperatives
 - Create end-to-end project examples
 - Demonstrate real-world usage
@@ -48,25 +53,30 @@ Thank you for your interest in improving mobile-engineering-skills! This guide w
 ## Guidelines
 
 ### SKILL.md Files
+
 - Keep imperatives clear, actionable, and numbered
 - Include anti-patterns (❌ Bad) alongside good patterns (✅ Good)
 - Provide code examples for each major principle
 - Include testing implications where relevant
 
 ### Reference Files
+
 - Use clear headings and table of contents
 - Include multiple code examples per concept
 - Explain the "why" behind each pattern
 - Reference source material (books, papers)
 
 ### Examples
+
 - Make them realistic and production-ready
 - Include error handling
 - Show testing approach
 - Document assumptions
 
 ### Commit Messages
+
 Follow conventional commits:
+
 ```
 feat: add Flutter navigation patterns guide
 fix: correct Liskov violation example in SOLID reference

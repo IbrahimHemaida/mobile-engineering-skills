@@ -3,6 +3,7 @@
 ## GoRouter — adding a route to an existing router config
 
 **Before (existing `app_router.dart`, do not replace — extend it):**
+
 ```dart
 final router = GoRouter(
   routes: [
@@ -13,6 +14,7 @@ final router = GoRouter(
 ```
 
 **After (added {Name} route with BlocProvider wiring):**
+
 ```dart
 final router = GoRouter(
   routes: [
@@ -38,15 +40,18 @@ context.go('/{name}/$userId');
 ## Injectable/GetIt — confirming registration
 
 **lib/core/di/injection.dart** (existing, generated file — do not hand-edit):
+
 ```dart
 @InjectableInit()
 void configureDependencies() => getIt.init();
 ```
 
 After running `build_runner`, `injection.config.dart` should now contain entries for the new feature's `@injectable`/`@LazySingleton` classes automatically — verify with:
+
 ```bash
 grep -c "{Name}Bloc\|{Name}RepositoryImpl" lib/core/di/injection.config.dart
 ```
+
 A result of `0` means the feature files aren't in the compiled `lib/` tree yet, or the annotations are missing/malformed — fix that before re-running `build_runner`, don't just re-run it repeatedly hoping it picks them up.
 
 ## pubspec.yaml — dependencies to reconcile
@@ -58,7 +63,7 @@ dependencies:
   get_it: ^7.6.0
   injectable: ^2.3.0
   dio: ^5.4.0
-  dartz: ^0.10.1        # or fpdart, match whichever this project already uses
+  dartz: ^0.10.1 # or fpdart, match whichever this project already uses
 
 dev_dependencies:
   injectable_generator: ^2.4.0

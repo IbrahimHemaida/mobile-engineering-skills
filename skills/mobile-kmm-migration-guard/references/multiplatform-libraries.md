@@ -49,7 +49,7 @@ implementation("io.ktor:ktor-client-okhttp:2.3.12") // Ktor's own OkHttp *engine
 implementation("io.ktor:ktor-client-darwin:2.3.12")
 ```
 
-Note the distinction: using OkHttp as Ktor's *engine* on the Android side (`ktor-client-okhttp`) is fine — it's platform-specific plumbing behind a common interface. The violation is calling OkHttp APIs *directly* from `commonMain` code, bypassing the multiplatform abstraction entirely.
+Note the distinction: using OkHttp as Ktor's _engine_ on the Android side (`ktor-client-okhttp`) is fine — it's platform-specific plumbing behind a common interface. The violation is calling OkHttp APIs _directly_ from `commonMain` code, bypassing the multiplatform abstraction entirely.
 
 ## Serialization: `kotlinx.serialization`, not `Serializable`/Gson/Moshi
 
@@ -116,11 +116,11 @@ If a full SQLDelight migration isn't feasible yet, an explicit `expect`/`actual`
 
 ## Quick reference: what to replace
 
-| JVM-only (don't use in `commonMain`) | Multiplatform-safe replacement |
-|---|---|
-| `java.time.*` | `kotlinx-datetime` |
-| `OkHttp`/`Retrofit` direct calls | Ktor client (`HttpClient`) |
-| `java.io.Serializable`, Gson, Moshi | `kotlinx.serialization` |
-| Room | SQLDelight, or an `expect`/`actual` storage interface |
-| `SharedPreferences`/`NSUserDefaults` direct calls | Multiplatform Settings (`com.russhwolf:multiplatform-settings`) for simple key-value storage |
-| `java.util.UUID` | `kotlin.uuid.Uuid` (stable since Kotlin 2.0.20) or a small `expect`/`actual` wrapper on older Kotlin versions |
+| JVM-only (don't use in `commonMain`)              | Multiplatform-safe replacement                                                                                |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `java.time.*`                                     | `kotlinx-datetime`                                                                                            |
+| `OkHttp`/`Retrofit` direct calls                  | Ktor client (`HttpClient`)                                                                                    |
+| `java.io.Serializable`, Gson, Moshi               | `kotlinx.serialization`                                                                                       |
+| Room                                              | SQLDelight, or an `expect`/`actual` storage interface                                                         |
+| `SharedPreferences`/`NSUserDefaults` direct calls | Multiplatform Settings (`com.russhwolf:multiplatform-settings`) for simple key-value storage                  |
+| `java.util.UUID`                                  | `kotlin.uuid.Uuid` (stable since Kotlin 2.0.20) or a small `expect`/`actual` wrapper on older Kotlin versions |

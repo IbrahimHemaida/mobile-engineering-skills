@@ -38,6 +38,7 @@ feature{name}/
 ```
 
 Apply the same rules `mobile-architecture-guard` enforces while generating (don't wait for a later review pass to catch these):
+
 - Domain layer has **zero** Android/Compose/Retrofit/Room imports.
 - Repository interface lives in `domain/`; implementation lives in `data/`.
 - ViewModel depends on use cases, never directly on repository or data sources.
@@ -47,6 +48,7 @@ Apply the same rules `mobile-architecture-guard` enforces while generating (don'
 ## Step 3 — Generate tests alongside the code, not after
 
 For every file in Step 2, generate its test in the same pass:
+
 - `domain/usecase/*UseCaseTest.kt` — JUnit, fake repository, no mocking framework needed for simple cases.
 - `data/repository/*RepositoryImplTest.kt` — MockK for remote/local data sources.
 - `presentation/*ViewModelTest.kt` — Turbine for StateFlow assertions, fake use cases.
@@ -62,6 +64,7 @@ Full test templates are in `references/kotlin-templates.md`.
 ## Step 5 — Self-check before presenting the result
 
 Before showing the generated files, verify against `mobile-architecture-guard`'s imperatives yourself and fix any violation silently — don't ask the user to run the guard separately for something you can catch now. Then present:
+
 1. A short summary of what was generated (files + what each layer does).
 2. Any assumption you made in Step 1 (e.g. "no fields specified, generated minimal Get/Update use cases").
 3. A one-line note suggesting the user still run `/mobile-engineering-skills:mobile-architecture-guard` before merging, as a second pair of eyes.

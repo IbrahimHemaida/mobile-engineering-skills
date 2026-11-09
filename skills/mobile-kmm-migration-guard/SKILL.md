@@ -10,6 +10,7 @@ You are reviewing Kotlin Multiplatform Mobile code — either new shared-module 
 ## Compatibility
 
 This skill works with:
+
 - **Kotlin Multiplatform Mobile**: `commonMain`/`androidMain`/`iosMain` source set structure, `expect`/`actual` declarations, Kotlin/Native
 - **Cross-platform libraries**: kotlinx-datetime, kotlinx.serialization, Ktor client, SQLDelight — the multiplatform-safe equivalents of JVM-only libraries
 - **iOS interop**: Kotlin/Native's Objective-C/Swift export, and the concurrency/exception/nullability differences at that boundary
@@ -19,6 +20,7 @@ This skill complements mobile-architecture-guard (layer boundaries apply the sam
 ## Reference files
 
 This SKILL.md covers the core rules and checklists. For deeper treatment, load these as needed:
+
 - `references/interop-and-concurrency.md` — Kotlin/Native memory model, `Dispatchers.Main` behavior on both platforms, and Swift interop hazards (exceptions, nullability, sealed class/enum export) with worked examples.
 - `references/multiplatform-libraries.md` — kotlinx-datetime, Ktor client, kotlinx.serialization, and SQLDelight setup and usage patterns, plus what JVM-only equivalents they replace and why those don't compile for iOS targets.
 
@@ -28,13 +30,14 @@ Read the relevant reference file when a violation needs more context than the su
 
 **Guard-pass mode** (recommended): After writing or migrating code into `commonMain`, check it against the imperatives below before merging.
 
-**Migration-planning mode**: When deciding what to migrate next from platform-specific code into shared code, use the *Migration Strategy* imperatives to sequence the work and the *Migration readiness report* format to assess a candidate module.
+**Migration-planning mode**: When deciding what to migrate next from platform-specific code into shared code, use the _Migration Strategy_ imperatives to sequence the work and the _Migration readiness report_ format to assess a candidate module.
 
 **Review mode**: Walk `commonMain` (and the `expect`/`actual` pairs it depends on) and flag platform leakage or unsafe library usage with the specific line and the platform it will fail on.
 
 ## Why this skill exists
 
 KMM code that compiles is not the same as KMM code that works on both platforms — the failure modes are specific to this architecture:
+
 - **Silent platform leakage**: an `android.content.Context` parameter or `androidx.lifecycle` import creeps into `commonMain` because it compiled fine (Android is usually the platform being actively developed against), and iOS discovers it only at iOS-target compile time or, worse, doesn't discover it because the file was never actually exercised on iOS.
 - **JVM-only libraries in shared code**: `java.time`, `java.io.Serializable`, `OkHttp`, or `Gson` used directly in `commonMain` compile against the JVM target but fail or don't exist for the Kotlin/Native (iOS) target.
 - **Concurrency assumptions that don't hold on iOS**: blocking the main thread is an ANR dialog on Android but a watchdog-triggered force-quit on iOS; code "tested" only on Android can pass there and crash on iOS.

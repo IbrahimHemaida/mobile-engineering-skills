@@ -5,6 +5,7 @@ Placeholders: `{Name}` = PascalCase (e.g. `Profile`), `{name}` = snake_case (e.g
 ## Domain Layer
 
 **domain/entities/{name}.dart**
+
 ```dart
 class {Name} extends Equatable {
   final String id;
@@ -17,7 +18,8 @@ class {Name} extends Equatable {
 }
 ```
 
-**domain/repositories/{name}_repository.dart**
+**domain/repositories/{name}\_repository.dart**
+
 ```dart
 abstract class {Name}Repository {
   Future<Either<Failure, {Name}>> get{Name}(String id);
@@ -25,7 +27,8 @@ abstract class {Name}Repository {
 }
 ```
 
-**domain/usecases/get_{name}_usecase.dart**
+**domain/usecases/get\_{name}\_usecase.dart**
+
 ```dart
 @injectable
 class Get{Name}UseCase {
@@ -36,7 +39,8 @@ class Get{Name}UseCase {
 }
 ```
 
-**domain/usecases/update_{name}_usecase.dart**
+**domain/usecases/update\_{name}\_usecase.dart**
+
 ```dart
 @injectable
 class Update{Name}UseCase {
@@ -49,7 +53,8 @@ class Update{Name}UseCase {
 
 ## Data Layer
 
-**data/models/{name}_model.dart**
+**data/models/{name}\_model.dart**
+
 ```dart
 class {Name}Model extends {Name} {
   const {Name}Model({required super.id});
@@ -61,7 +66,8 @@ class {Name}Model extends {Name} {
 }
 ```
 
-**data/datasources/{name}_remote_datasource.dart**
+**data/datasources/{name}\_remote_datasource.dart**
+
 ```dart
 abstract class {Name}RemoteDataSource {
   Future<{Name}Model> get{Name}(String id);
@@ -86,7 +92,8 @@ class {Name}RemoteDataSourceImpl implements {Name}RemoteDataSource {
 }
 ```
 
-**data/datasources/{name}_local_datasource.dart**
+**data/datasources/{name}\_local_datasource.dart**
+
 ```dart
 abstract class {Name}LocalDataSource {
   Future<{Name}Model?> getCached{Name}(String id);
@@ -111,7 +118,8 @@ class {Name}LocalDataSourceImpl implements {Name}LocalDataSource {
 }
 ```
 
-**data/repositories/{name}_repository_impl.dart**
+**data/repositories/{name}\_repository_impl.dart**
+
 ```dart
 @LazySingleton(as: {Name}Repository)
 class {Name}RepositoryImpl implements {Name}Repository {
@@ -150,7 +158,8 @@ class {Name}RepositoryImpl implements {Name}Repository {
 
 ## Presentation Layer (BLoC)
 
-**presentation/bloc/{name}_event.dart**
+**presentation/bloc/{name}\_event.dart**
+
 ```dart
 abstract class {Name}Event extends Equatable {
   const {Name}Event();
@@ -173,7 +182,8 @@ class Save{Name}Requested extends {Name}Event {
 }
 ```
 
-**presentation/bloc/{name}_state.dart**
+**presentation/bloc/{name}\_state.dart**
+
 ```dart
 abstract class {Name}State extends Equatable {
   const {Name}State();
@@ -198,7 +208,8 @@ class {Name}Error extends {Name}State {
 }
 ```
 
-**presentation/bloc/{name}_bloc.dart**
+**presentation/bloc/{name}\_bloc.dart**
+
 ```dart
 @injectable
 class {Name}Bloc extends Bloc<{Name}Event, {Name}State> {
@@ -231,7 +242,8 @@ class {Name}Bloc extends Bloc<{Name}Event, {Name}State> {
 }
 ```
 
-**presentation/pages/{name}_page.dart**
+**presentation/pages/{name}\_page.dart**
+
 ```dart
 class {Name}Page extends StatelessWidget {
   const {Name}Page({super.key});
@@ -268,7 +280,8 @@ class {Name}Page extends StatelessWidget {
 
 ## DI
 
-**core/di/{name}_injection.dart**
+**core/di/{name}\_injection.dart**
+
 ```dart
 // Registered automatically via @injectable / @LazySingleton annotations above.
 // Run `flutter pub run build_runner build` to regenerate injection.config.dart
@@ -277,7 +290,8 @@ class {Name}Page extends StatelessWidget {
 
 ## Tests
 
-**domain/usecases/get_{name}_usecase_test.dart**
+**domain/usecases/get\_{name}\_usecase_test.dart**
+
 ```dart
 class MockRepository extends Mock implements {Name}Repository {}
 
@@ -301,7 +315,8 @@ void main() {
 }
 ```
 
-**presentation/bloc/{name}_bloc_test.dart**
+**presentation/bloc/{name}\_bloc_test.dart**
+
 ```dart
 void main() {
   late MockGet{Name}UseCase getUseCase;
@@ -324,7 +339,8 @@ void main() {
 }
 ```
 
-**presentation/pages/{name}_page_test.dart**
+**presentation/pages/{name}\_page_test.dart**
+
 ```dart
 void main() {
   testWidgets('shows accessible error message on {Name}Error', (tester) async {

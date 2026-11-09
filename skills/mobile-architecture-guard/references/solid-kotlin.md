@@ -29,30 +29,31 @@
 class UserViewModel(private val repo: UserRepository) : ViewModel() {
   private val _user = MutableLiveData<User>()
   val user: LiveData<User> = _user
-  
+
   fun loadUser(id: String) {
     viewModelScope.launch {
       val user = repo.getUser(id)
       _user.value = user
-      
+
       // SRP violation: Also handling caching
       saveUserToCache(user)
-      
+
       // SRP violation: Also handling analytics
       trackUserLoad(id)
-      
+
       // SRP violation: Also handling date formatting
       val formatted = SimpleDateFormat("dd/MM/yyyy").format(Date())
       logEvent("User loaded: $formatted")
     }
   }
-  
+
   private fun saveUserToCache(user: User) { /* ... */ }
   private fun trackUserLoad(id: String) { /* ... */ }
 }
 ```
 
 **Reasons to change**:
+
 1. User loading logic changes
 2. Cache strategy changes
 3. Analytics implementation changes
@@ -68,7 +69,7 @@ class UserViewModel(
 ) : ViewModel() {
   private val _user = MutableLiveData<User>()
   val user: LiveData<User> = _user
-  
+
   fun loadUser(id: String) {
     viewModelScope.launch {
       val user = loadUserUseCase.invoke(id)
@@ -104,7 +105,7 @@ class UserCache(private val prefs: SharedPreferences) {
   fun save(user: User) {
     prefs.edit().putString("user_${user.id}", user.toJson()).apply()
   }
-  
+
   fun get(id: String): User? {
     val json = prefs.getString("user_$id", null) ?: return null
     return User.fromJson(json)
@@ -123,6 +124,7 @@ class AnalyticsService(private val firebase: FirebaseAnalytics) {
 ```
 
 **Why it's better**:
+
 - Each class has one reason to change
 - Easy to test (mock individual responsibilities)
 - Reusable components (AnalyticsService used elsewhere)
@@ -211,6 +213,7 @@ class AuthStrategyFactory {
 ```
 
 **Why it's better**:
+
 - New auth methods = new class, no modifications
 - Existing code remains stable and tested
 - Easy to test each strategy independently
@@ -293,6 +296,7 @@ when (result) {
 ```
 
 **Why it's better**:
+
 - All implementations honor the contract
 - Implementations are drop-in replaceable
 - Client code doesn't break on impl changes
@@ -366,6 +370,7 @@ class ReportScreen(private val reportRepo: ReportRepository) {
 ```
 
 **Why it's better**:
+
 - Each class depends only on what it uses
 - Easy to mock specific repositories
 - Changes to payment API don't affect UserProfileScreen
@@ -382,7 +387,7 @@ class ReportScreen(private val reportRepo: ReportRepository) {
 class LoginViewModel : ViewModel() {
   // Direct dependency on concrete HTTP client
   private val apiService = RetrofitAuthService()
-  
+
   fun login(email: String, password: String) {
     viewModelScope.launch {
       // Tightly coupled to RetrofitAuthService
@@ -440,6 +445,7 @@ val viewModel = LoginViewModel(mockRepo)
 ```
 
 **Why it's better**:
+
 - ViewModel doesn't know about Retrofit
 - Easy to test with mock repository
 - Easy to swap HTTP clients (Retrofit → OkHttp → Ktor)
@@ -449,11 +455,10 @@ val viewModel = LoginViewModel(mockRepo)
 
 ## Summary: SOLID Checklist for Kotlin/Android
 
-| Principle | Check For | Red Flag |
-|-----------|-----------|----------|
-| **SRP** | One reason to change per class | Multiple responsibilities (User + Cache + Analytics) |
-| **OCP** | New features = new classes | Modifying existing code for new features |
-| **LSP** | Implementations honor contract | Nulls, exceptions, missing fields |
-| **ISP** | Classes use all interface methods | Unused methods in interface |
-| **DIP** | Depend on interfaces/abstractions | Direct `new ConcreteClass()` |
-
+| Principle | Check For                         | Red Flag                                             |
+| --------- | --------------------------------- | ---------------------------------------------------- |
+| **SRP**   | One reason to change per class    | Multiple responsibilities (User + Cache + Analytics) |
+| **OCP**   | New features = new classes        | Modifying existing code for new features             |
+| **LSP**   | Implementations honor contract    | Nulls, exceptions, missing fields                    |
+| **ISP**   | Classes use all interface methods | Unused methods in interface                          |
+| **DIP**   | Depend on interfaces/abstractions | Direct `new ConcreteClass()`                         |

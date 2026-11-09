@@ -38,6 +38,7 @@ IconButton(
 ## Color contrast
 
 **WCAG 2.1 AA thresholds**:
+
 - Normal text (under 18pt, or under 14pt bold): **4.5:1**
 - Large text (18pt+, or 14pt+ bold): **3:1**
 - UI components and graphical objects that convey meaning (icons, chart lines, focus indicators, form field borders): **3:1**
@@ -51,16 +52,17 @@ ratio = (L1 + 0.05) / (L2 + 0.05)
 where L1 is the relative luminance of the lighter color and L2 the darker, and relative luminance is computed from the sRGB channel values per the WCAG spec (not a simple average of RGB — gamma-corrected per channel then weighted: `0.2126*R + 0.7152*G + 0.0722*B`).
 
 **In practice**: don't hand-calculate this. Check contrast with a tool against the actual rendered hex values:
+
 - Android Accessibility Scanner flags contrast issues automatically during a screen scan.
 - Any WCAG contrast checker (WebAIM's is a common reference) takes two hex values and returns pass/fail per level.
 
-**Check the rendered value, not the design token** — a color with alpha/opacity applied at render time (e.g. `Color.Black.copy(alpha = 0.6f)` over a white background) has a different *effective* contrast than the base color alone. Compute against the composited result.
+**Check the rendered value, not the design token** — a color with alpha/opacity applied at render time (e.g. `Color.Black.copy(alpha = 0.6f)` over a white background) has a different _effective_ contrast than the base color alone. Compute against the composited result.
 
 ## Common contrast failure patterns
 
 - **Placeholder text styled too light**: placeholder/hint text is often deliberately muted, but muted below 4.5:1 against the field background fails for anyone who actually needs to read it (not just decorative).
 - **Disabled-looking active elements**: a "disabled" gray applied to a button that's actually tappable — this is both a contrast issue and a discoverability issue (looks non-interactive).
-- **Text over images/gradients**: contrast must hold across the *worst* point of the image/gradient behind the text, not just the average — add a scrim/overlay if the image varies too much.
+- **Text over images/gradients**: contrast must hold across the _worst_ point of the image/gradient behind the text, not just the average — add a scrim/overlay if the image varies too much.
 - **Dark mode inversions that weren't re-checked**: a color pair that passed in light mode doesn't automatically pass when both colors are algorithmically inverted for dark mode — verify both themes independently.
 
 ## Dynamic text scaling
@@ -86,6 +88,7 @@ MediaQuery(
 ```
 
 **What breaks under scaling** (check these specifically, they're the recurring failure points):
+
 - Fixed-height containers that clip scaled text instead of growing.
 - Multi-line text set to `maxLines: 1` with `overflow: ellipsis` where the truncated content is essential (a price, a critical label).
 - Icon-and-text rows where the icon doesn't reflow/wrap with the now-taller text, causing overlap.

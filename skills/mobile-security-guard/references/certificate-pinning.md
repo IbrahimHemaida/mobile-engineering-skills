@@ -2,7 +2,7 @@
 
 ## Why pinning, beyond "TLS is already encrypted"
 
-Standard TLS verification only proves the server presented a certificate signed by *some* CA the OS trusts. It does not prove the certificate belongs to your actual backend. Any of the following can produce a technically-valid cert an unpinned app will accept without complaint:
+Standard TLS verification only proves the server presented a certificate signed by _some_ CA the OS trusts. It does not prove the certificate belongs to your actual backend. Any of the following can produce a technically-valid cert an unpinned app will accept without complaint:
 
 - A compromised or coerced CA (has happened at nation-state and commercial scale).
 - A corporate/airport/hotel Wi-Fi MITM proxy with its own trusted root pushed to the device.
@@ -90,7 +90,7 @@ Never ship with a single pin. A minimal safe rotation plan:
 1. Pin the current leaf (or intermediate) certificate's SPKI hash.
 2. Also pin the SPKI hash of the certificate you intend to rotate to next (obtainable in advance if you control the CSR/key ahead of the actual rotation).
 3. Set a pin-set expiration a few months out, sized to your app update cadence, so an app that somehow never updates fails open into normal TLS validation rather than becoming permanently unable to reach the backend.
-4. When rotation happens, ship an app update adding the *next-next* pin before removing the now-retired one — treat pin lists like a rolling window, not a single swap.
+4. When rotation happens, ship an app update adding the _next-next_ pin before removing the now-retired one — treat pin lists like a rolling window, not a single swap.
 
 ## Pinning at the intermediate vs. leaf level
 

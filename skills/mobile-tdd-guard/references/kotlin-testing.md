@@ -58,10 +58,10 @@ fun loginUseCaseReturnsUserOnValidCreds() = runTest {
   val mockRepository = mockk<AuthRepository>()
   coEvery { mockRepository.login("test@example.com", "password") } returns User("test@example.com")
   val useCase = LoginUseCase(mockRepository)
-  
+
   // ACT: Call the function under test
   val result = useCase.login("test@example.com", "password")
-  
+
   // ASSERT: Verify the result
   assertEquals(User("test@example.com"), result)
 }
@@ -142,10 +142,10 @@ class LoginUseCaseTest {
   fun loginUseCaseReturnsUserOnValidCreds() = runTest {
     val mockRepo = mockk<AuthRepository>()
     coEvery { mockRepo.login("a@b.c", "pass") } returns User("a@b.c")
-    
+
     val useCase = LoginUseCase(mockRepo)
     val result = useCase.login("a@b.c", "pass")
-    
+
     assertEquals(User("a@b.c"), result)
     // ✓ Test waits for suspend function to complete
   }
@@ -159,15 +159,15 @@ class LoginUseCaseTest {
 fun viewModelEmitsMultipleStates() = runTest {
   val mockUseCase = mockk<LoadUserUseCase>()
   coEvery { mockUseCase.invoke("123") } returns User("123")
-  
+
   val viewModel = UserViewModel(mockUseCase)
-  
+
   // Start loading
   viewModel.loadUser("123")
-  
+
   // runTest automatically waits for coroutines
   advanceUntilIdle()
-  
+
   // Check final state
   assertEquals(UserState.Success(User("123")), viewModel.state.value)
 }
@@ -184,18 +184,18 @@ fun viewModelEmitsMultipleStates() = runTest {
 fun viewModelEmitsLoadingThenSuccess() = runTest {
   val mockUseCase = mockk<GetUserUseCase>()
   coEvery { mockUseCase("123") } returns User("123")
-  
+
   val viewModel = UserViewModel(mockUseCase)
-  
+
   val collectedStates = mutableListOf<UserState>()
   val job = launch {
     viewModel.state.collect { collectedStates.add(it) }
   }
-  
+
   viewModel.loadUser("123")
   advanceUntilIdle()
   job.cancel()
-  
+
   assertEquals(
     listOf(
       UserState.Idle,
@@ -214,17 +214,17 @@ fun viewModelEmitsLoadingThenSuccess() = runTest {
 fun viewModelEmitsUserOnSuccess() {
   val mockUseCase = mockk<GetUserUseCase>()
   every { mockUseCase("123") } returns User("123")
-  
+
   val viewModel = UserViewModel(mockUseCase)
-  
+
   val liveData = viewModel.user
   val observer = mockk<Observer<User>>()
-  
+
   liveData.observeForever(observer)
   viewModel.loadUser("123")
-  
+
   verify { observer.onChanged(User("123")) }
-  
+
   liveData.removeObserver(observer)
 }
 ```
@@ -239,12 +239,12 @@ fun viewModelEmitsUserOnSuccess() {
 class LoginUseCaseTest {
   private lateinit var useCase: LoginUseCase
   private val mockRepo = mockk<AuthRepository>()
-  
+
   @Before
   fun setUp() {
     useCase = LoginUseCase(mockRepo)
   }
-  
+
   // Happy path
   @Test
   fun loginWithValidEmailAndPassword() = runTest {
@@ -252,7 +252,7 @@ class LoginUseCaseTest {
     val result = useCase.login("test@example.com", "password123")
     assertEquals(User("test"), result)
   }
-  
+
   // Sad paths
   @Test
   fun loginWithEmptyEmail() = runTest {
@@ -261,7 +261,7 @@ class LoginUseCaseTest {
     }
     assertEquals("Email cannot be empty", result.message)
   }
-  
+
   @Test
   fun loginWithEmptyPassword() = runTest {
     val result = assertThrows<ValidationException> {
@@ -269,27 +269,27 @@ class LoginUseCaseTest {
     }
     assertEquals("Password cannot be empty", result.message)
   }
-  
+
   @Test
   fun loginWithInvalidEmailFormat() = runTest {
     val result = assertThrows<ValidationException> {
       useCase.login("notanemail", "password123")
     }
   }
-  
+
   @Test
   fun loginWithWrongCredentials() = runTest {
     coEvery { mockRepo.login(any(), any()) } throws InvalidCredentialsException()
-    
+
     val result = assertThrows<InvalidCredentialsException> {
       useCase.login("test@example.com", "wrongpass")
     }
   }
-  
+
   @Test
   fun loginWithNetworkError() = runTest {
     coEvery { mockRepo.login(any(), any()) } throws NetworkException()
-    
+
     val result = assertThrows<NetworkException> {
       useCase.login("test@example.com", "password123")
     }
@@ -329,17 +329,17 @@ class GetUserUseCaseTest {
   private val mockRepo = mockk<UserRepository> {
     coEvery { getUser("123") } returns User("123")
   }
-  
+
   @Before
   fun setUp() {
     useCase = GetUserUseCase(mockRepo)
   }
-  
+
   @Test
   fun test1() {
     // test1 logic, reusing setup
   }
-  
+
   @Test
   fun test2() {
     // test2 logic, reusing setup
@@ -385,7 +385,7 @@ fun invalidEmailThrowsValidationException() {
   val exception = assertThrows<ValidationException> {
     useCase.validate("notanemail@.com")
   }
-  
+
   assertEquals("Invalid email format", exception.message)
 }
 ```
@@ -459,10 +459,10 @@ fun loginSuccess() = runTest {
   // GOOD: Mock the repository interface
   val mockRepo: AuthRepository = mockk()
   coEvery { mockRepo.login("a@b.c", "pass") } returns User("a@b.c")
-  
+
   val useCase = LoginUseCase(mockRepo)
   val result = useCase.login("a@b.c", "pass")
-  
+
   assertEquals(User("a@b.c"), result)
   // ✓ Can swap repository implementation without changing test
 }
@@ -476,11 +476,11 @@ fun loginSuccess() = runTest {
   // BAD: Mock the HTTP client directly
   val mockHttpClient = mockk<HttpClient>()
   every { mockHttpClient.post(any(), any()) } returns MockResponse(200, "{...}")
-  
+
   val repo = AuthRepository(mockHttpClient)
   val useCase = LoginUseCase(repo)
   val result = useCase.login("a@b.c", "pass")
-  
+
   // ✗ Test is brittle; breaks if you change HTTP client
 }
 ```
@@ -495,15 +495,15 @@ fun loginSuccess() = runTest {
 fun paymentProcessorRejectsDuplicatePayment() = runTest {
   val mockRepository = mockk<PaymentRepository>()
   val processor = PaymentProcessor(mockRepository)
-  
+
   coEvery { mockRepository.processPayment(any()) } returns PaymentResult.Success("txn_1")
-  
+
   val payment = Payment("txn_1", 100.0)
-  
+
   // First call succeeds
   val result1 = processor.process(payment)
   assertEquals(PaymentResult.Success("txn_1"), result1)
-  
+
   // Second call with same payment should fail
   val result2 = processor.process(payment)
   assertTrue(result2 is PaymentResult.DuplicatePayment)
@@ -513,12 +513,12 @@ fun paymentProcessorRejectsDuplicatePayment() = runTest {
 // GREEN: Minimal implementation
 class PaymentProcessor(private val repo: PaymentRepository) {
   private val processedPayments = mutableSetOf<String>()
-  
+
   suspend fun process(payment: Payment): PaymentResult {
     if (payment.id in processedPayments) {
       return PaymentResult.DuplicatePayment
     }
-    
+
     val result = repo.processPayment(payment)
     processedPayments.add(payment.id)
     return result
@@ -529,20 +529,20 @@ class PaymentProcessor(private val repo: PaymentRepository) {
 // REFACTOR: Clean up
 class PaymentProcessor(private val repo: PaymentRepository) {
   private val processedPayments = mutableSetOf<String>()
-  
+
   suspend fun process(payment: Payment): PaymentResult {
     checkForDuplicate(payment)
     val result = repo.processPayment(payment)
     recordPayment(payment)
     return result
   }
-  
+
   private fun checkForDuplicate(payment: Payment) {
     require(payment.id !in processedPayments) {
       "Duplicate payment: ${payment.id}"
     }
   }
-  
+
   private fun recordPayment(payment: Payment) {
     processedPayments.add(payment.id)
   }

@@ -118,6 +118,7 @@ output-localization-file: app_localizations.dart
 ```
 
 **lib/core/l10n/intl_en.arb**
+
 ```json
 {
   "@@locale": "en",
@@ -127,6 +128,7 @@ output-localization-file: app_localizations.dart
 ```
 
 **lib/core/l10n/intl_ar.arb**
+
 ```json
 {
   "@@locale": "ar",
@@ -135,6 +137,7 @@ output-localization-file: app_localizations.dart
 ```
 
 **main.dart wiring**
+
 ```dart
 MaterialApp(
   localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -235,6 +238,7 @@ class AppConstants {
 ```
 
 **Build command using the environment override:**
+
 ```bash
 flutter run --dart-define=API_BASE_URL=https://api.example.com
 ```
